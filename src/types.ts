@@ -21,14 +21,25 @@ export interface ScanOptions {
 
 export interface ProjectContext {
   cwd: string;
+  /** Lowest version allowed by the declared range; replaced by the lockfile version once that is parsed. */
   reactNativeVersion?: string;
+  /** The react-native range as written in package.json. */
+  reactNativeRange?: string;
   packageManager?: 'npm' | 'yarn' | 'pnpm';
   /** Installed versions resolved from the lockfile. */
   installed: Record<string, string>;
 }
 
 export interface Report {
-  meta: { tool: string; version: string; scannedAt: string; cwd: string; apk?: string };
+  meta: {
+    tool: string;
+    version: string;
+    scannedAt: string;
+    cwd: string;
+    apk?: string;
+    reactNativeVersion?: string;
+    packageManager?: ProjectContext['packageManager'];
+  };
   summary: { blockers: number; warnings: number; ok: number };
   findings: Finding[];
 }

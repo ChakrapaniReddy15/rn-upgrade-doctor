@@ -22,6 +22,8 @@ program
         offline: Boolean(opts.offline),
       });
       // TODO (week 1): render with src/report/terminal.ts
+      const { reactNativeVersion, packageManager } = report.meta;
+      console.log(`React Native ${reactNativeVersion ?? 'version unknown'} · ${packageManager ?? 'package manager unknown'}`);
       console.log(JSON.stringify(report.summary));
       process.exitCode = report.summary.blockers > 0 ? 1 : 0;
     } catch (err) {

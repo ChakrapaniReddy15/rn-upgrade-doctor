@@ -3,12 +3,12 @@
 ## Week 0 — setup
 - [x] Folder, plan docs, CLAUDE.md, package.json, tsconfig, folder skeleton, git init
 - [x] Check the npm name `rn-upgrade-doctor` is free (else pick another and rename everywhere)
-- [ ] Create empty public GitHub repo and push (owner does the push)
+- [x] Create empty public GitHub repo and push (owner does the push)
 - [x] `npm install`; `npm run build` and `npm test` pass on the skeleton
 - [ ] Create 4–5 fresh sample RN apps (public templates) at different versions under fixtures/ (gitignored) and build APKs
 
 ## Week 1 — version gap + dependency report
-- [ ] `src/project`: read package.json, detect RN version, detect package manager
+- [x] `src/project`: read package.json, detect RN version, detect package manager
 - [ ] Lockfile parsers: package-lock.json, yarn.lock, pnpm-lock.yaml -> installed versions
 - [ ] `src/registry`: npm registry client (latest version, last publish) with cache
 - [ ] React Native Directory client (New Architecture flag, unmaintained) — verify the current API first
