@@ -2,9 +2,9 @@
 
 ## Week 0 — setup
 - [x] Folder, plan docs, CLAUDE.md, package.json, tsconfig, folder skeleton, git init
-- [ ] Check the npm name `rn-upgrade-doctor` is free (else pick another and rename everywhere)
+- [x] Check the npm name `rn-upgrade-doctor` is free (else pick another and rename everywhere)
 - [ ] Create empty public GitHub repo and push (owner does the push)
-- [ ] `npm install`; `npm run build` and `npm test` pass on the skeleton
+- [x] `npm install`; `npm run build` and `npm test` pass on the skeleton
 - [ ] Create 4–5 fresh sample RN apps (public templates) at different versions under fixtures/ (gitignored) and build APKs
 
 ## Week 1 — version gap + dependency report
