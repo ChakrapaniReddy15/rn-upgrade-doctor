@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+fixtures/*/
+fixtures/**/*.apk
+fixtures/**/*.aab
+*.log
+.DS_Store
+.env
+rn-doctor-report.*
