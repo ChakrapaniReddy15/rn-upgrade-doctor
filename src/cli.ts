@@ -12,7 +12,7 @@ program
   .option('--format <list>', 'terminal,html,md,json', 'terminal,html')
   .option('--ci', 'CI mode: no colours, exit 1 on blockers', false)
   .option('--offline', 'skip network lookups (use cache only)', false)
-  .action(async (opts) => {
+  .action(async (opts: { cwd: string; apk?: string; format: string; ci?: boolean; offline?: boolean }) => {
     try {
       const report = await runScan({
         cwd: opts.cwd,
