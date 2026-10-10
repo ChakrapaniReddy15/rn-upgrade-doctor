@@ -12,7 +12,11 @@ describe('runScan', () => {
       await writeFile(path.join(dir, 'package-lock.json'), '{}');
 
       const report = await runScan({ cwd: dir, format: ['json'], ci: true, offline: true });
-      expect(report.meta).toMatchObject({ reactNativeVersion: '0.76.0', packageManager: 'npm' });
+      expect(report.meta).toMatchObject({
+        reactNativeVersion: '0.76.0',
+        reactNativeVersionSource: 'package.json',
+        packageManager: 'npm',
+      });
       expect(report.summary).toEqual({ blockers: 0, warnings: 0, ok: 0 });
     } finally {
       await rm(dir, { recursive: true, force: true });

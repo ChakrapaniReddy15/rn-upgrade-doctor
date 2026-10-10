@@ -21,12 +21,13 @@ export interface ScanOptions {
 
 export interface ProjectContext {
   cwd: string;
-  /** Lowest version allowed by the declared range; replaced by the lockfile version once that is parsed. */
+  /** Exact version from the lockfile, else the lowest version allowed by the package.json range. */
   reactNativeVersion?: string;
+  reactNativeVersionSource: 'lockfile' | 'package.json';
   /** The react-native range as written in package.json. */
   reactNativeRange?: string;
   packageManager?: 'npm' | 'yarn' | 'pnpm';
-  /** Installed versions resolved from the lockfile. */
+  /** Installed versions of the direct dependencies, resolved from the lockfile. */
   installed: Record<string, string>;
 }
 
@@ -38,6 +39,7 @@ export interface Report {
     cwd: string;
     apk?: string;
     reactNativeVersion?: string;
+    reactNativeVersionSource: ProjectContext['reactNativeVersionSource'];
     packageManager?: ProjectContext['packageManager'];
   };
   summary: { blockers: number; warnings: number; ok: number };

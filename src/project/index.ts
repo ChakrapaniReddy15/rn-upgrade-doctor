@@ -1,9 +1,11 @@
 import path from 'node:path';
 import type { ProjectContext } from '../types.js';
 import { detectPackageManager, detectReactNativeVersion } from './detect.js';
+import { readInstalledVersions } from './lockfile.js';
 import { ProjectError, readPackageJson } from './packageJson.js';
 
 export { detectPackageManager, detectReactNativeVersion } from './detect.js';
+export { declaredDeps, parseNpmLock, parsePnpmLock, parseYarnLock, readInstalledVersions } from './lockfile.js';
 export { ProjectError, readPackageJson } from './packageJson.js';
 export type { ReactNativeVersion } from './detect.js';
 export type { PackageJson } from './packageJson.js';
@@ -20,11 +22,16 @@ export async function buildProjectContext(cwd: string): Promise<ProjectContext> 
     );
   }
 
+  const packageManager = await detectPackageManager(root, pkg);
+  const installed = await readInstalledVersions(root, packageManager, pkg);
+  const lockedVersion = installed['react-native'];
+
   return {
     cwd: root,
-    reactNativeVersion: reactNative.version,
+    reactNativeVersion: lockedVersion ?? reactNative.version,
+    reactNativeVersionSource: lockedVersion ? 'lockfile' : 'package.json',
     reactNativeRange: reactNative.range,
-    packageManager: await detectPackageManager(root, pkg),
-    installed: {},
+    packageManager,
+    installed,
   };
 }

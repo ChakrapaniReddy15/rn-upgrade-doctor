@@ -99,6 +99,7 @@ describe('buildProjectContext', () => {
     expect(await buildProjectContext(dir)).toEqual({
       cwd: path.resolve(dir),
       reactNativeVersion: '0.76.5',
+      reactNativeVersionSource: 'package.json',
       reactNativeRange: '0.76.5',
       packageManager: 'yarn',
       installed: {},

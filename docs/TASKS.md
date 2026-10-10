@@ -9,7 +9,7 @@
 
 ## Week 1 — version gap + dependency report
 - [x] `src/project`: read package.json, detect RN version, detect package manager
-- [ ] Lockfile parsers: package-lock.json, yarn.lock, pnpm-lock.yaml -> installed versions
+- [x] Lockfile parsers: package-lock.json, yarn.lock, pnpm-lock.yaml -> installed versions
 - [ ] `src/registry`: npm registry client (latest version, last publish) with cache
 - [ ] React Native Directory client (New Architecture flag, unmaintained) — verify the current API first
 - [ ] Findings model + ranking; terminal summary with cli-table3

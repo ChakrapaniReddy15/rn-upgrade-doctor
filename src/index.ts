@@ -6,7 +6,7 @@ export * from './types.js';
 /** Library entry: run every check and return a ranked report. */
 export async function runScan(options: ScanOptions): Promise<Report> {
   const project = await buildProjectContext(options.cwd);
-  // TODO (week 1): fill project.installed from the lockfile, run checks, rank findings.
+  // TODO (week 1): run checks, rank findings.
   // TODO (week 2): if options.apk, run src/apk 16 KB scan and map .so files to packages.
   return {
     meta: {
@@ -16,6 +16,7 @@ export async function runScan(options: ScanOptions): Promise<Report> {
       cwd: project.cwd,
       apk: options.apk,
       reactNativeVersion: project.reactNativeVersion,
+      reactNativeVersionSource: project.reactNativeVersionSource,
       packageManager: project.packageManager,
     },
     summary: { blockers: 0, warnings: 0, ok: 0 },
