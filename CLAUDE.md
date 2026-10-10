@@ -38,14 +38,18 @@ src/registry/         npm registry, React Native Directory, GitHub clients + cac
 src/android/          Gradle / gradle.properties parsing
 src/ios/              Podfile / Podfile.lock parsing
 src/apk/              unzip APK/AAB, ELF header parser, 16 KB alignment check, .so -> package mapping
-src/rules/            known libraries table, version rules, advice text
+src/rules/            known libraries table, version rules, advice text, semver helpers
+src/checks/           pure checks (ProjectContext -> Finding[]) and ranking
 src/report/           terminal, HTML, Markdown, JSON renderers
+action.yml            composite GitHub Action (example workflow in docs/examples/)
 test/                 Vitest specs; fixtures/ holds sample projects and APKs (not committed if large)
 docs/                 PLAN.md (full plan), TASKS.md (checklist)
 ```
 
 ## Commands
-- `npm install` · `npm run dev -- scan --cwd <project>` · `npm run build` · `npm test` · `npm run lint`
+- `npm install` · `npm run dev -- scan --cwd <project>` · `npm run build` · `npm test` · `npm run lint` (type-checks src and test)
 
 ## Status
-- Skeleton only (no feature code yet). Next: Week 1 tasks in `docs/TASKS.md`.
+- Weeks 1–3 feature code done: project/lockfiles, registry + cache, Android/iOS/patches, 16 KB APK/AAB scan, checks,
+  renderers, GitHub Action. Not yet checked against real sample apps or real APKs (fixtures pending).
+- Open: fixtures, real-APK validation, GitHub client (archived repos), README GIF, npm publish. See `docs/TASKS.md`.

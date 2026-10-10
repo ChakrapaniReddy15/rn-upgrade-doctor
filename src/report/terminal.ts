@@ -1,0 +1,69 @@
+import Table from 'cli-table3';
+import pc from 'picocolors';
+import type { Report, Severity } from '../types.js';
+import { dataSources, headline, interestingDependencies, maintenanceLabel, newArchLabel } from './shared.js';
+
+export function renderTerminal(report: Report, options: { color: boolean }): string {
+  const c = pc.createColors(options.color);
+  const icon: Record<Severity, string> = { blocker: c.red('✖'), warning: c.yellow('▲'), info: c.blue('ℹ') };
+  const out: string[] = [];
+
+  out.push('', c.bold(`rn-upgrade-doctor · ${headline(report)}`));
+  out.push(c.dim(`${report.meta.cwd}${report.meta.packageManager ? ` · ${report.meta.packageManager}` : ''}`));
+  if (report.meta.upgradeHelperUrl) out.push(`Upgrade diff: ${c.cyan(report.meta.upgradeHelperUrl)}`);
+
+  const { blockers, warnings, info } = report.summary;
+  out.push(
+    '',
+    `${c.red(c.bold(`${blockers} blocker${blockers === 1 ? '' : 's'}`))}  ${c.yellow(`${warnings} warning${warnings === 1 ? '' : 's'}`)}  ${c.blue(`${info} info`)}`,
+  );
+
+  if (report.findings.length > 0) {
+    out.push('', c.bold('What to fix first'));
+    report.findings.forEach((f, i) => {
+      out.push(`${String(i + 1).padStart(3)}. ${icon[f.severity]} ${f.title}`);
+      if (f.detail) out.push(c.dim(`       ${f.detail}`));
+      if (f.fix) out.push(`       ${c.green('→')} ${f.fix}`);
+      out.push(c.dim(`       source: ${f.source}`));
+    });
+  }
+
+  const deps = interestingDependencies(report);
+  if (deps.length > 0) {
+    const table = new Table({
+      head: ['Package', 'Installed', 'Latest', 'New Arch', 'Maintenance'],
+      style: { head: options.color ? ['cyan'] : [], border: options.color ? ['grey'] : [] },
+    });
+    for (const d of deps) {
+      const outdated = d.installed && d.npm.value && d.installed !== d.npm.value.latest;
+      table.push([
+        d.name + (d.dev ? c.dim(' (dev)') : ''),
+        d.installed ?? c.dim(d.declared),
+        d.npm.value ? (outdated ? c.yellow(d.npm.value.latest) : d.npm.value.latest) : c.dim('?'),
+        colorStatus(newArchLabel(d), c),
+        colorStatus(maintenanceLabel(d), c),
+      ]);
+    }
+    out.push('', c.bold(`Dependencies to review (${deps.length} of ${report.dependencies.length})`), table.toString());
+  }
+
+  if (report.apk) {
+    const libs64 = report.apk.libs.filter((l) => l.is64Bit);
+    const bad = libs64.filter((l) => !l.elfOk || l.zipAligned === false);
+    out.push(
+      '',
+      c.bold('16 KB page size'),
+      `${report.apk.file}: ${libs64.length} 64-bit native libraries, ${bad.length === 0 ? c.green('all compatible') : c.red(`${bad.length} not compatible`)}`,
+    );
+  }
+
+  out.push('', c.dim('Data sources:'), ...dataSources(report).map((s) => c.dim(`  ${s}`)), '');
+  return out.join('\n');
+}
+
+function colorStatus(label: string, c: ReturnType<typeof pc.createColors>): string {
+  if (label === 'no' || label === 'deprecated' || label === 'unmaintained') return c.red(label);
+  if (label === 'untested') return c.yellow(label);
+  if (label.startsWith('yes') || label === 'ok') return c.green(label);
+  return c.dim(label);
+}

@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { ProjectContext } from '../types.js';
 import { detectPackageManager, detectReactNativeVersion } from './detect.js';
-import { readInstalledVersions } from './lockfile.js';
+import { declaredDeps, readInstalledVersions } from './lockfile.js';
 import { ProjectError, readPackageJson } from './packageJson.js';
 
 export { detectPackageManager, detectReactNativeVersion } from './detect.js';
@@ -33,5 +33,7 @@ export async function buildProjectContext(cwd: string): Promise<ProjectContext> 
     reactNativeRange: reactNative.range,
     packageManager,
     installed,
+    declared: declaredDeps(pkg),
+    devOnly: Object.keys(pkg.devDependencies ?? {}).filter((name) => !pkg.dependencies?.[name]),
   };
 }

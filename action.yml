@@ -1,0 +1,88 @@
+name: RN Upgrade Doctor
+description: See what breaks when you upgrade a React Native app, and what to fix first. Adds a report to the job summary and, optionally, the pull request.
+author: Sunkesula Chakrapani Reddy
+branding:
+  icon: activity
+  color: blue
+
+inputs:
+  working-directory:
+    description: React Native project folder, relative to the repository root.
+    default: .
+  apk:
+    description: Path to a built APK or AAB (relative to working-directory) for the 16 KB page-size scan. Leave empty to skip.
+    default: ''
+  fail-on-blockers:
+    description: Fail the job when the report has blockers.
+    default: 'true'
+  comment:
+    description: "Post (or update) the Markdown report as a pull request comment. Needs `pull-requests: write` permission."
+    default: 'false'
+  github-token:
+    description: Token used to comment on the pull request.
+    default: ${{ github.token }}
+
+outputs:
+  blockers:
+    description: Number of blockers.
+    value: ${{ steps.scan.outputs.blockers }}
+  warnings:
+    description: Number of warnings.
+    value: ${{ steps.scan.outputs.warnings }}
+  report-dir:
+    description: Folder with rn-upgrade-doctor-report.{md,json,html}.
+    value: ${{ steps.scan.outputs.report-dir }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Build rn-upgrade-doctor
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci --no-audit --no-fund && npm run build
+
+    - name: Scan
+      id: scan
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        APK: ${{ inputs.apk }}
+        OUT: ${{ runner.temp }}/rn-upgrade-doctor
+      run: |
+        args=(--ci --format terminal,md,json,html --out "$OUT")
+        if [ -n "$APK" ]; then args+=(--apk "$APK"); fi
+        set +e
+        node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
+        code=$?
+        set -e
+        # 2 = the tool itself failed; 1 = blockers (handled in the last step).
+        if [ "$code" -eq 2 ]; then exit 2; fi
+        cat "$OUT/rn-upgrade-doctor-report.md" >> "$GITHUB_STEP_SUMMARY"
+        node -e 'const r = require(process.argv[1]); console.log(`blockers=${r.summary.blockers}`); console.log(`warnings=${r.summary.warnings}`);' \
+          "$OUT/rn-upgrade-doctor-report.json" >> "$GITHUB_OUTPUT"
+        echo "report-dir=$OUT" >> "$GITHUB_OUTPUT"
+
+    - name: Comment on pull request
+      if: inputs.comment == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        PR: ${{ github.event.pull_request.number }}
+        REPORT: ${{ steps.scan.outputs.report-dir }}/rn-upgrade-doctor-report.md
+      run: |
+        # Update this job's previous comment if there is one, else create it.
+        gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --edit-last --body-file "$REPORT" 2>/dev/null \
+          || gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$REPORT"
+
+    - name: Fail on blockers
+      if: inputs.fail-on-blockers == 'true' && steps.scan.outputs.blockers != '0'
+      shell: bash
+      env:
+        BLOCKERS: ${{ steps.scan.outputs.blockers }}
+      run: |
+        echo "::error::rn-upgrade-doctor found $BLOCKERS blocker(s). See the job summary."
+        exit 1

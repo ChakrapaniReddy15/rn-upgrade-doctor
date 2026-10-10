@@ -1,1 +1,2 @@
-Read package.json and lockfiles (npm, yarn, pnpm); detect React Native version, package manager and patch-package patches.
+Read package.json and lockfiles (npm, yarn classic/berry, pnpm 5/6/9); detect React Native version, package manager and
+patch-package / pnpm patches.

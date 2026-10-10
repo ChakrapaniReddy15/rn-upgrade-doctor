@@ -1,0 +1,33 @@
+# Example: copy to .github/workflows/rn-upgrade-doctor.yml in your React Native app.
+name: rn-upgrade-doctor
+
+on:
+  pull_request:
+    paths:
+      - package.json
+      - package-lock.json
+      - yarn.lock
+      - pnpm-lock.yaml
+      - android/**
+      - ios/Podfile
+      - ios/Podfile.lock
+      - patches/**
+
+permissions:
+  contents: read
+  pull-requests: write # only needed for `comment: true`
+
+jobs:
+  doctor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Optional: installing dependencies lets the 16 KB scan map each .so to its npm package.
+      # - run: npm ci --ignore-scripts
+
+      - uses: ChakrapaniReddy15/rn-upgrade-doctor@main
+        with:
+          comment: true
+          fail-on-blockers: true
+          # apk: android/app/build/outputs/apk/release/app-release.apk

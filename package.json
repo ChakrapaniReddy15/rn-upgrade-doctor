@@ -13,10 +13,13 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc -p tsconfig.json --noEmit"
+    "lint": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
   },
   "keywords": ["react-native", "upgrade", "cli", "new-architecture", "16kb", "android", "doctor"],
   "author": "Sunkesula Chakrapani Reddy",
+  "repository": { "type": "git", "url": "git+https://github.com/ChakrapaniReddy15/rn-upgrade-doctor.git" },
+  "homepage": "https://github.com/ChakrapaniReddy15/rn-upgrade-doctor#readme",
+  "bugs": { "url": "https://github.com/ChakrapaniReddy15/rn-upgrade-doctor/issues" },
   "license": "MIT",
   "dependencies": {
     "cli-table3": "^0.6.5",
