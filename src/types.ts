@@ -58,6 +58,7 @@ export interface AndroidConfig {
   minSdk?: number;
   compileSdk?: number;
   targetSdk?: number;
+  buildToolsVersion?: string;
   ndkVersion?: string;
   kotlinVersion?: string;
   gradleVersion?: string;
@@ -77,6 +78,43 @@ export interface IosConfig {
   podsReactNativeVersion?: string;
   cocoapodsVersion?: string;
   files: string[];
+}
+
+/** Native settings of the official React Native app template for one release (see src/registry/template.ts). */
+export interface TemplateInfo {
+  version: string;
+  android: Omit<AndroidConfig, 'files'>;
+  /** Minimum iOS version: the Podfile literal, or React Native's own `min_ios_version_supported`. */
+  minIos?: string;
+}
+
+/** Templates for the installed React Native version and for the upgrade target (the latest release). */
+export interface NativeTemplates {
+  currentVersion?: string;
+  current: Sourced<TemplateInfo>;
+  targetVersion?: string;
+  target: Sourced<TemplateInfo>;
+}
+
+export type NativeStatus = 'ok' | 'newer' | 'raised' | 'behind' | 'below-required' | 'differs' | 'unknown';
+
+/** One native setting: yours next to the template values for your current and the target React Native version. */
+export interface NativeRow {
+  platform: 'Android' | 'iOS';
+  key: string;
+  label: string;
+  yours: string;
+  current?: string;
+  target?: string;
+  status: NativeStatus;
+}
+
+export interface NativeComparison {
+  currentVersion?: string;
+  currentSource: string;
+  targetVersion?: string;
+  targetSource: string;
+  rows: NativeRow[];
 }
 
 export interface PatchInfo {
@@ -136,6 +174,7 @@ export interface ProjectContext {
   ios?: IosConfig;
   patches?: PatchInfo[];
   apk?: ApkReport;
+  templates?: NativeTemplates;
 }
 
 export interface Report {
@@ -160,6 +199,8 @@ export interface Report {
   dependencies: DependencyInfo[];
   android?: AndroidConfig;
   ios?: IosConfig;
+  /** Your Android/iOS settings next to the React Native template values for your current and target version. */
+  native: NativeComparison;
   patches: PatchInfo[];
   apk?: ApkReport;
 }

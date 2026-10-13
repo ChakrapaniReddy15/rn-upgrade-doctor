@@ -5,7 +5,7 @@
   "dependencies": {
     "@demo/not-in-snapshot": "^1.0.0",
     "react": "19.3.0",
-    "react-native": "0.87.1",
+    "react-native": "0.86.0",
     "react-native-mmkv": "^4.3.2"
   }
 }

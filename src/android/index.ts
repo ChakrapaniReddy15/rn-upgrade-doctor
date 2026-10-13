@@ -1,1 +1,1 @@
-export { parseProperties, readAndroidConfig } from './gradle.js';
+export { parseAndroidFiles, parseProperties, readAndroidConfig, type AndroidFiles } from './gradle.js';

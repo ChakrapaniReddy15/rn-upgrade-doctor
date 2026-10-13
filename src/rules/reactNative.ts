@@ -12,7 +12,10 @@ export const NEW_ARCH_ONLY_SINCE = '0.82.0';
 /** First React Native release whose own native libraries are built for 16 KB page sizes. */
 export const SIXTEEN_KB_SINCE = '0.77.0';
 
-/** Minimum platform versions a React Native release needs. Newest first; only versions confirmed from release notes. */
+/**
+ * Fallback minimum platform versions, used only when the React Native template (src/registry/template.ts) is not
+ * available, e.g. offline without a cache. Newest first.
+ */
 export const PLATFORM_MINIMUMS: Array<{ since: string; minSdk: number; minIos: string }> = [
   { since: '0.76.0', minSdk: 24, minIos: '15.1' },
   { since: '0.74.0', minSdk: 23, minIos: '13.4' },

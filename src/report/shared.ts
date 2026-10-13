@@ -1,4 +1,4 @@
-import type { DependencyInfo, Report, Severity } from '../types.js';
+import type { DependencyInfo, NativeRow, NativeStatus, Report, Severity } from '../types.js';
 
 export const SEVERITY_LABEL: Record<Severity, string> = { blocker: 'Blocker', warning: 'Warning', info: 'Info' };
 
@@ -41,6 +41,7 @@ export function dataSources(report: Report): string[] {
   const dir = countBy(report.dependencies.map((d) => d.directory.source));
   sources.add(`Versions: ${npm}`);
   sources.add(`New Architecture / maintenance: ${dir}`);
+  if (report.native.rows.length > 0) sources.add(nativeSourceLine(report));
   return [...sources];
 }
 
@@ -50,49 +51,44 @@ function countBy(values: string[]): string {
   return [...counts.entries()].map(([value, n]) => `${value} (${n})`).join(', ') || 'none';
 }
 
-export interface ConfigSection {
+export const NATIVE_STATUS_LABEL: Record<NativeStatus, string> = {
+  ok: '✓',
+  newer: '✓ newer',
+  raised: '▲ raised by the upgrade',
+  behind: '▲ behind your RN version',
+  'below-required': '✖ below the minimum',
+  differs: '▲ differs from the template',
+  unknown: '–',
+};
+
+export interface NativeSection {
   platform: 'Android' | 'iOS';
-  /** Files the values came from; empty when the platform folder was not found. */
+  /** Files your values came from; empty when the platform folder was not found. */
   files: string[];
-  rows: Array<[label: string, value: string]>;
+  rows: NativeRow[];
 }
 
-/** Android and iOS settings as read from the project, so the report shows them even when nothing is wrong. */
-export function configSections(report: Report): ConfigSection[] {
-  const a = report.android;
-  const i = report.ios;
-  const shown = (value: string | number | undefined) => (value === undefined ? 'not found' : String(value));
-  const flag = (value: boolean | undefined) => (value === undefined ? 'not set (React Native default: on)' : value ? 'on' : 'off');
-
+/** Template column headers: one per distinct React Native version (current, and target when it differs). */
+export function templateColumns(report: Report): Array<{ key: 'current' | 'target'; title: string }> {
+  const { currentVersion, targetVersion } = report.native;
+  if (!targetVersion || targetVersion === currentVersion) return [{ key: 'target', title: `RN ${targetVersion ?? '?'} template` }];
   return [
-    {
-      platform: 'Android',
-      files: a?.files ?? [],
-      rows: a
-        ? [
-            ['targetSdk', shown(a.targetSdk)],
-            ['compileSdk', shown(a.compileSdk)],
-            ['minSdk', shown(a.minSdk)],
-            ['New Architecture (newArchEnabled)', flag(a.newArchEnabled)],
-            ['Hermes (hermesEnabled)', flag(a.hermesEnabled)],
-            ['NDK', shown(a.ndkVersion)],
-            ['Kotlin', shown(a.kotlinVersion)],
-            ['Gradle', shown(a.gradleVersion)],
-          ]
-        : [],
-    },
-    {
-      platform: 'iOS',
-      files: i?.files ?? [],
-      rows: i
-        ? [
-            ['Deployment target', i.minIos ?? (i.usesRnMinIos ? 'min_ios_version_supported (follows React Native)' : 'not found')],
-            ['New Architecture (RCT_NEW_ARCH_ENABLED)', flag(i.newArchEnabled)],
-            ['Hermes (:hermes_enabled)', flag(i.hermesEnabled)],
-            ['React Native in Podfile.lock', shown(i.podsReactNativeVersion)],
-            ['CocoaPods', shown(i.cocoapodsVersion)],
-          ]
-        : [],
-    },
+    { key: 'current', title: `RN ${currentVersion ?? '?'} (yours)` },
+    { key: 'target', title: `RN ${targetVersion} (target)` },
   ];
+}
+
+/** Your Android and iOS settings next to the React Native template values, grouped by platform. */
+export function nativeSections(report: Report): NativeSection[] {
+  return (['Android', 'iOS'] as const).map((platform) => ({
+    platform,
+    files: (platform === 'Android' ? report.android?.files : report.ios?.files) ?? [],
+    rows: report.native.rows.filter((r) => r.platform === platform),
+  }));
+}
+
+export function nativeSourceLine(report: Report): string {
+  const { currentVersion, currentSource, targetVersion, targetSource } = report.native;
+  if (!targetVersion || targetVersion === currentVersion) return `React Native template: ${targetSource}`;
+  return `React Native templates: ${currentVersion ?? '?'} ${currentSource}; ${targetVersion} ${targetSource}`;
 }

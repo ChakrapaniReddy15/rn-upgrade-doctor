@@ -53,7 +53,7 @@ flowchart LR
 | CLI | commander |
 | Terminal | picocolors, cli-table3 |
 | Lockfiles | own parsers for package-lock.json, yarn.lock (v1 + berry), pnpm-lock.yaml (yaml) |
-| Data | npm registry API; React Native Directory data (verify current API); GitHub REST API (optional token) |
+| Data | npm registry API; React Native Directory check API; React Native template per release (rn-diff-purge); GitHub REST API later |
 | 16 KB | yauzl to read the zip; small ELF64 program-header parser |
 | Mapping | search node_modules for each .so name + CMake target names; known-library table in src/rules |
 | Reports | HTML (single file, inline CSS), Markdown, JSON |

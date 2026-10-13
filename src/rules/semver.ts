@@ -1,4 +1,7 @@
-/** Minimal semver helpers for x.y.z[-pre] strings. Enough for comparisons in rules; not a full semver implementation. */
+/**
+ * Minimal semver helpers for x.y.z[-pre] strings (missing parts count as 0, so SDK levels like "35" compare too).
+ * Enough for comparisons in rules; not a full semver implementation.
+ */
 
 export interface Version {
   major: number;
@@ -8,9 +11,9 @@ export interface Version {
 }
 
 export function parseVersion(version: string): Version | undefined {
-  const match = /^v?(\d+)\.(\d+)(?:\.(\d+))?(?:-([0-9A-Za-z.-]+))?/.exec(version.trim());
+  const match = /^v?(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:-([0-9A-Za-z.-]+))?/.exec(version.trim());
   if (!match) return undefined;
-  return { major: Number(match[1]), minor: Number(match[2]), patch: Number(match[3] ?? 0), prerelease: match[4] ?? '' };
+  return { major: Number(match[1]), minor: Number(match[2] ?? 0), patch: Number(match[3] ?? 0), prerelease: match[4] ?? '' };
 }
 
 /** Negative if a < b, 0 if equal, positive if a > b. Unparseable versions sort first. */

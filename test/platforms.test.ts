@@ -43,6 +43,7 @@ describe('readAndroidConfig', () => {
       minSdk: 24,
       compileSdk: 35,
       targetSdk: 34,
+      buildToolsVersion: '35.0.0',
       ndkVersion: '27.1.12297006',
       kotlinVersion: '2.0.21',
       gradleVersion: '8.10.2',

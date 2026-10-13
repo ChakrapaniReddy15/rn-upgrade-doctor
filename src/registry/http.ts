@@ -44,3 +44,17 @@ export async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) =>
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
   return results;
 }
+
+export interface TextResponse {
+  status: number;
+  text: string;
+}
+
+/** fetch() for plain-text files (raw GitHub content). Throws on network errors and timeouts, not on HTTP error codes. */
+export async function fetchText(url: string, init: { timeoutMs?: number } = {}): Promise<TextResponse> {
+  const response = await fetch(url, {
+    headers: { 'user-agent': USER_AGENT },
+    signal: AbortSignal.timeout(init.timeoutMs ?? 15_000),
+  });
+  return { status: response.status, text: await response.text() };
+}

@@ -2,13 +2,13 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { readAndroidConfig } from './android/index.js';
 import { scanApk } from './apk/index.js';
-import { registryUnreachable, runChecks } from './checks/index.js';
+import { compareNative, registryUnreachable, runChecks } from './checks/index.js';
 import { readIosConfig } from './ios/index.js';
 import { buildProjectContext, readPackageJson, type PackageJson } from './project/index.js';
 import { readPatches } from './project/patches.js';
-import { FileCache, getDirectoryInfo, getNpmInfo, type RegistryOptions } from './registry/index.js';
+import { FileCache, getDirectoryInfo, getNpmInfo, getTemplate, type RegistryOptions } from './registry/index.js';
 import { upgradeHelperUrl } from './rules/index.js';
-import type { DependencyInfo, PatchInfo, ProjectContext, Report, ScanOptions, Sourced } from './types.js';
+import type { DependencyInfo, NativeTemplates, PatchInfo, ProjectContext, Report, ScanOptions, Sourced } from './types.js';
 
 export * from './types.js';
 export { runChecks, rankFindings } from './checks/index.js';
@@ -21,7 +21,7 @@ export const TOOL_VERSION = (createRequire(import.meta.url)('../package.json') a
  * gives 2 (the tool could not do its job), so a network failure never passes as a clean result.
  */
 export function exitCodeFor(report: Report, options: { ci: boolean }): 0 | 1 | 2 {
-  if (options.ci && registryUnreachable(report.dependencies)) return 2;
+  if (options.ci && registryUnreachable(report.dependencies, [report.native.currentSource, report.native.targetSource])) return 2;
   return report.summary.blockers > 0 ? 1 : 0;
 }
 
@@ -49,7 +49,8 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
 
   const rnNpm = dependencies.find((d) => d.name === 'react-native')?.npm;
   const latestReactNative: Sourced<string> = { value: rnNpm?.value?.latest, source: rnNpm?.source ?? 'unknown' };
-  const full: ProjectContext = { ...ctx, latestReactNative, dependencies, android, ios, patches, apk };
+  const templates = android || ios ? await lookupTemplates(ctx.reactNativeVersion, latestReactNative.value, registry) : undefined;
+  const full: ProjectContext = { ...ctx, latestReactNative, dependencies, android, ios, patches, apk, templates };
   const findings = runChecks(full);
 
   const current = ctx.reactNativeVersion;
@@ -79,8 +80,29 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
     dependencies,
     android,
     ios,
+    native: compareNative(full),
     patches,
     apk,
+  };
+}
+
+/** React Native templates for the installed version and the upgrade target (the same version when up to date). */
+async function lookupTemplates(
+  current: string | undefined,
+  target: string | undefined,
+  registry: RegistryOptions,
+): Promise<NativeTemplates> {
+  const none = { source: 'React Native version unknown' };
+  const [currentTemplate, targetTemplate] = await Promise.all([
+    current ? getTemplate(current, registry) : Promise.resolve(none),
+    target && target !== current ? getTemplate(target, registry) : Promise.resolve(undefined),
+  ]);
+  return {
+    currentVersion: current,
+    current: currentTemplate,
+    targetVersion: target ?? current,
+    // Without a known latest version, compare against the installed version's template only.
+    target: targetTemplate ?? currentTemplate,
   };
 }
 

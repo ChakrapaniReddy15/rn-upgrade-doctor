@@ -56,6 +56,7 @@ export const EXAMPLES: ExampleRun[] = [
       'warning:android-compile-sdk',
       'warning:android-min-sdk',
       'warning:android-new-arch-off',
+      'warning:android-template-gap',
     ],
   },
   {
@@ -102,6 +103,7 @@ export const EXAMPLES: ExampleRun[] = [
       'warning:android-compile-sdk',
       'warning:android-min-sdk',
       'warning:android-new-arch-off',
+      'warning:android-template-gap',
       'warning:dep-deprecated:request',
       'warning:dep-new-arch-untested:@demo/untested-charts',
       'warning:dep-outdated:react-native-code-push',
@@ -131,7 +133,7 @@ export const EXAMPLES: ExampleRun[] = [
     name: '13 registry data missing',
     folder: '13-registry-data-missing',
     exitCode: 0,
-    findings: ['warning:data-registry-unavailable'],
+    findings: ['info:rn-version-gap', 'warning:data-registry-unavailable', 'warning:data-template-unavailable'],
   },
   { name: '14 monorepo', folder: '14-monorepo/apps/mobile', exitCode: 0, findings: ['info:patch:react-native-mmkv'] },
 ];

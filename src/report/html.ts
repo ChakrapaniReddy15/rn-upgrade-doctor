@@ -1,12 +1,14 @@
 import type { Report } from '../types.js';
 import {
+  NATIVE_STATUS_LABEL,
   SEVERITY_LABEL,
-  configSections,
   dataSources,
   headline,
   interestingDependencies,
   maintenanceLabel,
+  nativeSections,
   newArchLabel,
+  templateColumns,
 } from './shared.js';
 
 /** A single self-contained HTML page (inline CSS, no scripts), safe to attach to CI runs. */
@@ -32,13 +34,19 @@ export function renderHtml(report: Report): string {
     )
     .join('\n');
 
-  const config = configSections(report)
+  const columns = templateColumns(report);
+  const config = nativeSections(report)
     .map((section) =>
       section.rows.length === 0
         ? `<h3>${section.platform}</h3><p class="dim">Not found.</p>`
         : `<h3>${section.platform} <span class="dim">(${section.files.map(esc).join(', ')})</span></h3>
-<div class="table-wrap"><table><tbody>
-${section.rows.map(([label, value]) => `<tr><td>${esc(label)}</td><td${value.startsWith('not') ? ' class="dim"' : ''}>${esc(value)}</td></tr>`).join('\n')}
+<div class="table-wrap"><table><thead><tr><th>Setting</th><th>Yours</th>${columns.map((col) => `<th>${esc(col.title)}</th>`).join('')}<th>Status</th></tr></thead><tbody>
+${section.rows
+  .map(
+    (row) =>
+      `<tr><td>${esc(row.label)}</td><td${row.yours.startsWith('not') ? ' class="dim"' : ''}>${esc(row.yours)}</td>${columns.map((col) => `<td>${esc(row[col.key] ?? '–')}</td>`).join('')}<td class="n-${row.status}">${esc(NATIVE_STATUS_LABEL[row.status])}</td></tr>`,
+  )
+  .join('\n')}
 </tbody></table></div>`,
     )
     .join('\n');
@@ -81,6 +89,7 @@ table { border-collapse: collapse; width: 100%; font-size: .9rem; }
 th, td { text-align:left; padding:6px 10px; border-bottom:1px solid var(--line); white-space: nowrap; }
 tr.bad td { color: var(--red); font-weight: 600; }
 .s-no, .s-deprecated, .s-unmaintained { color: var(--red); } .s-untested { color: var(--yellow); } .s-yes, .s-yes-only, .s-ok { color: var(--green); }
+.n-ok, .n-newer { color: var(--green); } .n-raised, .n-behind, .n-differs { color: var(--yellow); } .n-below-required { color: var(--red); font-weight: 600; } .n-unknown { color: var(--dim); }
 footer { margin-top: 32px; font-size: .8rem; color: var(--dim); }
 </style>
 </head>
@@ -99,7 +108,7 @@ ${deps.length > 0 ? `<h2>Dependencies to review <span class="dim">(${deps.length
 <div class="table-wrap"><table><thead><tr><th>Package</th><th>Installed</th><th>Latest</th><th>New Arch</th><th>Maintenance</th></tr></thead><tbody>
 ${depRows}
 </tbody></table></div>` : ''}
-<h2>Project config</h2>
+<h2>Native config vs React Native template</h2>
 ${config}
 ${report.apk ? `<h2>16 KB page size</h2><p class="meta">${esc(report.apk.file)}</p>
 <div class="table-wrap"><table><thead><tr><th>Library</th><th>ABI</th><th>Package</th><th>ELF align</th><th>Zip aligned</th></tr></thead><tbody>

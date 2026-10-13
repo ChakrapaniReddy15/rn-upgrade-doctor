@@ -1,6 +1,6 @@
 import type { NpmPackageInfo, Sourced } from '../types.js';
 import { FileCache } from './cache.js';
-import { fetchJson, mapLimit } from './http.js';
+import { fetchJson, mapLimit, type fetchText } from './http.js';
 
 const REGISTRY = 'https://registry.npmjs.org';
 const NAMESPACE = 'npm-latest';
@@ -12,6 +12,8 @@ export interface RegistryOptions {
   cache?: FileCache;
   /** Replaceable in tests. */
   fetch?: typeof fetchJson;
+  /** Replaceable in tests (plain-text files such as the React Native template). */
+  fetchText?: typeof fetchText;
 }
 
 /**

@@ -28,8 +28,8 @@ npx tsx src/cli.ts examples/10-everything-broken --offline --cache-dir examples/
 |---|---|---|
 | React Native | Version gap to the latest release, link to the [upgrade helper](https://react-native-community.github.io/upgrade-helper/) diff, New Architecture-only releases (0.82+), 16 KB support (0.77+) | lockfile, npm registry, rules |
 | Dependencies | Installed vs latest, New Architecture support, unmaintained / deprecated packages, known replacements | lockfile, npm registry, [React Native Directory](https://reactnative.directory) |
-| Android | targetSdk vs Google Play minimum, compileSdk, minSdk vs React Native minimum, `newArchEnabled`, `hermesEnabled` | `android/*.gradle`, `gradle.properties` |
-| iOS | Deployment target vs React Native minimum, `RCT_NEW_ARCH_ENABLED`, Podfile.lock in sync | `ios/Podfile`, `ios/Podfile.lock` |
+| Android | Your targetSdk, compileSdk, minSdk, build tools, NDK, Kotlin, Gradle, `newArchEnabled`, `hermesEnabled` side by side with the official React Native template for your version and the target version; targetSdk vs Google Play minimum | `android/*.gradle`, `gradle.properties`, [React Native template](https://github.com/react-native-community/rn-diff-purge) |
+| iOS | Deployment target vs the template's minimum, `RCT_NEW_ARCH_ENABLED`, Podfile.lock in sync | `ios/Podfile`, `ios/Podfile.lock`, React Native template |
 | 16 KB page size | ELF `PT_LOAD` alignment of every 64-bit `.so`, 16 KB zip alignment of uncompressed `.so` in APKs, each library mapped to its npm package | `--apk` file, `node_modules` |
 | Patches | patch-package and pnpm patches that need re-checking, or no longer match the installed version | `patches/`, `package.json` |
 
@@ -60,7 +60,15 @@ warning in the report.
 
 See [docs/COMMANDS.md](docs/COMMANDS.md) for every command with an explanation.
 
-Registry responses are cached in `~/.cache/rn-upgrade-doctor` (npm: 12 h, React Native Directory: 24 h). Use `--cache-dir` or `RN_UPGRADE_DOCTOR_CACHE_DIR` to move it.
+Registry responses are cached in `~/.cache/rn-upgrade-doctor` (npm: 12 h, React Native Directory: 24 h, React Native
+templates: permanently, since a release's template never changes). Use `--cache-dir` or `RN_UPGRADE_DOCTOR_CACHE_DIR` to move it.
+
+**Native settings vs the React Native template:** the "latest" value for an Android or iOS setting is what a new app
+created on that React Native version uses. The tool reads it from the same public data the official upgrade helper uses
+(`react-native-community/rn-diff-purge`) and shows your value next to the template of your current version and of the
+target version. Statuses: *below the minimum* (minSdk, iOS target, Play's targetSdk), *raised by the upgrade*,
+*behind your RN version* (drift you already have), *newer* (fine). Template values other than the minimums are
+recommendations, not hard rules.
 
 ## GitHub Action
 

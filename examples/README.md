@@ -15,11 +15,11 @@ or React Native Directory change. Drop `--offline --cache-dir examples/registry-
 
 | Folder | Scenario | Command | Exit | Key finding ids |
 |---|---|---|---|---|
-| `01-healthy-latest` | Latest RN (0.87.1 in the snapshot), targetSdk 36, New Architecture and Hermes on, maintained libraries | `npx tsx src/cli.ts examples/01-healthy-latest --offline --cache-dir examples/registry-snapshot` | 0 | none |
+| `01-healthy-latest` | Latest RN (0.87.1 in the snapshot); Android settings equal to the 0.87.1 template; New Architecture and Hermes on; maintained libraries | `npx tsx src/cli.ts examples/01-healthy-latest --offline --cache-dir examples/registry-snapshot` | 0 | none |
 | `02-old-rn-version` | RN 0.68.7, 19 releases behind; report links the upgrade-helper diff | `npx tsx src/cli.ts examples/02-old-rn-version --offline --cache-dir examples/registry-snapshot` | 0 | `rn-version-gap` (warning), `rn-new-arch-only`, `rn-16kb`, `dep-outdated:react` (info) |
 | `03-new-arch-blockers` | Libraries without New Architecture support, on a target RN that is New Architecture only | `npx tsx src/cli.ts examples/03-new-arch-blockers --offline --cache-dir examples/registry-snapshot` | 1 | `dep-new-arch:react-native-fast-image`, `dep-new-arch:@demo/legacy-maps` (blockers), `dep-new-arch-untested:@demo/untested-charts`, `dep-replace:react-native-fast-image` |
 | `04-unmaintained-deps` | Unmaintained, deprecated and replaced libraries | `npx tsx src/cli.ts examples/04-unmaintained-deps --offline --cache-dir examples/registry-snapshot` | 1 | `dep-replace:react-native-code-push`, `dep-replace:react-native-camera`, `dep-deprecated:request`, `dep-unmaintained:@demo/abandoned-picker`, `dep-outdated:react-native-mmkv`, `dep-new-arch:react-native-code-push` (blocker, see note) |
-| `05-android-config` | targetSdk 34, compileSdk 33, minSdk 21, `newArchEnabled=false`, `hermesEnabled=false` | `npx tsx src/cli.ts examples/05-android-config --offline --cache-dir examples/registry-snapshot` | 1 | `android-target-sdk` (blocker), `android-compile-sdk`, `android-min-sdk`, `android-new-arch-off`, `android-hermes-off` |
+| `05-android-config` | targetSdk 34, compileSdk 33, minSdk 21, Gradle 7.5.1, `newArchEnabled=false`, `hermesEnabled=false` | `npx tsx src/cli.ts examples/05-android-config --offline --cache-dir examples/registry-snapshot` | 1 | `android-target-sdk` (blocker), `android-compile-sdk`, `android-min-sdk`, `android-template-gap`, `android-new-arch-off`, `android-hermes-off` |
 | `06-ios-podfile` | Old-style Podfile: `platform :ios, '12.4'`, `RCT_NEW_ARCH_ENABLED=0`, Flipper; Podfile.lock from RN 0.79.2 | `npx tsx src/cli.ts examples/06-ios-podfile --offline --cache-dir examples/registry-snapshot` | 0 | `ios-min-version`, `ios-new-arch-off`, `ios-pods-out-of-sync` |
 | `07-patch-package` | Two patch-package patches (one for the installed version, one for an older one) and a `postinstall` script | `npx tsx src/cli.ts examples/07-patch-package --offline --cache-dir examples/registry-snapshot` | 0 | `patch:@demo/js-utils` (warning), `patch:react-native-mmkv` (info), `dep-outdated:@demo/js-utils` (info) |
 | `08-lockfiles/npm` | Same app as yarn and pnpm, with `package-lock.json` | `npx tsx src/cli.ts examples/08-lockfiles/npm --offline --cache-dir examples/registry-snapshot` | 0 | `rn-version-gap` (info) |
@@ -30,7 +30,7 @@ or React Native Directory change. Drop `--offline --cache-dir examples/registry-
 | `10-everything-broken` | Every problem at once (for the README GIF and screenshots) | `npx tsx src/cli.ts examples/10-everything-broken --offline --cache-dir examples/registry-snapshot` | 1 | 27 findings: all of 02–07 together |
 | `11-unknown-rn-version` | `react-native` from a git URL, no lockfile, so there is no version to compare | `npx tsx src/cli.ts examples/11-unknown-rn-version --offline --cache-dir examples/registry-snapshot` | 0 | `rn-version-unknown`, `data-lockfile-missing` |
 | `12-not-an-rn-app` | A web app without `react-native` | `npx tsx src/cli.ts examples/12-not-an-rn-app --offline --cache-dir examples/registry-snapshot` | 2 | none (tool error) |
-| `13-registry-data-missing` | A dependency that is not in the registry snapshot (like being offline without a cache) | `npx tsx src/cli.ts examples/13-registry-data-missing --offline --cache-dir examples/registry-snapshot` | 0 | `data-registry-unavailable` |
+| `13-registry-data-missing` | A dependency and an RN version (0.86.0) whose data is not in the snapshot, like being offline without a cache | `npx tsx src/cli.ts examples/13-registry-data-missing --offline --cache-dir examples/registry-snapshot` | 0 | `data-registry-unavailable`, `data-template-unavailable` |
 | `14-monorepo` | Yarn workspaces: the app is in `apps/mobile`; `yarn.lock` and `patches/` are at the monorepo root | `npx tsx src/cli.ts examples/14-monorepo/apps/mobile --offline --cache-dir examples/registry-snapshot` | 0 | `patch:react-native-mmkv` (from `../../patches/`), RN version from `../../yarn.lock` |
 
 The full expected findings for each run are in [`scripts/examples.ts`](../scripts/examples.ts); `test/examples.test.ts`
@@ -51,8 +51,10 @@ checks them, snapshots each JSON report, and fails if a finding id in `src/check
 ## Registry snapshot
 
 [`registry-snapshot/`](registry-snapshot) uses the same format as the tool's cache (`~/.cache/rn-upgrade-doctor`):
-`npm-latest/<name>.json` and `rn-directory/<name>.json`, each `{ "fetchedAt": ..., "value": ... }`, where a `null`
-value means "not on npm" / "not listed in React Native Directory".
+`npm-latest/<name>.json`, `rn-directory/<name>.json` and `rn-template/<version>.json`, each
+`{ "fetchedAt": ..., "value": ... }`, where a `null` value means "not on npm" / "not listed in React Native Directory" /
+"no template for this version".
 
 - Real package names hold the values that registry.npmjs.org and reactnative.directory returned on **2026-10-13**.
+- `rn-template/` holds the real React Native template values for 0.68.7, 0.85.2 and 0.87.1 (from rn-diff-purge).
 - Packages named `@demo/*` are made up, so that no real library is shown with a status it doesn't have.

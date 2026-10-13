@@ -17,21 +17,41 @@ export async function readAndroidConfig(cwd: string): Promise<AndroidConfig | un
   };
   const found = Object.values(files).filter((f): f is SourceFile => f !== undefined);
   if (found.length === 0) return undefined;
+  return {
+    ...parseAndroidFiles({
+      root: files.root?.text,
+      app: files.app?.text,
+      properties: files.properties?.text,
+      wrapper: files.wrapper?.text,
+    }),
+    files: found.map((f) => f.path),
+  };
+}
 
+/** Text of the Gradle files that hold SDK levels and flags; any of them may be missing. */
+export interface AndroidFiles {
+  root?: string;
+  app?: string;
+  properties?: string;
+  wrapper?: string;
+}
+
+/** Pure parser shared by the project reader and the React Native template reader. */
+export function parseAndroidFiles(files: AndroidFiles): Omit<AndroidConfig, 'files'> {
   // The app module wins when it sets a literal; the template points it at rootProject.ext instead.
-  const gradle = [files.app, files.root].filter((f): f is SourceFile => f !== undefined).map((f) => stripComments(f.text));
-  const props = parseProperties(files.properties?.text ?? '');
+  const gradle = [files.app, files.root].filter((t): t is string => t !== undefined).map(stripComments);
+  const props = parseProperties(files.properties ?? '');
 
   return {
     minSdk: firstNumber(gradle, 'minSdk'),
     compileSdk: firstNumber(gradle, 'compileSdk'),
     targetSdk: firstNumber(gradle, 'targetSdk'),
+    buildToolsVersion: firstString(gradle, 'buildTools'),
     ndkVersion: firstString(gradle, 'ndkVersion'),
     kotlinVersion: firstString(gradle, 'kotlinVersion'),
-    gradleVersion: /gradle-([\d.]+(?:-[\w.]+)?)-(?:all|bin)\.zip/.exec(files.wrapper?.text ?? '')?.[1],
+    gradleVersion: /gradle-([\d.]+(?:-[\w.]+)?)-(?:all|bin)\.zip/.exec(files.wrapper ?? '')?.[1],
     newArchEnabled: parseBool(props.newArchEnabled),
     hermesEnabled: parseBool(props.hermesEnabled),
-    files: found.map((f) => f.path),
   };
 }
 

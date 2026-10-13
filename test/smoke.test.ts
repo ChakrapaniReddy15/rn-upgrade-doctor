@@ -94,15 +94,14 @@ describe('runScan', () => {
     expect(report.meta).toMatchObject({ latestReactNative: '0.87.1', latestReactNativeSource: 'npm registry (cache)' });
   });
 
-  it('shows Android and iOS config in every format', async () => {
+  it('shows Android and iOS settings in every format', async () => {
     await writeTree(dir, { 'ios/Podfile': 'platform :ios, min_ios_version_supported\n' });
     const report = await runScan({ cwd: dir, format: ['json'], ci: true, offline: true, cacheDir: path.join(dir, '.empty-cache') });
     for (const format of ['terminal', 'md', 'html'] as const) {
       const text = renderReport(report, format);
-      expect(text, format).toContain('Project config');
+      expect(text, format).toContain('Native config vs React Native template');
       expect(text, format).toContain('targetSdk');
-      expect(text, format).toContain('min_ios_version_supported (follows React Native)');
-      expect(text, format).toContain('not set (React Native default: on)');
+      expect(text, format).toContain('follows React Native');
     }
   });
 

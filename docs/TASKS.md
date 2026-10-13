@@ -25,11 +25,12 @@
 
 ## Checks, reports, CI
 - [x] Android Gradle + iOS Podfile checks; patch-package detection
+- [x] Native settings vs the React Native template for the current and target version (rn-diff-purge), cached permanently
 - [x] Terminal, HTML, Markdown, JSON renderers, including Android/iOS config
 - [x] GitHub Action (composite) + example workflow
 
 ## Release
-- [ ] Verify rule values in `src/rules/` (Play targetSdk minimum, RN platform minimums)
+- [ ] Verify the Play targetSdk minimum in `src/rules/reactNative.ts` (platform minimums now come from the template)
 - [ ] README with a demo GIF
 - [ ] Publish v0.1 to npm; tag `v0.1.0`
 

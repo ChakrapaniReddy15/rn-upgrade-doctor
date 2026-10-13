@@ -35,12 +35,12 @@ ranked report of what will break on upgrade and what to fix first:
 src/cli.ts            command + flags
 src/index.ts          runScan(options) -> Report (library entry)
 src/project/          read package.json, lockfiles (npm/yarn/pnpm), detect RN version, patches/
-src/registry/         npm registry, React Native Directory, GitHub clients + cache
+src/registry/         npm registry, React Native Directory, React Native template clients + cache
 src/android/          Gradle / gradle.properties parsing
 src/ios/              Podfile / Podfile.lock parsing
 src/apk/              unzip APK/AAB, ELF header parser, 16 KB alignment check, .so -> package mapping
 src/rules/            known libraries table, version rules, advice text, semver helpers
-src/checks/           pure checks (ProjectContext -> Finding[]) and ranking
+src/checks/           pure checks (ProjectContext -> Finding[]), native vs template comparison, ranking
 src/report/           terminal, HTML, Markdown, JSON renderers
 action.yml            composite GitHub Action (example workflow in docs/examples/)
 examples/             text-only scenario projects + registry-snapshot/ (offline data); see examples/README.md

@@ -2,12 +2,14 @@ import type { Finding, ProjectContext, Severity } from '../types.js';
 import { checkApk } from './apk.js';
 import { checkDataGaps } from './data.js';
 import { checkDependencies } from './dependencies.js';
+import { checkNativeTemplate } from './native.js';
 import { checkPatches } from './patches.js';
 import { checkAndroid, checkIos } from './platforms.js';
 import { checkReactNative } from './reactNative.js';
 
 export { checkApk, checkAndroid, checkDataGaps, checkDependencies, checkIos, checkPatches, checkReactNative };
 export { registryUnreachable } from './data.js';
+export { checkNativeTemplate, compareNative } from './native.js';
 
 /**
  * Order inside a severity: what blocks a release first, then gaps in the data (so a quiet report is not read as a
@@ -19,6 +21,7 @@ const CHECKS: Array<(ctx: ProjectContext) => Finding[]> = [
   checkReactNative,
   checkDependencies,
   checkAndroid,
+  checkNativeTemplate,
   checkIos,
   checkPatches,
 ];

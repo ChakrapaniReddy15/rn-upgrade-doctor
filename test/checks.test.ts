@@ -188,7 +188,11 @@ describe('checkDataGaps', () => {
 
 describe('exitCodeFor', () => {
   const report = (blockers: number, source = 'npm registry') =>
-    ({ summary: { blockers, warnings: 0, info: 0 }, dependencies: [dep('x', { npm: { source } })] }) as Parameters<typeof exitCodeFor>[0];
+    ({
+      summary: { blockers, warnings: 0, info: 0 },
+      dependencies: [dep('x', { npm: { source } })],
+      native: { currentSource: 'React Native template', targetSource: 'React Native template', rows: [] },
+    }) as unknown as Parameters<typeof exitCodeFor>[0];
 
   it('returns 1 for blockers and 0 otherwise', () => {
     expect(exitCodeFor(report(2), { ci: false })).toBe(1);

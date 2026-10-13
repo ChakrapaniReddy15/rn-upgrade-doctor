@@ -1,7 +1,16 @@
 import Table from 'cli-table3';
 import pc from 'picocolors';
 import type { Report, Severity } from '../types.js';
-import { configSections, dataSources, headline, interestingDependencies, maintenanceLabel, newArchLabel } from './shared.js';
+import {
+  NATIVE_STATUS_LABEL,
+  dataSources,
+  headline,
+  interestingDependencies,
+  maintenanceLabel,
+  nativeSections,
+  newArchLabel,
+  templateColumns,
+} from './shared.js';
 
 export function renderTerminal(report: Report, options: { color: boolean }): string {
   const c = pc.createColors(options.color);
@@ -47,17 +56,23 @@ export function renderTerminal(report: Report, options: { color: boolean }): str
     out.push('', c.bold(`Dependencies to review (${deps.length} of ${report.dependencies.length})`), table.toString());
   }
 
-  out.push('', c.bold('Project config'));
-  for (const section of configSections(report)) {
+  const columns = templateColumns(report);
+  out.push('', c.bold('Native config vs React Native template'));
+  for (const section of nativeSections(report)) {
     if (section.rows.length === 0) {
       out.push(`  ${section.platform}: ${c.dim(`no ${section.platform === 'Android' ? 'android/' : 'ios/Podfile'} found`)}`);
       continue;
     }
-    out.push(`  ${section.platform} ${c.dim(`(${section.files.join(', ')})`)}`);
-    const width = Math.max(...section.rows.map(([label]) => label.length));
-    for (const [label, value] of section.rows) {
-      out.push(`    ${label.padEnd(width)}  ${value.startsWith('not') ? c.dim(value) : value}`);
+    const table = new Table({
+      head: [`${section.platform}`, 'Yours', ...columns.map((col) => col.title), 'Status'],
+      style: { head: options.color ? ['cyan'] : [], border: options.color ? ['grey'] : [] },
+    });
+    for (const row of section.rows) {
+      const label = NATIVE_STATUS_LABEL[row.status];
+      const status = row.status === 'below-required' ? c.red(label) : label.startsWith('▲') ? c.yellow(label) : label.startsWith('✓') ? c.green(label) : c.dim(label);
+      table.push([row.label, row.yours.startsWith('not') ? c.dim(row.yours) : row.yours, ...columns.map((col) => row[col.key] ?? c.dim('–')), status]);
     }
+    out.push(c.dim(`  ${section.files.join(', ')}`), table.toString());
   }
 
   if (report.apk) {

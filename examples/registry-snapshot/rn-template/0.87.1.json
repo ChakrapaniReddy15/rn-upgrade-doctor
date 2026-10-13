@@ -1,0 +1,18 @@
+{
+  "fetchedAt": 1791849600000,
+  "value": {
+    "version": "0.87.1",
+    "android": {
+      "minSdk": 24,
+      "compileSdk": 37,
+      "targetSdk": 36,
+      "buildToolsVersion": "37.0.0",
+      "ndkVersion": "27.1.12297006",
+      "kotlinVersion": "2.2.0",
+      "gradleVersion": "9.4.1",
+      "newArchEnabled": true,
+      "hermesEnabled": true
+    },
+    "minIos": "15.1"
+  }
+}

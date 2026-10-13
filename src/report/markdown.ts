@@ -1,12 +1,14 @@
 import type { Report, Severity } from '../types.js';
 import {
+  NATIVE_STATUS_LABEL,
   SEVERITY_LABEL,
-  configSections,
   dataSources,
   headline,
   interestingDependencies,
   maintenanceLabel,
+  nativeSections,
   newArchLabel,
+  templateColumns,
 } from './shared.js';
 
 const ICON: Record<Severity, string> = { blocker: '🔴', warning: '🟡', info: '🔵' };
@@ -44,14 +46,22 @@ export function renderMarkdown(report: Report): string {
     out.push('');
   }
 
-  out.push('### Project config', '');
-  for (const section of configSections(report)) {
+  const columns = templateColumns(report);
+  out.push('### Native config vs React Native template', '');
+  for (const section of nativeSections(report)) {
     if (section.rows.length === 0) {
       out.push(`**${section.platform}:** not found`, '');
       continue;
     }
-    out.push(`**${section.platform}** (${section.files.map((f) => `\`${f}\``).join(', ')})`, '', '| Setting | Value |', '|---|---|');
-    for (const [label, value] of section.rows) out.push(`| ${cell(label)} | ${cell(value)} |`);
+    out.push(
+      `**${section.platform}** (${section.files.map((f) => `\`${f}\``).join(', ')})`,
+      '',
+      `| Setting | Yours | ${columns.map((col) => col.title).join(' | ')} | Status |`,
+      `|---|---|${columns.map(() => '---|').join('')}---|`,
+    );
+    for (const row of section.rows) {
+      out.push(`| ${cell(row.label)} | ${cell(row.yours)} | ${columns.map((col) => cell(row[col.key] ?? '–')).join(' | ')} | ${NATIVE_STATUS_LABEL[row.status]} |`);
+    }
     out.push('');
   }
 
