@@ -3,6 +3,7 @@ import pc from 'picocolors';
 import type { Report, Severity } from '../types.js';
 import {
   NATIVE_STATUS_LABEL,
+  SIXTEEN_KB_NOT_CHECKED,
   dataSources,
   groupFindings,
   headline,
@@ -10,6 +11,7 @@ import {
   maintenanceLabel,
   nativeSections,
   newArchLabel,
+  sixteenKbNotChecked,
   templateColumns,
 } from './shared.js';
 
@@ -96,6 +98,8 @@ export function renderTerminal(report: Report, options: { color: boolean }): str
       c.bold('16 KB page size'),
       `${report.apk.file}: ${libs64.length} 64-bit native libraries, ${bad.length === 0 ? c.green('all compatible') : c.red(`${bad.length} not compatible`)}`,
     );
+  } else if (sixteenKbNotChecked(report)) {
+    out.push('', c.bold('16 KB page size'), c.yellow(SIXTEEN_KB_NOT_CHECKED));
   }
 
   out.push('', c.dim('Data sources:'), ...dataSources(report).map((s) => c.dim(`  ${s}`)), '');

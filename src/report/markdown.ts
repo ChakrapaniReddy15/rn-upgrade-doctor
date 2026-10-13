@@ -2,6 +2,7 @@ import type { Report, Severity } from '../types.js';
 import {
   NATIVE_STATUS_LABEL,
   SEVERITY_LABEL,
+  SIXTEEN_KB_NOT_CHECKED,
   dataSources,
   groupFindings,
   headline,
@@ -9,6 +10,7 @@ import {
   maintenanceLabel,
   nativeSections,
   newArchLabel,
+  sixteenKbNotChecked,
   templateColumns,
 } from './shared.js';
 
@@ -81,6 +83,8 @@ export function renderMarkdown(report: Report): string {
       }
       out.push('');
     }
+  } else if (sixteenKbNotChecked(report)) {
+    out.push('### 16 KB page size', '', SIXTEEN_KB_NOT_CHECKED.replace('--apk', '`--apk`'), '');
   }
 
   out.push('<details><summary>Data sources</summary>', '', ...dataSources(report).map((s) => `- ${s}`), '', '</details>', '');

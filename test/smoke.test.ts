@@ -106,6 +106,20 @@ describe('runScan', () => {
     }
   });
 
+  it('says the 16 KB check did not run when an Android app is scanned without --apk', async () => {
+    const options = { cwd: dir, format: ['json'] as const, ci: true, offline: true, cacheDir: path.join(dir, '.empty-cache') };
+    const withoutApk = await runScan({ ...options, format: ['json'] });
+    for (const format of ['terminal', 'md', 'html'] as const) {
+      expect(renderReport(withoutApk, format), format).toContain('Not checked: pass');
+    }
+
+    const lib = makeElf({ is64Bit: true, loadAligns: [16384] });
+    await writeTree(dir, { 'app.apk': makeZip([{ name: 'lib/arm64-v8a/libreactnative.so', data: lib }]) });
+    const withApk = await runScan({ ...options, format: ['json'], apk: path.join(dir, 'app.apk') });
+    expect(renderReport(withApk, 'terminal')).not.toContain('Not checked: pass');
+    expect(renderReport(withApk, 'terminal')).toContain('all compatible');
+  });
+
   it('works offline with an empty cache', async () => {
     const report = await runScan(
       { cwd: dir, format: ['json'], ci: true, offline: true },

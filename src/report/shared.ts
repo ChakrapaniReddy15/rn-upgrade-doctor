@@ -119,3 +119,14 @@ export function groupFindings(findings: Finding[]): FindingGroup[] {
   }
   return groups;
 }
+
+/**
+ * Shown when an Android app was scanned without --apk: the 16 KB check needs the built app, and a report that is
+ * silent about it would read as "checked and fine".
+ */
+export const SIXTEEN_KB_NOT_CHECKED =
+  "Not checked: pass --apk with a release APK or AAB to scan your app's native libraries.";
+
+export function sixteenKbNotChecked(report: Report): boolean {
+  return !report.apk && report.android !== undefined;
+}

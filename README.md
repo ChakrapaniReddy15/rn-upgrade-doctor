@@ -47,7 +47,6 @@ Every finding says where its data came from. Findings are ranked: **blockers** (
 | `--ci` | off | No colours; exit `2` if npm or React Native Directory cannot be reached, so a network failure never passes as clean |
 | `--offline` | off | No network; use cached registry data only |
 | `--cache-dir <dir>` | `~/.cache/rn-upgrade-doctor` | Registry cache folder (also `RN_UPGRADE_DOCTOR_CACHE_DIR`) |
-
 | `-v, --version` | | Print the version |
 
 Exit codes: `0` no blockers, `1` blockers found, `2` the tool could not run (for example, not a React Native project) or, with `--ci`, a registry was unreachable.
