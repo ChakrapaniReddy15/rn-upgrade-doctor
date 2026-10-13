@@ -3,9 +3,11 @@ import type { ProjectContext } from '../types.js';
 import { detectPackageManager, detectReactNativeVersion } from './detect.js';
 import { declaredDeps, readInstalledVersions } from './lockfile.js';
 import { ProjectError, readPackageJson } from './packageJson.js';
+import { findWorkspace } from './workspace.js';
 
 export { detectPackageManager, detectReactNativeVersion } from './detect.js';
 export { declaredDeps, parseNpmLock, parsePnpmLock, parseYarnLock, readInstalledVersions } from './lockfile.js';
+export { findWorkspace, type Workspace } from './workspace.js';
 export { ProjectError, readPackageJson } from './packageJson.js';
 export type { ReactNativeVersion } from './detect.js';
 export type { PackageJson } from './packageJson.js';
@@ -22,8 +24,9 @@ export async function buildProjectContext(cwd: string): Promise<ProjectContext> 
     );
   }
 
-  const packageManager = await detectPackageManager(root, pkg);
-  const installed = await readInstalledVersions(root, packageManager, pkg);
+  const workspace = await findWorkspace(root);
+  const packageManager = await detectPackageManager(workspace.root, pkg, workspace.rootPkg);
+  const { installed, file: lockfile } = await readInstalledVersions(workspace.root, packageManager, pkg, workspace.member);
   const lockedVersion = installed['react-native'];
 
   return {
@@ -32,6 +35,8 @@ export async function buildProjectContext(cwd: string): Promise<ProjectContext> 
     reactNativeVersionSource: lockedVersion ? 'lockfile' : 'package.json',
     reactNativeRange: reactNative.range,
     packageManager,
+    workspaceRoot: workspace.root === root ? undefined : workspace.root,
+    lockfile,
     installed,
     declared: declaredDeps(pkg),
     devOnly: Object.keys(pkg.devDependencies ?? {}).filter((name) => !pkg.dependencies?.[name]),

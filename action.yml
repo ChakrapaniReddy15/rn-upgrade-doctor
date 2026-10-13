@@ -36,7 +36,17 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
+    # GitHub-hosted runners already have Node 20+. Only install Node when it is missing or too old, so the
+    # caller's own Node version is not changed for their later steps.
+    - name: Check Node.js
+      id: node
+      shell: bash
+      run: |
+        major=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
+        if [ "$major" -ge 20 ]; then echo "setup=false" >> "$GITHUB_OUTPUT"; else echo "setup=true" >> "$GITHUB_OUTPUT"; fi
+
+    - if: steps.node.outputs.setup == 'true'
+      uses: actions/setup-node@v4
       with:
         node-version: 20
 
@@ -59,7 +69,7 @@ runs:
         node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
         code=$?
         set -e
-        # 2 = the tool itself failed; 1 = blockers (handled in the last step).
+        # 2 = the tool could not run or a registry was unreachable; 1 = blockers (handled in the last step).
         if [ "$code" -eq 2 ]; then exit 2; fi
         cat "$OUT/rn-upgrade-doctor-report.md" >> "$GITHUB_STEP_SUMMARY"
         node -e 'const r = require(process.argv[1]); console.log(`blockers=${r.summary.blockers}`); console.log(`warnings=${r.summary.warnings}`);' \
@@ -72,11 +82,32 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         PR: ${{ github.event.pull_request.number }}
+        HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
         REPORT: ${{ steps.scan.outputs.report-dir }}/rn-upgrade-doctor-report.md
       run: |
-        # Update this job's previous comment if there is one, else create it.
-        gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --edit-last --body-file "$REPORT" 2>/dev/null \
-          || gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$REPORT"
+        # Pull requests from forks get a read-only token, so commenting is not possible there.
+        if [ "$HEAD_REPO" != "$GITHUB_REPOSITORY" ]; then
+          echo "::notice::Pull request from a fork: not commenting. The report is in the job summary."
+          exit 0
+        fi
+
+        # The hidden marker identifies our own comment, so it is updated in place and no other bot comment is touched.
+        marker='<!-- rn-upgrade-doctor -->'
+        body="$RUNNER_TEMP/rn-upgrade-doctor-comment.md"
+        { echo "$marker"; head -c 60000 "$REPORT"; } > "$body"
+        if [ "$(wc -c < "$REPORT")" -gt 60000 ]; then
+          printf '\n\n_Report truncated; the full report is in the job summary._\n' >> "$body"
+        fi
+
+        id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+          --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | tail -n 1)
+        if [ -n "$id" ]; then
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -F "body=@$body" > /dev/null \
+            || echo "::warning::Could not update the pull request comment."
+        else
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$body" \
+            || echo "::warning::Could not comment on the pull request (does the job have pull-requests: write?)."
+        fi
 
     - name: Fail on blockers
       if: inputs.fail-on-blockers == 'true' && steps.scan.outputs.blockers != '0'

@@ -6,8 +6,9 @@ One command to see what will break when you upgrade a React Native app, and what
 
 ```bash
 npx rn-upgrade-doctor                                   # scan the project in the current folder
+npx rn-upgrade-doctor ./apps/mobile                     # scan another folder (monorepo apps work too)
 npx rn-upgrade-doctor --apk app-release.apk             # also run the 16 KB page-size scan
-npx rn-upgrade-doctor --format terminal,md --out reports
+npx rn-upgrade-doctor --format terminal,html --out reports
 ```
 
 ## Try it
@@ -40,13 +41,24 @@ Every finding says where its data came from. Findings are ranked: **blockers** (
 |---|---|---|
 | `[path]` or `--cwd <path>` | current folder | React Native project folder |
 | `--apk <path>` | | APK or AAB for the 16 KB scan, relative to the current folder. Run `npm install` in the project first so libraries can be mapped to packages. |
-| `--format <list>` | `terminal,html` | Any of `terminal`, `html`, `md`, `json` |
+| `--format <list>` | `terminal` | Any of `terminal`, `html`, `md`, `json` |
 | `--out <dir>` | project folder | Where `rn-upgrade-doctor-report.{html,md,json}` are written |
-| `--ci` | off | No colours; for CI logs |
+| `--ci` | off | No colours; exit `2` if npm or React Native Directory cannot be reached, so a network failure never passes as clean |
 | `--offline` | off | No network; use cached registry data only |
 | `--cache-dir <dir>` | `~/.cache/rn-upgrade-doctor` | Registry cache folder (also `RN_UPGRADE_DOCTOR_CACHE_DIR`) |
 
-Exit codes: `0` no blockers, `1` blockers found, `2` the tool failed (for example, not a React Native project).
+| `-v, --version` | | Print the version |
+
+Exit codes: `0` no blockers, `1` blockers found, `2` the tool could not run (for example, not a React Native project) or, with `--ci`, a registry was unreachable.
+
+**Monorepos:** point it at the app folder (`apps/mobile`). When the app has no lockfile of its own, the tool looks in parent
+folders for the workspace root (a lockfile plus `workspaces` in `package.json`, or `pnpm-workspace.yaml`), without leaving
+the git repository. `patches/` and hoisted `node_modules` are read from there too.
+
+**Missing data is reported**, never silently skipped: no lockfile, or registry data that could not be fetched, becomes a
+warning in the report.
+
+See [docs/COMMANDS.md](docs/COMMANDS.md) for every command with an explanation.
 
 Registry responses are cached in `~/.cache/rn-upgrade-doctor` (npm: 12 h, React Native Directory: 24 h). Use `--cache-dir` or `RN_UPGRADE_DOCTOR_CACHE_DIR` to move it.
 
@@ -77,7 +89,7 @@ console.log(report.summary, renderReport(report, 'md'));
 
 ```bash
 npm install
-npm run dev -- ../my-rn-app         # run from source
+npm run dev -- ../my-rn-app         # run from source (no build needed)
 npm run examples                    # run every example scenario
 npm test                            # Vitest
 npm run lint                        # type-check src and tests

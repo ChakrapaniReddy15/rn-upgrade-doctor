@@ -1,4 +1,4 @@
-# RN Upgrade Doctor — full plan
+# RN Upgrade Doctor — design
 
 ## 1. Problem
 React Native upgrades are slow and risky because nobody knows upfront which libraries will break. Teams find out late,
@@ -61,28 +61,31 @@ flowchart LR
 | Tests | Vitest, fixture projects, sample APKs |
 
 ## 7. Report outputs
-- **Terminal:** header (RN version gap), BLOCKERS (n), WARNINGS (n), OK count, path to HTML report.
-- **HTML:** summary cards (blockers / warnings / OK), table (package, issue, fix, source), upgrade path and helper link.
-- **JSON:** `{ meta, summary, findings[] }` — stable schema for CI and other tools.
-- **Markdown:** same as HTML, for PR comments.
+- **Terminal** (default): header (RN version gap, upgrade-helper link), blocker / warning / info counts, ranked findings
+  with fix and data source, dependency table, Android and iOS config, 16 KB summary, data sources.
+- **HTML:** the same in a single self-contained page (inline CSS, light and dark).
+- **Markdown:** the same, for PR comments and the GitHub job summary.
+- **JSON:** `{ meta, summary, findings[], dependencies[], android, ios, patches[], apk }` for CI and other tools.
 
 ## 8. Features
 MVP: version gap, dependency table, Android/iOS checks, 16 KB scan + mapping, patch detection, 3 report formats,
 GitHub Action.
-Later: Expo support, monorepos, "fix" mode with suggested version bumps, VS Code extension, history across runs.
+Done since: monorepos (npm/yarn/pnpm workspaces), missing-data findings, offline example scenarios.
+Later: Expo support, `--to <version>` target, "fix" mode with suggested version bumps, GitHub archived-repo check,
+VS Code extension, history across runs.
 
 ## 9. What's required
 Accounts: GitHub, npm (free). Tools: Node 20+, Android Studio + SDK (to build test APKs), Xcode (optional).
-Test material: 4–5 fresh sample RN apps at different versions (e.g. 0.72, 0.76, 0.80, latest) + their APKs/AABs.
-Device: optional Android 15 emulator with a 16 KB system image. Cost: ₹0.
+Test material: text-only scenarios in `examples/` (committed); 1–2 sample RN apps built from the public template, with
+release APKs, under `fixtures/` (git-ignored).
+Device: optional Android 15 emulator with a 16 KB system image.
 
 ## 10. Challenges and mitigations
 | Challenge | Mitigation |
 | --- | --- |
 | .so names don't match package names | Search node_modules build files and CMake targets; known-library table; show "unknown" honestly |
 | RN Directory data missing/stale | Fall back to npm publish dates + GitHub archived flag; label sources |
-| Many project shapes | MVP: bare React Native only; say so in README |
+| Many project shapes | Bare React Native and monorepos; Expo later; say so in README |
 | API rate limits | Local cache; optional GITHUB_TOKEN |
 | Advice goes stale | Rules in one versioned file; update per RN release |
 | Low adoption | Real story + demo; answer issues fast |
-

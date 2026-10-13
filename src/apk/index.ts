@@ -11,9 +11,10 @@ export { readNativeLibs } from './zip.js';
 
 /**
  * 16 KB page-size scan of a built APK or AAB, with each native library mapped to the npm package behind it.
- * `file` is resolved against the process working directory; `cwd` is the project whose node_modules are searched.
+ * `file` is resolved against the process working directory; `projectDirs` are the folders whose node_modules are
+ * searched (the app, then the monorepo root).
  */
-export async function scanApk(file: string, cwd: string): Promise<ApkReport> {
+export async function scanApk(file: string, projectDirs: string | string[]): Promise<ApkReport> {
   const resolved = path.resolve(file);
   try {
     await access(resolved);
@@ -22,7 +23,7 @@ export async function scanApk(file: string, cwd: string): Promise<ApkReport> {
   }
   const kind = resolved.toLowerCase().endsWith('.aab') ? 'aab' : 'apk';
   const entries = await readNativeLibs(resolved, kind);
-  const index = await buildSoIndex(cwd);
+  const index = await buildSoIndex(projectDirs);
 
   const libs = entries.map((entry): NativeLib => {
     let loadAlign: number | undefined;

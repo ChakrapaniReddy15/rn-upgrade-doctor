@@ -12,11 +12,16 @@ const MAX_DEPTH = 6;
 
 /**
  * Index of "libX.so" -> npm package, built by looking inside each top-level package's android/ folder for
- * prebuilt .so files and CMake `add_library(<name> SHARED ...)` targets.
+ * prebuilt .so files and CMake `add_library(<name> SHARED ...)` targets. `dirs` are the app folder and, in a
+ * monorepo, the workspace root (where packages are usually hoisted); earlier folders win.
  */
-export async function buildSoIndex(cwd: string): Promise<Map<string, SoOwner>> {
+export async function buildSoIndex(dirs: string | string[]): Promise<Map<string, SoOwner>> {
   const index = new Map<string, SoOwner>();
-  const modules = path.join(cwd, 'node_modules');
+  for (const dir of Array.isArray(dirs) ? dirs : [dirs]) await indexModules(path.join(dir, 'node_modules'), index);
+  return index;
+}
+
+async function indexModules(modules: string, index: Map<string, SoOwner>): Promise<void> {
   for (const pkg of await listPackages(modules)) {
     const androidDir = path.join(modules, pkg, 'android');
     if (!(await isDir(androidDir))) continue;
@@ -32,7 +37,6 @@ export async function buildSoIndex(cwd: string): Promise<Map<string, SoOwner>> {
       }
     });
   }
-  return index;
 }
 
 /** Owner of a native library: React Native core and the known table first, then the node_modules index. */

@@ -33,7 +33,8 @@ export function parsePodfile(text: string): Omit<IosConfig, 'files' | 'podsReact
 
 export function parsePodfileLock(text: string): Pick<IosConfig, 'podsReactNativeVersion' | 'cocoapodsVersion'> {
   return {
-    podsReactNativeVersion: /^\s+- React-Core \(([^)]+)\)/m.exec(text)?.[1],
+    // Top-level pod entries are indented by exactly two spaces; deeper lines are dependencies like "React-Core (= 0.84.1)".
+    podsReactNativeVersion: /^ {2}- React-Core \(([^)=\s][^)]*)\)/m.exec(text)?.[1],
     cocoapodsVersion: /^COCOAPODS: (\S+)/m.exec(text)?.[1],
   };
 }

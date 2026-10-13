@@ -168,7 +168,7 @@ describe('readInstalledVersions', () => {
   });
 
   it('returns {} when the lockfile is missing', async () => {
-    expect(await readInstalledVersions(dir, 'yarn', { dependencies: deps })).toEqual({});
+    expect(await readInstalledVersions(dir, 'yarn', { dependencies: deps })).toEqual({ installed: {} });
   });
 
   it('throws ProjectError for an unreadable lockfile', async () => {

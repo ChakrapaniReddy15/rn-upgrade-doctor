@@ -7,4 +7,5 @@ fixtures/*/
 *.log
 .DS_Store
 .env
+.private/
 rn-upgrade-doctor-report.*

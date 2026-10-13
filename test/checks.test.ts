@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { exitCodeFor } from '../src/index.js';
 import {
   checkAndroid,
+  checkDataGaps,
   checkDependencies,
   checkIos,
   checkPatches,
@@ -157,5 +159,45 @@ describe('rankFindings', () => {
       'd',
       'a',
     ]);
+  });
+});
+
+describe('checkDataGaps', () => {
+  it('reports a missing lockfile', () => {
+    expect(ids(checkDataGaps(ctx({ declared: { 'react-native': '^0.85.0' } })))).toEqual(['warning:data-lockfile-missing']);
+    expect(checkDataGaps(ctx({ declared: { 'react-native': '^0.85.0' }, lockfile: '/app/yarn.lock' }))).toEqual([]);
+  });
+
+  it('reports registry data that could not be fetched, but not packages that are simply not listed', () => {
+    const findings = checkDataGaps(
+      ctx({
+        lockfile: '/app/package-lock.json',
+        dependencies: [
+          dep('fetched'),
+          dep('private-pkg', { npm: { source: 'not on npm' }, directory: { source: 'not listed in React Native Directory' } }),
+          dep('offline-pkg', { npm: { source: 'offline, not cached' } }),
+          dep('down-pkg', { directory: { source: 'React Native Directory unreachable' } }),
+        ],
+      }),
+    );
+    expect(ids(findings)).toEqual(['warning:data-registry-unavailable']);
+    expect(findings[0].title).toBe('Registry data missing for 2 of 4 dependencies');
+    expect(findings[0].detail).toContain('offline-pkg, down-pkg');
+  });
+});
+
+describe('exitCodeFor', () => {
+  const report = (blockers: number, source = 'npm registry') =>
+    ({ summary: { blockers, warnings: 0, info: 0 }, dependencies: [dep('x', { npm: { source } })] }) as Parameters<typeof exitCodeFor>[0];
+
+  it('returns 1 for blockers and 0 otherwise', () => {
+    expect(exitCodeFor(report(2), { ci: false })).toBe(1);
+    expect(exitCodeFor(report(0), { ci: true })).toBe(0);
+  });
+
+  it('returns 2 in CI when a registry was unreachable, but not for --offline', () => {
+    expect(exitCodeFor(report(0, 'npm registry unreachable'), { ci: true })).toBe(2);
+    expect(exitCodeFor(report(0, 'npm registry unreachable'), { ci: false })).toBe(0);
+    expect(exitCodeFor(report(0, 'offline, not cached'), { ci: true })).toBe(0);
   });
 });

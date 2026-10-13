@@ -1,15 +1,21 @@
 import type { Finding, ProjectContext, Severity } from '../types.js';
 import { checkApk } from './apk.js';
+import { checkDataGaps } from './data.js';
 import { checkDependencies } from './dependencies.js';
 import { checkPatches } from './patches.js';
 import { checkAndroid, checkIos } from './platforms.js';
 import { checkReactNative } from './reactNative.js';
 
-export { checkApk, checkAndroid, checkDependencies, checkIos, checkPatches, checkReactNative };
+export { checkApk, checkAndroid, checkDataGaps, checkDependencies, checkIos, checkPatches, checkReactNative };
+export { registryUnreachable } from './data.js';
 
-/** Order inside a severity: what blocks a release first, then the upgrade itself, then housekeeping. */
+/**
+ * Order inside a severity: what blocks a release first, then gaps in the data (so a quiet report is not read as a
+ * clean one), then the upgrade itself, then housekeeping.
+ */
 const CHECKS: Array<(ctx: ProjectContext) => Finding[]> = [
   checkApk,
+  checkDataGaps,
   checkReactNative,
   checkDependencies,
   checkAndroid,

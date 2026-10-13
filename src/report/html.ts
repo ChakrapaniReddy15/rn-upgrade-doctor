@@ -1,5 +1,13 @@
 import type { Report } from '../types.js';
-import { SEVERITY_LABEL, dataSources, headline, interestingDependencies, maintenanceLabel, newArchLabel } from './shared.js';
+import {
+  SEVERITY_LABEL,
+  configSections,
+  dataSources,
+  headline,
+  interestingDependencies,
+  maintenanceLabel,
+  newArchLabel,
+} from './shared.js';
 
 /** A single self-contained HTML page (inline CSS, no scripts), safe to attach to CI runs. */
 export function renderHtml(report: Report): string {
@@ -24,6 +32,17 @@ export function renderHtml(report: Report): string {
     )
     .join('\n');
 
+  const config = configSections(report)
+    .map((section) =>
+      section.rows.length === 0
+        ? `<h3>${section.platform}</h3><p class="dim">Not found.</p>`
+        : `<h3>${section.platform} <span class="dim">(${section.files.map(esc).join(', ')})</span></h3>
+<div class="table-wrap"><table><tbody>
+${section.rows.map(([label, value]) => `<tr><td>${esc(label)}</td><td${value.startsWith('not') ? ' class="dim"' : ''}>${esc(value)}</td></tr>`).join('\n')}
+</tbody></table></div>`,
+    )
+    .join('\n');
+
   const apkLibs = report.apk?.libs.filter((l) => l.is64Bit) ?? [];
   const apkRows = apkLibs
     .map(
@@ -44,7 +63,7 @@ export function renderHtml(report: Report): string {
 * { box-sizing: border-box; }
 body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
-h1 { font-size: 1.5rem; margin: 0 0 4px; } h2 { font-size: 1.15rem; margin: 32px 0 12px; }
+h1 { font-size: 1.5rem; margin: 0 0 4px; } h2 { font-size: 1.15rem; margin: 32px 0 12px; } h3 { font-size: 1rem; margin: 16px 0 8px; }
 .dim, .meta, .source { color: var(--dim); } .meta { margin: 0; font-size: .9rem; word-break: break-all; }
 .summary { display:flex; gap:12px; flex-wrap:wrap; margin: 16px 0; }
 .summary div { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 14px; }
@@ -80,6 +99,8 @@ ${deps.length > 0 ? `<h2>Dependencies to review <span class="dim">(${deps.length
 <div class="table-wrap"><table><thead><tr><th>Package</th><th>Installed</th><th>Latest</th><th>New Arch</th><th>Maintenance</th></tr></thead><tbody>
 ${depRows}
 </tbody></table></div>` : ''}
+<h2>Project config</h2>
+${config}
 ${report.apk ? `<h2>16 KB page size</h2><p class="meta">${esc(report.apk.file)}</p>
 <div class="table-wrap"><table><thead><tr><th>Library</th><th>ABI</th><th>Package</th><th>ELF align</th><th>Zip aligned</th></tr></thead><tbody>
 ${apkRows}

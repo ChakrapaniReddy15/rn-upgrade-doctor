@@ -1,5 +1,13 @@
 import type { Report, Severity } from '../types.js';
-import { SEVERITY_LABEL, dataSources, headline, interestingDependencies, maintenanceLabel, newArchLabel } from './shared.js';
+import {
+  SEVERITY_LABEL,
+  configSections,
+  dataSources,
+  headline,
+  interestingDependencies,
+  maintenanceLabel,
+  newArchLabel,
+} from './shared.js';
 
 const ICON: Record<Severity, string> = { blocker: '🔴', warning: '🟡', info: '🔵' };
 
@@ -33,6 +41,17 @@ export function renderMarkdown(report: Report): string {
         `| ${cell(d.name)}${d.dev ? ' (dev)' : ''} | ${cell(d.installed ?? d.declared)} | ${cell(d.npm.value?.latest ?? '?')} | ${newArchLabel(d)} | ${maintenanceLabel(d)} |`,
       );
     }
+    out.push('');
+  }
+
+  out.push('### Project config', '');
+  for (const section of configSections(report)) {
+    if (section.rows.length === 0) {
+      out.push(`**${section.platform}:** not found`, '');
+      continue;
+    }
+    out.push(`**${section.platform}** (${section.files.map((f) => `\`${f}\``).join(', ')})`, '', '| Setting | Value |', '|---|---|');
+    for (const [label, value] of section.rows) out.push(`| ${cell(label)} | ${cell(value)} |`);
     out.push('');
   }
 

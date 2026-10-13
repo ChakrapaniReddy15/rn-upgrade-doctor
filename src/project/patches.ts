@@ -8,7 +8,12 @@ import type { PackageJson } from './packageJson.js';
  * patch-package names files "<name>+<version>.patch", with "/" in scoped names written as "+" and
  * nested dependencies joined with "++" (e.g. "parent++child+1.0.0.patch"; the last package is the patched one).
  */
-export async function readPatches(cwd: string, pkg: PackageJson & { pnpm?: { patchedDependencies?: Record<string, string> } }): Promise<PatchInfo[]> {
+export async function readPatches(
+  cwd: string,
+  pkg: PackageJson & { pnpm?: { patchedDependencies?: Record<string, string> } },
+  /** Prefix for reported file paths, e.g. "../../" when reading a monorepo root from an app folder. */
+  displayPrefix = '',
+): Promise<PatchInfo[]> {
   const patches: PatchInfo[] = [];
 
   let files: string[] = [];
@@ -19,13 +24,14 @@ export async function readPatches(cwd: string, pkg: PackageJson & { pnpm?: { pat
   }
   for (const file of files.sort()) {
     const parsed = parsePatchFileName(file);
-    if (parsed) patches.push({ file: `patches/${file}`, ...parsed });
+    if (parsed) patches.push({ file: `${displayPrefix}patches/${file}`, ...parsed });
   }
 
   for (const [key, file] of Object.entries(pkg.pnpm?.patchedDependencies ?? {})) {
     const at = key.indexOf('@', 1);
+    const shown = `${displayPrefix}${file}`;
     patches.push(
-      at === -1 ? { file, package: key } : { file, package: key.slice(0, at), version: key.slice(at + 1) },
+      at === -1 ? { file: shown, package: key } : { file: shown, package: key.slice(0, at), version: key.slice(at + 1) },
     );
   }
   return patches;

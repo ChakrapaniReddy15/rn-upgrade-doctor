@@ -90,6 +90,12 @@ end`;
     });
   });
 
+  it('ignores React-Core dependency lines such as "(= 0.84.1)"', () => {
+    const lock = 'PODS:\n  - React-Core/Default (0.84.1):\n    - React-Core (= 0.84.1)\n  - React-Core (0.84.1):\n    - glog\n';
+    expect(parsePodfileLock(lock).podsReactNativeVersion).toBe('0.84.1');
+    expect(parsePodfileLock('PODS:\n  - RNScreens (4.0.0):\n    - React-Core (= 0.84.1)\n').podsReactNativeVersion).toBeUndefined();
+  });
+
   it('reads React-Core and CocoaPods versions from Podfile.lock', () => {
     const lock = 'PODS:\n  - React-Core (0.76.5):\n    - glog\n  - React-Core/Default (0.76.5)\n\nCOCOAPODS: 1.15.2\n';
     expect(parsePodfileLock(lock)).toEqual({ podsReactNativeVersion: '0.76.5', cocoapodsVersion: '1.15.2' });

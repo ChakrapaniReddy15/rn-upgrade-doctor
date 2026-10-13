@@ -1,0 +1,14 @@
+{
+  "name": "demo-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "postinstall": "patch-package"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1"
+  }
+}

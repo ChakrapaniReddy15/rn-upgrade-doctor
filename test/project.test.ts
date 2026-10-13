@@ -102,6 +102,8 @@ describe('buildProjectContext', () => {
       reactNativeVersionSource: 'package.json',
       reactNativeRange: '0.76.5',
       packageManager: 'yarn',
+      workspaceRoot: undefined,
+      lockfile: path.join(dir, 'yarn.lock'),
       installed: {},
       declared: { react: '18.3.1', 'react-native': '0.76.5' },
       devOnly: [],

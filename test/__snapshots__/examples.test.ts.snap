@@ -155,6 +155,7 @@ exports[`examples > 01 healthy latest 1`] = `
     "cwd": "<repo>/examples/01-healthy-latest",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -245,6 +246,7 @@ exports[`examples > 02 old RN version 1`] = `
     "cwd": "<repo>/examples/02-old-rn-version",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.68.7",
@@ -402,6 +404,7 @@ exports[`examples > 03 New Architecture blockers 1`] = `
     "cwd": "<repo>/examples/03-new-arch-blockers",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -609,6 +612,7 @@ exports[`examples > 04 unmaintained deps 1`] = `
     "cwd": "<repo>/examples/04-unmaintained-deps",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -718,6 +722,7 @@ exports[`examples > 05 Android config 1`] = `
     "cwd": "<repo>/examples/05-android-config",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -809,6 +814,7 @@ exports[`examples > 06 iOS Podfile 1`] = `
     "cwd": "<repo>/examples/06-ios-podfile",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -938,6 +944,7 @@ exports[`examples > 07 patch-package 1`] = `
     "cwd": "<repo>/examples/07-patch-package",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -1053,6 +1060,7 @@ exports[`examples > 08 lockfiles (npm) 1`] = `
     "cwd": "<repo>/examples/08-lockfiles/npm",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.85.2",
@@ -1158,6 +1166,7 @@ exports[`examples > 08 lockfiles (pnpm) 1`] = `
     "cwd": "<repo>/examples/08-lockfiles/pnpm",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "pnpm-lock.yaml",
     "offline": true,
     "packageManager": "pnpm",
     "reactNativeVersion": "0.85.2",
@@ -1263,6 +1272,7 @@ exports[`examples > 08 lockfiles (yarn) 1`] = `
     "cwd": "<repo>/examples/08-lockfiles/yarn",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "yarn.lock",
     "offline": true,
     "packageManager": "yarn",
     "reactNativeVersion": "0.85.2",
@@ -1436,6 +1446,7 @@ exports[`examples > 09 16 KB (bad.apk) 1`] = `
     "cwd": "<repo>/examples/09-16kb-apk",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -1603,6 +1614,7 @@ exports[`examples > 09 16 KB (good.apk) 1`] = `
     "cwd": "<repo>/examples/09-16kb-apk",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -1697,6 +1709,7 @@ exports[`examples > 09 16 KB (no APK) 1`] = `
     "cwd": "<repo>/examples/09-16kb-apk",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.87.1",
@@ -2175,6 +2188,7 @@ exports[`examples > 10 everything broken 1`] = `
     "cwd": "<repo>/examples/10-everything-broken",
     "latestReactNative": "0.87.1",
     "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
     "offline": true,
     "packageManager": "npm",
     "reactNativeVersion": "0.68.7",
@@ -2235,6 +2249,14 @@ exports[`examples > 11 unknown RN version 1`] = `
   ],
   "findings": [
     {
+      "detail": "Version checks were skipped for every dependency, and the React Native version comes from the package.json range. Looked in the app folder and, for monorepos, in parent folders that declare workspaces.",
+      "fix": "Run your package manager install and commit the lockfile (package-lock.json, yarn.lock or pnpm-lock.yaml).",
+      "id": "data-lockfile-missing",
+      "severity": "warning",
+      "source": "project files",
+      "title": "No lockfile found: installed versions are unknown",
+    },
+    {
       "fix": "Pin react-native to a version number in package.json and install, so the lockfile records it.",
       "id": "rn-version-unknown",
       "severity": "warning",
@@ -2255,7 +2277,239 @@ exports[`examples > 11 unknown RN version 1`] = `
   "summary": {
     "blockers": 0,
     "info": 0,
+    "warnings": 2,
+  },
+}
+`;
+
+exports[`examples > 13 registry data missing 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "^1.0.0",
+      "dev": false,
+      "directory": {
+        "source": "offline, not cached",
+      },
+      "installed": "1.0.0",
+      "name": "@demo/not-in-snapshot",
+      "npm": {
+        "source": "offline, not cached",
+      },
+    },
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "detail": "Offline and not in the cache, so version, New Architecture and maintenance checks were skipped for: @demo/not-in-snapshot.",
+      "fix": "Run once without --offline to fill the cache, or point --cache-dir at a cache that has these packages.",
+      "id": "data-registry-unavailable",
+      "severity": "warning",
+      "source": "offline, not cached",
+      "title": "Registry data missing for 1 of 4 dependencies",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/13-registry-data-missing",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "package-lock.json",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 0,
     "warnings": 1,
+  },
+}
+`;
+
+exports[`examples > 14 monorepo 1`] = `
+{
+  "android": {
+    "compileSdk": 36,
+    "files": [
+      "android/build.gradle",
+      "android/app/build.gradle",
+      "android/gradle.properties",
+      "android/gradle/wrapper/gradle-wrapper.properties",
+    ],
+    "gradleVersion": "8.14.1",
+    "hermesEnabled": true,
+    "kotlinVersion": "2.1.20",
+    "minSdk": 24,
+    "ndkVersion": "28.0.13004108",
+    "newArchEnabled": true,
+    "targetSdk": 36,
+  },
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^4.7.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.7.1",
+      "name": "react-native-reanimated",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.7.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "fix": "After upgrading, check whether the fix is upstream; if not, re-create the patch for the new version.",
+      "id": "patch:react-native-mmkv",
+      "package": "react-native-mmkv",
+      "severity": "info",
+      "source": "../../patches/react-native-mmkv+4.3.2.patch",
+      "title": "react-native-mmkv is patched (../../patches/react-native-mmkv+4.3.2.patch); re-check the patch when you upgrade it",
+    },
+  ],
+  "ios": {
+    "cocoapodsVersion": "1.16.2",
+    "files": [
+      "ios/Podfile",
+      "ios/Podfile.lock",
+    ],
+    "podsReactNativeVersion": "0.87.1",
+    "usesRnMinIos": true,
+  },
+  "meta": {
+    "cwd": "<repo>/examples/14-monorepo/apps/mobile",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "lockfile": "../../yarn.lock",
+    "offline": true,
+    "packageManager": "yarn",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [
+    {
+      "file": "../../patches/react-native-mmkv+4.3.2.patch",
+      "package": "react-native-mmkv",
+      "version": "4.3.2",
+    },
+  ],
+  "summary": {
+    "blockers": 0,
+    "info": 1,
+    "warnings": 0,
   },
 }
 `;

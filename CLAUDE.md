@@ -1,6 +1,6 @@
 # RN Upgrade Doctor — guide for Claude Code
 
-Read this file first, then `docs/PLAN.md` (full plan) and `docs/TASKS.md` (current tasks).
+Read this file first, then `docs/PLAN.md` (design) and `docs/TASKS.md` (roadmap).
 
 ## What we are building
 A Node.js + TypeScript CLI, `npx rn-upgrade-doctor`, that a React Native team runs inside its project to get one
@@ -15,9 +15,10 @@ ranked report of what will break on upgrade and what to fix first:
 ## Hard rules
 - **Clean-room:** everything is written fresh from public docs. Never copy code, configs, file names or details from
   any employer's or client's projects, and never name them in code, docs, commits, tests or fixtures.
-- Fixtures are fresh sample apps created from public templates only.
+- Fixtures and examples are made from public templates or written by hand; use generic names (`demo-shop`, `@demo/*`).
+- No machine-specific data in the repo: no absolute paths, user names or local folder names. Tests normalise paths.
 - Never commit secrets or tokens. GitHub/npm tokens come from env vars (`GITHUB_TOKEN`) only.
-- Suggest before large changes; keep changes small and reviewed. The owner pushes to GitHub himself.
+- Suggest before large changes; keep changes small and reviewed. Do not commit or push unless asked.
 
 ## Tech and conventions
 - Node.js 20+, TypeScript strict, ESM (`"type": "module"`), output to `dist/`.
@@ -45,14 +46,15 @@ action.yml            composite GitHub Action (example workflow in docs/examples
 examples/             text-only scenario projects + registry-snapshot/ (offline data); see examples/README.md
 scripts/              example APK generator and example runner (npm run examples)
 test/                 Vitest specs; fixtures/ holds sample projects and APKs (not committed if large)
-docs/                 PLAN.md (full plan), TASKS.md (checklist)
+docs/                 PLAN.md (design), TASKS.md (roadmap), COMMANDS.md (every command explained)
 ```
 
 ## Commands
-- `npm install` · `npm run dev -- scan --cwd <project>` · `npm run build` · `npm test` · `npm run lint` (type-checks src and test)
+- `npm install` · `npm run dev -- <project>` · `npm run build` · `npm test` · `npm run lint` (type-checks src, test, scripts)
+  · `npm run examples`. Full list with explanations: `docs/COMMANDS.md`.
 
 ## Status
-- Weeks 1–3 feature code done: project/lockfiles, registry + cache, Android/iOS/patches, 16 KB APK/AAB scan, checks,
-  renderers, GitHub Action. Not yet checked against real buildable apps or real release APKs.
+- Feature code done: project/lockfiles (incl. monorepos), registry + cache, Android/iOS/patches, 16 KB APK/AAB scan,
+  checks, renderers, GitHub Action. Not yet checked against real buildable apps or real release APKs.
 - Examples in examples/ cover every finding id (test/examples.test.ts guards this).
-- Open: real buildable fixture apps, real-APK validation, GitHub client (archived repos), README GIF, npm publish. See `docs/TASKS.md`.
+- Open items: `docs/TASKS.md`.

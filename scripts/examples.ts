@@ -120,8 +120,20 @@ export const EXAMPLES: ExampleRun[] = [
       'warning:rn-version-gap',
     ],
   },
-  { name: '11 unknown RN version', folder: '11-unknown-rn-version', exitCode: 0, findings: ['warning:rn-version-unknown'] },
+  {
+    name: '11 unknown RN version',
+    folder: '11-unknown-rn-version',
+    exitCode: 0,
+    findings: ['warning:data-lockfile-missing', 'warning:rn-version-unknown'],
+  },
   { name: '12 not an RN app', folder: '12-not-an-rn-app', exitCode: 2, findings: [] },
+  {
+    name: '13 registry data missing',
+    folder: '13-registry-data-missing',
+    exitCode: 0,
+    findings: ['warning:data-registry-unavailable'],
+  },
+  { name: '14 monorepo', folder: '14-monorepo/apps/mobile', exitCode: 0, findings: ['info:patch:react-native-mmkv'] },
 ];
 
 /** CLI arguments for an example, relative to the repository root. */

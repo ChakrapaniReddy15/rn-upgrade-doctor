@@ -119,6 +119,10 @@ export interface ProjectContext {
   /** The react-native range as written in package.json. */
   reactNativeRange?: string;
   packageManager?: 'npm' | 'yarn' | 'pnpm';
+  /** Monorepo root holding the lockfile, when it is not the app folder. */
+  workspaceRoot?: string;
+  /** Absolute path of the lockfile that was read; undefined when none was found. */
+  lockfile?: string;
   /** Installed versions of the direct dependencies, resolved from the lockfile. */
   installed: Record<string, string>;
   /** Declared direct dependencies: name -> range (dependencies and devDependencies). */
@@ -147,6 +151,8 @@ export interface Report {
     latestReactNativeSource?: string;
     upgradeHelperUrl?: string;
     packageManager?: ProjectContext['packageManager'];
+    /** Lockfile read, relative to `cwd` (e.g. "package-lock.json" or "../../yarn.lock" in a monorepo). */
+    lockfile?: string;
     offline: boolean;
   };
   summary: { blockers: number; warnings: number; info: number };

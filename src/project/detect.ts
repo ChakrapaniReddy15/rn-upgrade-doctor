@@ -16,11 +16,16 @@ const LOCKFILES: Array<[file: string, manager: PackageManager]> = [
 const KNOWN_MANAGERS: readonly string[] = ['npm', 'yarn', 'pnpm'];
 
 /**
- * Package manager from the `packageManager` field (e.g. "pnpm@9.12.0"), else from the lockfile present.
+ * Package manager from the `packageManager` field (e.g. "pnpm@9.12.0") of the app or monorepo root, else from the
+ * lockfile present in `cwd` (the folder that holds the lockfile).
  * Returns undefined when neither gives an answer.
  */
-export async function detectPackageManager(cwd: string, pkg: PackageJson): Promise<PackageManager | undefined> {
-  const declared = pkg.packageManager?.split('@')[0];
+export async function detectPackageManager(
+  cwd: string,
+  pkg: PackageJson,
+  rootPkg?: PackageJson,
+): Promise<PackageManager | undefined> {
+  const declared = (pkg.packageManager ?? rootPkg?.packageManager)?.split('@')[0];
   if (declared && KNOWN_MANAGERS.includes(declared)) return declared as PackageManager;
 
   for (const [file, manager] of LOCKFILES) {

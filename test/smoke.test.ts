@@ -1,5 +1,7 @@
+import { execFile } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { promisify } from 'node:util';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { renderReport, runScan, writeReports } from '../src/index.js';
 import { FileCache } from '../src/registry/index.js';
@@ -92,6 +94,18 @@ describe('runScan', () => {
     expect(report.meta).toMatchObject({ latestReactNative: '0.87.1', latestReactNativeSource: 'npm registry (cache)' });
   });
 
+  it('shows Android and iOS config in every format', async () => {
+    await writeTree(dir, { 'ios/Podfile': 'platform :ios, min_ios_version_supported\n' });
+    const report = await runScan({ cwd: dir, format: ['json'], ci: true, offline: true, cacheDir: path.join(dir, '.empty-cache') });
+    for (const format of ['terminal', 'md', 'html'] as const) {
+      const text = renderReport(report, format);
+      expect(text, format).toContain('Project config');
+      expect(text, format).toContain('targetSdk');
+      expect(text, format).toContain('min_ios_version_supported (follows React Native)');
+      expect(text, format).toContain('not set (React Native default: on)');
+    }
+  });
+
   it('works offline with an empty cache', async () => {
     const report = await runScan(
       { cwd: dir, format: ['json'], ci: true, offline: true },
@@ -100,5 +114,26 @@ describe('runScan', () => {
     expect(report.meta.latestReactNative).toBeUndefined();
     expect(report.dependencies.every((d) => d.npm.source === 'offline, not cached')).toBe(true);
     expect(renderReport(report, 'md')).toContain('latest unknown, offline');
+  });
+});
+
+describe('cli', () => {
+  const cli = (...args: string[]) =>
+    promisify(execFile)(process.execPath, ['--import', 'tsx', 'src/cli.ts', ...args], { cwd: path.resolve(__dirname, '..') });
+
+  it('prints the version', async () => {
+    const { version } = JSON.parse(await readFile(path.resolve(__dirname, '../package.json'), 'utf8')) as { version: string };
+    expect((await cli('--version')).stdout.trim()).toBe(version);
+  });
+
+  it('shows every option in the top-level help', async () => {
+    const { stdout } = await cli('--help');
+    for (const flag of ['[path]', '--apk', '--format', '--out', '--ci', '--offline', '--cache-dir', 'Exit codes']) expect(stdout).toContain(flag);
+  });
+
+  it('still accepts the old "scan" form and defaults to terminal output only', async () => {
+    const { stdout } = await cli('scan', 'examples/08-lockfiles/npm', '--offline', '--cache-dir', 'examples/registry-snapshot');
+    expect(stdout).toContain('React Native 0.85.2 → 0.87.1');
+    expect(stdout).not.toContain('Report written');
   });
 });
