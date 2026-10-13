@@ -21,5 +21,6 @@ First release.
 - **Reports:** terminal, HTML, Markdown and JSON; findings ranked blocker, warning, info and grouped per package.
   Every value says where its data came from; missing data is reported, never silently skipped.
 - **Offline mode** with a local cache (`--offline`, `--cache-dir`). Colours follow `FORCE_COLOR` / `NO_COLOR`.
-- **GitHub Action:** job summary, pull request comment, fail on blockers.
+- **GitHub Action:** job summary, pull request comment, fail on blockers; `offline` and `cache-dir` inputs. Tested on
+  GitHub runners on every push (`.github/workflows/action-test.yml`).
 - Exit codes: 0 no blockers, 1 blockers, 2 the tool could not run (or, with `--ci`, a registry was unreachable).

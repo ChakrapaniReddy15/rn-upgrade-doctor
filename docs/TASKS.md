@@ -29,6 +29,7 @@
 - [x] Native settings vs the React Native template for the current and target version (rn-diff-purge), cached permanently
 - [x] Terminal, HTML, Markdown, JSON renderers, including Android/iOS config
 - [x] GitHub Action (composite) + example workflow
+- [x] Action self-test on GitHub runners (healthy app, blocker, 16 KB APK, fail-on-blockers), offline and deterministic
 
 ## Release
 - [x] Play policy checked 2026-10-13: target API 36 since 31 Aug 2026; 16 KB required for updates from 1 Feb 2027

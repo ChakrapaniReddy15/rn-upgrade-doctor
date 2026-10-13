@@ -101,6 +101,16 @@ See [docs/examples/rn-upgrade-doctor.yml](docs/examples/rn-upgrade-doctor.yml).
     # apk: android/app/build/outputs/apk/release/app-release.apk
 ```
 
+| Input | Default | |
+|---|---|---|
+| `working-directory` | `.` | React Native app folder (e.g. `apps/mobile` in a monorepo) |
+| `apk` | | APK or AAB for the 16 KB scan, relative to `working-directory` |
+| `fail-on-blockers` | `true` | Fail the job when the report has blockers |
+| `comment` | `false` | Post or update the report as a pull request comment |
+| `offline` / `cache-dir` | `false` / `~/.cache/rn-upgrade-doctor` | Use cached registry data; combine `cache-dir` with `actions/cache` to reuse it between runs |
+
+Outputs: `blockers`, `warnings`, `report-dir` (folder with the Markdown, JSON and HTML reports).
+
 ## Library use
 
 ```ts

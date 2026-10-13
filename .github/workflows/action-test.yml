@@ -1,0 +1,106 @@
+# Runs the GitHub Action from this repository (uses: ./) on the example projects, offline against the frozen registry
+# data in examples/registry-snapshot, so results do not change when npm or React Native Directory change.
+name: action-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: healthy app
+            dir: examples/01-healthy-latest
+            apk: ''
+            blockers: '0'
+            finding: ''
+          - name: Android config with a blocker
+            dir: examples/05-android-config
+            apk: ''
+            blockers: '1'
+            finding: android-target-sdk
+          - name: 16 KB scan of an APK
+            dir: examples/09-16kb-apk
+            apk: bad.apk
+            blockers: '3'
+            finding: apk-16kb:react-native-mmkv
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate the example APKs
+        if: matrix.apk != ''
+        run: npm ci --no-audit --no-fund && npx tsx scripts/make-example-apks.ts
+
+      - name: Run the Action
+        id: doctor
+        uses: ./
+        with:
+          working-directory: ${{ matrix.dir }}
+          apk: ${{ matrix.apk }}
+          fail-on-blockers: 'false'
+          offline: 'true'
+          cache-dir: ${{ github.workspace }}/examples/registry-snapshot
+
+      - name: Check outputs and reports
+        shell: bash
+        env:
+          BLOCKERS: ${{ steps.doctor.outputs.blockers }}
+          WARNINGS: ${{ steps.doctor.outputs.warnings }}
+          REPORT_DIR: ${{ steps.doctor.outputs.report-dir }}
+          EXPECTED_BLOCKERS: ${{ matrix.blockers }}
+          EXPECTED_FINDING: ${{ matrix.finding }}
+        run: |
+          set -euo pipefail
+          echo "blockers=$BLOCKERS warnings=$WARNINGS report-dir=$REPORT_DIR"
+          if [ "$BLOCKERS" != "$EXPECTED_BLOCKERS" ]; then
+            echo "::error::expected $EXPECTED_BLOCKERS blocker(s), got '$BLOCKERS'"
+            exit 1
+          fi
+          for format in md json html; do
+            test -s "$REPORT_DIR/rn-upgrade-doctor-report.$format" || { echo "::error::missing $format report"; exit 1; }
+          done
+          if [ -n "$EXPECTED_FINDING" ]; then
+            node -e '
+              const report = require(process.argv[1]);
+              const ids = report.findings.map((f) => f.id);
+              if (!ids.includes(process.argv[2])) {
+                console.error(`::error::finding ${process.argv[2]} not in report: ${ids.join(", ")}`);
+                process.exit(1);
+              }
+            ' "$REPORT_DIR/rn-upgrade-doctor-report.json" "$EXPECTED_FINDING"
+          fi
+
+  fail-on-blockers:
+    name: fail-on-blockers fails the job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run the Action on an app with a blocker
+        id: doctor
+        continue-on-error: true
+        uses: ./
+        with:
+          working-directory: examples/05-android-config
+          fail-on-blockers: 'true'
+          offline: 'true'
+          cache-dir: ${{ github.workspace }}/examples/registry-snapshot
+
+      - name: Check that the Action failed
+        shell: bash
+        env:
+          OUTCOME: ${{ steps.doctor.outcome }}
+        run: |
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "::error::expected the Action to fail on blockers, outcome was '$OUTCOME'"
+            exit 1
+          fi

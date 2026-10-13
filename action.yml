@@ -21,6 +21,12 @@ inputs:
   github-token:
     description: Token used to comment on the pull request.
     default: ${{ github.token }}
+  offline:
+    description: "No network: use only registry data already in `cache-dir`."
+    default: 'false'
+  cache-dir:
+    description: Registry cache folder (relative to working-directory). Combine with actions/cache to reuse data between runs. Default ~/.cache/rn-upgrade-doctor.
+    default: ''
 
 outputs:
   blockers:
@@ -61,10 +67,14 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         APK: ${{ inputs.apk }}
+        OFFLINE: ${{ inputs.offline }}
+        CACHE_DIR: ${{ inputs.cache-dir }}
         OUT: ${{ runner.temp }}/rn-upgrade-doctor
       run: |
         args=(--ci --format terminal,md,json,html --out "$OUT")
         if [ -n "$APK" ]; then args+=(--apk "$APK"); fi
+        if [ "$OFFLINE" = "true" ]; then args+=(--offline); fi
+        if [ -n "$CACHE_DIR" ]; then args+=(--cache-dir "$CACHE_DIR"); fi
         set +e
         node "$GITHUB_ACTION_PATH/dist/cli.js" "${args[@]}"
         code=$?
