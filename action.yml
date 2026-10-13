@@ -1,5 +1,5 @@
 name: RN Upgrade Doctor
-description: See what breaks when you upgrade a React Native app, and what to fix first. Adds a report to the job summary and, optionally, the pull request.
+description: "See what breaks when you upgrade a React Native app, and what to fix first: dependencies, native config, 16 KB pages."
 author: Sunkesula Chakrapani Reddy
 branding:
   icon: activity
