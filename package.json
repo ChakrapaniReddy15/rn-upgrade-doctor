@@ -13,7 +13,8 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json"
+    "lint": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
+    "examples": "tsx scripts/make-example-apks.ts && tsx scripts/run-examples.ts"
   },
   "keywords": ["react-native", "upgrade", "cli", "new-architecture", "16kb", "android", "doctor"],
   "author": "Sunkesula Chakrapani Reddy",

@@ -42,6 +42,8 @@ src/rules/            known libraries table, version rules, advice text, semver 
 src/checks/           pure checks (ProjectContext -> Finding[]) and ranking
 src/report/           terminal, HTML, Markdown, JSON renderers
 action.yml            composite GitHub Action (example workflow in docs/examples/)
+examples/             text-only scenario projects + registry-snapshot/ (offline data); see examples/README.md
+scripts/              example APK generator and example runner (npm run examples)
 test/                 Vitest specs; fixtures/ holds sample projects and APKs (not committed if large)
 docs/                 PLAN.md (full plan), TASKS.md (checklist)
 ```
@@ -51,5 +53,6 @@ docs/                 PLAN.md (full plan), TASKS.md (checklist)
 
 ## Status
 - Weeks 1–3 feature code done: project/lockfiles, registry + cache, Android/iOS/patches, 16 KB APK/AAB scan, checks,
-  renderers, GitHub Action. Not yet checked against real sample apps or real APKs (fixtures pending).
-- Open: fixtures, real-APK validation, GitHub client (archived repos), README GIF, npm publish. See `docs/TASKS.md`.
+  renderers, GitHub Action. Not yet checked against real buildable apps or real release APKs.
+- Examples in examples/ cover every finding id (test/examples.test.ts guards this).
+- Open: real buildable fixture apps, real-APK validation, GitHub client (archived repos), README GIF, npm publish. See `docs/TASKS.md`.

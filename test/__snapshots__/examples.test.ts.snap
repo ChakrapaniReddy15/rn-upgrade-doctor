@@ -1,0 +1,2261 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`examples > 01 healthy latest 1`] = `
+{
+  "android": {
+    "compileSdk": 36,
+    "files": [
+      "android/build.gradle",
+      "android/app/build.gradle",
+      "android/gradle.properties",
+      "android/gradle/wrapper/gradle-wrapper.properties",
+    ],
+    "gradleVersion": "8.14.1",
+    "hermesEnabled": true,
+    "kotlinVersion": "2.1.20",
+    "minSdk": 24,
+    "ndkVersion": "28.0.13004108",
+    "newArchEnabled": true,
+    "targetSdk": 36,
+  },
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^4.7.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.7.1",
+      "name": "react-native-reanimated",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.7.1",
+        },
+      },
+    },
+    {
+      "declared": "^5.10.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "5.10.1",
+      "name": "react-native-safe-area-context",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "5.10.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.29.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.29.0",
+      "name": "react-native-screens",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.29.0",
+        },
+      },
+    },
+    {
+      "declared": "^7.0.2",
+      "dev": true,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "7.0.2",
+      "name": "typescript",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "7.0.2",
+        },
+      },
+    },
+  ],
+  "findings": [],
+  "ios": {
+    "cocoapodsVersion": "1.16.2",
+    "files": [
+      "ios/Podfile",
+      "ios/Podfile.lock",
+    ],
+    "podsReactNativeVersion": "0.87.1",
+    "usesRnMinIos": true,
+  },
+  "meta": {
+    "cwd": "<repo>/examples/01-healthy-latest",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 0,
+    "warnings": 0,
+  },
+}
+`;
+
+exports[`examples > 02 old RN version 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "17.0.2",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "17.0.2",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.68.7",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.68.7",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "id": "dep-outdated:react",
+      "package": "react",
+      "severity": "info",
+      "source": "npm registry (cache)",
+      "title": "react 17.0.2 is 2 major versions behind 19.3.0",
+    },
+    {
+      "detail": "Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes (since 1 Nov 2025, for new apps and updates).",
+      "fix": "Upgrade to React Native 0.77.0 or newer, then scan the release build with --apk.",
+      "id": "rn-16kb",
+      "package": "react-native",
+      "severity": "warning",
+      "source": "rules (React Native release notes, Google Play policy)",
+      "title": "React Native 0.68.7 is older than 0.77.0, the first release built for 16 KB page sizes",
+    },
+    {
+      "detail": "Your version predates the New Architecture default (0.76.0). Every native library must support it.",
+      "fix": "Turn on newArchEnabled (Android) and RCT_NEW_ARCH_ENABLED (iOS) on your current version first and fix what breaks, then upgrade.",
+      "id": "rn-new-arch-only",
+      "severity": "warning",
+      "source": "rules (React Native release notes)",
+      "title": "React Native 0.82+ runs only on the New Architecture",
+    },
+    {
+      "detail": "Each React Native minor release can contain breaking changes to native project files.",
+      "fix": "Follow the upgrade helper diff: https://react-native-community.github.io/upgrade-helper/?from=0.68.7&to=0.87.1",
+      "id": "rn-version-gap",
+      "package": "react-native",
+      "severity": "warning",
+      "source": "lockfile + npm registry (cache)",
+      "title": "React Native 0.68.7 is 19 releases behind 0.87.1",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/02-old-rn-version",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.68.7",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "upgradeHelperUrl": "https://react-native-community.github.io/upgrade-helper/?from=0.68.7&to=0.87.1",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 1,
+    "warnings": 3,
+  },
+}
+`;
+
+exports[`examples > 03 New Architecture blockers 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "^2.4.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "unsupported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "2.4.0",
+      "name": "@demo/legacy-maps",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "2.4.0",
+        },
+      },
+    },
+    {
+      "declared": "^1.3.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "untested",
+          "unmaintained": false,
+        },
+      },
+      "installed": "1.3.0",
+      "name": "@demo/untested-charts",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "1.3.0",
+        },
+      },
+    },
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^8.6.3",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "unsupported",
+          "unmaintained": true,
+        },
+      },
+      "installed": "8.6.3",
+      "name": "react-native-fast-image",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "10.0.0",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "fix": "Test it with the New Architecture on, or check the library issues for New Architecture reports.",
+      "id": "dep-new-arch-untested:@demo/untested-charts",
+      "package": "@demo/untested-charts",
+      "severity": "warning",
+      "source": "React Native Directory (cache)",
+      "title": "@demo/untested-charts: New Architecture support is untested",
+    },
+    {
+      "detail": "React Native 0.82+ has no legacy architecture, so this library will not work after the upgrade.",
+      "fix": "Find a maintained alternative on reactnative.directory, or patch the library.",
+      "id": "dep-new-arch:@demo/legacy-maps",
+      "package": "@demo/legacy-maps",
+      "severity": "blocker",
+      "source": "React Native Directory (cache)",
+      "title": "@demo/legacy-maps does not support the New Architecture",
+    },
+    {
+      "detail": "React Native 0.82+ has no legacy architecture, so this library will not work after the upgrade.",
+      "fix": "Replace with @d11/react-native-fast-image (maintained fork) or expo-image.",
+      "id": "dep-new-arch:react-native-fast-image",
+      "package": "react-native-fast-image",
+      "severity": "blocker",
+      "source": "React Native Directory (cache)",
+      "title": "react-native-fast-image does not support the New Architecture",
+    },
+    {
+      "fix": "Read its changelog for React Native version requirements and upgrade it together with React Native.",
+      "id": "dep-outdated:react-native-fast-image",
+      "package": "react-native-fast-image",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "react-native-fast-image 8.6.3 is 2 major versions behind 10.0.0",
+    },
+    {
+      "fix": "Move to @d11/react-native-fast-image (maintained fork) or expo-image.",
+      "id": "dep-replace:react-native-fast-image",
+      "package": "react-native-fast-image",
+      "severity": "warning",
+      "source": "rules (known libraries)",
+      "title": "react-native-fast-image: The original package is unmaintained.",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/03-new-arch-blockers",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 2,
+    "info": 0,
+    "warnings": 3,
+  },
+}
+`;
+
+exports[`examples > 04 unmaintained deps 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "^0.9.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": true,
+        },
+      },
+      "installed": "0.9.2",
+      "name": "@demo/abandoned-picker",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.9.2",
+        },
+      },
+    },
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.2.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "untested",
+          "unmaintained": true,
+        },
+      },
+      "installed": "4.2.1",
+      "name": "react-native-camera",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.2.1",
+        },
+      },
+    },
+    {
+      "declared": "^8.3.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "unsupported",
+          "unmaintained": true,
+        },
+      },
+      "installed": "8.3.1",
+      "name": "react-native-code-push",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "deprecated": "Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.",
+          "latest": "9.0.1",
+        },
+      },
+    },
+    {
+      "declared": "^2.12.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "2.12.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^2.88.2",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "2.88.2",
+      "name": "request",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "deprecated": "request has been deprecated, see https://github.com/request/request/issues/3142",
+          "latest": "2.88.2",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "detail": "request has been deprecated, see https://github.com/request/request/issues/3142",
+      "id": "dep-deprecated:request",
+      "package": "request",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "request is deprecated on npm",
+    },
+    {
+      "detail": "React Native 0.82+ has no legacy architecture, so this library will not work after the upgrade.",
+      "fix": "Replace with expo-updates or a self-hosted CodePush server.",
+      "id": "dep-new-arch:react-native-code-push",
+      "package": "react-native-code-push",
+      "severity": "blocker",
+      "source": "React Native Directory (cache)",
+      "title": "react-native-code-push does not support the New Architecture",
+    },
+    {
+      "fix": "Read its changelog for React Native version requirements and upgrade it together with React Native.",
+      "id": "dep-outdated:react-native-code-push",
+      "package": "react-native-code-push",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "react-native-code-push 8.3.1 is 1 major version behind 9.0.1",
+    },
+    {
+      "fix": "Read its changelog for React Native version requirements and upgrade it together with React Native.",
+      "id": "dep-outdated:react-native-mmkv",
+      "package": "react-native-mmkv",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "react-native-mmkv 2.12.2 is 2 major versions behind 4.3.2",
+    },
+    {
+      "fix": "Move to react-native-vision-camera.",
+      "id": "dep-replace:react-native-camera",
+      "package": "react-native-camera",
+      "severity": "warning",
+      "source": "rules (known libraries)",
+      "title": "react-native-camera: Deprecated by its maintainers.",
+    },
+    {
+      "fix": "Move to expo-updates or a self-hosted CodePush server.",
+      "id": "dep-replace:react-native-code-push",
+      "package": "react-native-code-push",
+      "severity": "warning",
+      "source": "rules (known libraries)",
+      "title": "react-native-code-push: Visual Studio App Center, which CodePush depends on, was retired on 31 March 2025.",
+    },
+    {
+      "fix": "Look for a maintained fork or alternative on reactnative.directory.",
+      "id": "dep-unmaintained:@demo/abandoned-picker",
+      "package": "@demo/abandoned-picker",
+      "severity": "warning",
+      "source": "React Native Directory (cache)",
+      "title": "@demo/abandoned-picker is marked unmaintained",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/04-unmaintained-deps",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 1,
+    "info": 0,
+    "warnings": 6,
+  },
+}
+`;
+
+exports[`examples > 05 Android config 1`] = `
+{
+  "android": {
+    "compileSdk": 33,
+    "files": [
+      "android/build.gradle",
+      "android/app/build.gradle",
+      "android/gradle.properties",
+      "android/gradle/wrapper/gradle-wrapper.properties",
+    ],
+    "gradleVersion": "7.5.1",
+    "hermesEnabled": false,
+    "minSdk": 21,
+    "newArchEnabled": false,
+    "targetSdk": 34,
+  },
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "fix": "Set compileSdkVersion to at least targetSdkVersion.",
+      "id": "android-compile-sdk",
+      "severity": "warning",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "compileSdkVersion 33 is lower than targetSdkVersion 34",
+    },
+    {
+      "detail": "JavaScriptCore is no longer part of React Native core (it moved to a community package). Hermes is the default engine.",
+      "fix": "Switch to Hermes, or add the community JSC package when you upgrade.",
+      "id": "android-hermes-off",
+      "severity": "info",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "hermesEnabled=false: the app uses JavaScriptCore on Android",
+    },
+    {
+      "fix": "Raise minSdkVersion to 24; check how many of your users are on older Android versions first.",
+      "id": "android-min-sdk",
+      "severity": "warning",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties) + rules",
+      "title": "minSdkVersion 21 is below 24, required by React Native 0.76+",
+    },
+    {
+      "detail": "The flag is ignored from React Native 0.82: the app will run on the New Architecture.",
+      "fix": "Turn it on and test before upgrading.",
+      "id": "android-new-arch-off",
+      "severity": "warning",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "newArchEnabled=false in android/gradle.properties",
+    },
+    {
+      "detail": "Google Play requires app updates to target API 35 (Android 15) or higher since 31 Aug 2025.",
+      "fix": "Set targetSdkVersion (and compileSdkVersion) to 35 or higher in android/build.gradle.",
+      "id": "android-target-sdk",
+      "severity": "blocker",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "targetSdkVersion 34 is below Google Play's minimum (35)",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/05-android-config",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 1,
+    "info": 1,
+    "warnings": 3,
+  },
+}
+`;
+
+exports[`examples > 06 iOS Podfile 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "fix": "Use \`platform :ios, min_ios_version_supported\` in the Podfile so it follows React Native, or raise it by hand.",
+      "id": "ios-min-version",
+      "severity": "warning",
+      "source": "ios/Podfile, ios/Podfile.lock + rules",
+      "title": "iOS deployment target 12.4 is below 15.1, required by React Native 0.76+",
+    },
+    {
+      "detail": "It is ignored from React Native 0.82: the app will run on the New Architecture.",
+      "fix": "Remove the override, run pod install and test before upgrading.",
+      "id": "ios-new-arch-off",
+      "severity": "warning",
+      "source": "ios/Podfile, ios/Podfile.lock",
+      "title": "RCT_NEW_ARCH_ENABLED is '0' in the Podfile",
+    },
+    {
+      "fix": "Run \`cd ios && pod install\` and commit Podfile.lock.",
+      "id": "ios-pods-out-of-sync",
+      "severity": "warning",
+      "source": "ios/Podfile, ios/Podfile.lock",
+      "title": "Podfile.lock has React Native 0.79.2, node_modules has 0.87.1",
+    },
+  ],
+  "ios": {
+    "cocoapodsVersion": "1.11.3",
+    "files": [
+      "ios/Podfile",
+      "ios/Podfile.lock",
+    ],
+    "hermesEnabled": false,
+    "minIos": "12.4",
+    "newArchEnabled": false,
+    "podsReactNativeVersion": "0.79.2",
+    "usesRnMinIos": false,
+  },
+  "meta": {
+    "cwd": "<repo>/examples/06-ios-podfile",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 0,
+    "warnings": 3,
+  },
+}
+`;
+
+exports[`examples > 07 patch-package 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "^2.1.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "2.1.0",
+      "name": "@demo/js-utils",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "3.0.0",
+        },
+      },
+    },
+    {
+      "declared": "^8.0.1",
+      "dev": true,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "8.0.1",
+      "name": "patch-package",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "8.0.1",
+        },
+      },
+    },
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "id": "dep-outdated:@demo/js-utils",
+      "package": "@demo/js-utils",
+      "severity": "info",
+      "source": "npm registry (cache)",
+      "title": "@demo/js-utils 2.1.0 is 1 major version behind 3.0.0",
+    },
+    {
+      "fix": "Re-create the patch against the installed version, or delete it if the fix is now upstream.",
+      "id": "patch:@demo/js-utils",
+      "package": "@demo/js-utils",
+      "severity": "warning",
+      "source": "patches/@demo+js-utils+2.0.0.patch",
+      "title": "Patch for @demo/js-utils@2.0.0 but 2.1.0 is installed",
+    },
+    {
+      "fix": "After upgrading, check whether the fix is upstream; if not, re-create the patch for the new version.",
+      "id": "patch:react-native-mmkv",
+      "package": "react-native-mmkv",
+      "severity": "info",
+      "source": "patches/react-native-mmkv+4.3.2.patch",
+      "title": "react-native-mmkv is patched (patches/react-native-mmkv+4.3.2.patch); re-check the patch when you upgrade it",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/07-patch-package",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [
+    {
+      "file": "patches/@demo+js-utils+2.0.0.patch",
+      "package": "@demo/js-utils",
+      "version": "2.0.0",
+    },
+    {
+      "file": "patches/react-native-mmkv+4.3.2.patch",
+      "package": "react-native-mmkv",
+      "version": "4.3.2",
+    },
+  ],
+  "summary": {
+    "blockers": 0,
+    "info": 2,
+    "warnings": 1,
+  },
+}
+`;
+
+exports[`examples > 08 lockfiles (npm) 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "19.2.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.2.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.85.2",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.85.2",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^5.10.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "5.10.1",
+      "name": "react-native-safe-area-context",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "5.10.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "detail": "Each React Native minor release can contain breaking changes to native project files.",
+      "fix": "Follow the upgrade helper diff: https://react-native-community.github.io/upgrade-helper/?from=0.85.2&to=0.87.1",
+      "id": "rn-version-gap",
+      "package": "react-native",
+      "severity": "info",
+      "source": "lockfile + npm registry (cache)",
+      "title": "React Native 0.85.2 is 2 releases behind 0.87.1",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/08-lockfiles/npm",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.85.2",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "upgradeHelperUrl": "https://react-native-community.github.io/upgrade-helper/?from=0.85.2&to=0.87.1",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 1,
+    "warnings": 0,
+  },
+}
+`;
+
+exports[`examples > 08 lockfiles (pnpm) 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "19.2.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.2.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.85.2",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.85.2",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^5.10.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "5.10.1",
+      "name": "react-native-safe-area-context",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "5.10.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "detail": "Each React Native minor release can contain breaking changes to native project files.",
+      "fix": "Follow the upgrade helper diff: https://react-native-community.github.io/upgrade-helper/?from=0.85.2&to=0.87.1",
+      "id": "rn-version-gap",
+      "package": "react-native",
+      "severity": "info",
+      "source": "lockfile + npm registry (cache)",
+      "title": "React Native 0.85.2 is 2 releases behind 0.87.1",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/08-lockfiles/pnpm",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "pnpm",
+    "reactNativeVersion": "0.85.2",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "upgradeHelperUrl": "https://react-native-community.github.io/upgrade-helper/?from=0.85.2&to=0.87.1",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 1,
+    "warnings": 0,
+  },
+}
+`;
+
+exports[`examples > 08 lockfiles (yarn) 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "19.2.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.2.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.85.2",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.85.2",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^5.10.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "5.10.1",
+      "name": "react-native-safe-area-context",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "5.10.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "detail": "Each React Native minor release can contain breaking changes to native project files.",
+      "fix": "Follow the upgrade helper diff: https://react-native-community.github.io/upgrade-helper/?from=0.85.2&to=0.87.1",
+      "id": "rn-version-gap",
+      "package": "react-native",
+      "severity": "info",
+      "source": "lockfile + npm registry (cache)",
+      "title": "React Native 0.85.2 is 2 releases behind 0.87.1",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/08-lockfiles/yarn",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "yarn",
+    "reactNativeVersion": "0.85.2",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "upgradeHelperUrl": "https://react-native-community.github.io/upgrade-helper/?from=0.85.2&to=0.87.1",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 1,
+    "warnings": 0,
+  },
+}
+`;
+
+exports[`examples > 09 16 KB (bad.apk) 1`] = `
+{
+  "apk": {
+    "file": "<tmp>/bad.apk",
+    "kind": "apk",
+    "libs": [
+      {
+        "abi": "arm64-v8a",
+        "elfOk": true,
+        "is64Bit": true,
+        "loadAlign": 16384,
+        "name": "libc++_shared.so",
+        "package": "react-native",
+        "packageSource": "known table (NDK C++ runtime)",
+        "path": "lib/arm64-v8a/libc++_shared.so",
+        "stored": false,
+      },
+      {
+        "abi": "arm64-v8a",
+        "elfOk": false,
+        "is64Bit": true,
+        "loadAlign": 4096,
+        "name": "libreanimated.so",
+        "package": "react-native-reanimated",
+        "packageSource": "known table",
+        "path": "lib/arm64-v8a/libreanimated.so",
+        "stored": false,
+      },
+      {
+        "abi": "arm64-v8a",
+        "elfOk": true,
+        "is64Bit": true,
+        "loadAlign": 16384,
+        "name": "libreactnativemmkv.so",
+        "package": "react-native-mmkv",
+        "packageSource": "known table",
+        "path": "lib/arm64-v8a/libreactnativemmkv.so",
+        "stored": true,
+        "zipAligned": false,
+      },
+      {
+        "abi": "arm64-v8a",
+        "elfOk": false,
+        "is64Bit": true,
+        "loadAlign": 4096,
+        "name": "libdemo_native.so",
+        "path": "lib/arm64-v8a/libdemo_native.so",
+        "stored": true,
+        "zipAligned": true,
+      },
+    ],
+  },
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^4.7.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.7.1",
+      "name": "react-native-reanimated",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.7.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "detail": "ELF segments aligned to 4 KB instead of 16 KB. ABIs: arm64-v8a. Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes (since 1 Nov 2025, for new apps and updates).",
+      "fix": "Find which dependency ships this library and upgrade it to a 16 KB compatible release.",
+      "id": "apk-16kb:libdemo_native.so",
+      "severity": "blocker",
+      "source": "APK scan (APK)",
+      "title": "Unknown package: libdemo_native.so not 16 KB page-size compatible",
+    },
+    {
+      "detail": "stored uncompressed at an offset that is not 16 KB aligned in the APK. ABIs: arm64-v8a. Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes (since 1 Nov 2025, for new apps and updates).",
+      "fix": "Use Android Gradle Plugin 8.5.1 or newer, which aligns uncompressed native libraries to 16 KB.",
+      "id": "apk-16kb:react-native-mmkv",
+      "package": "react-native-mmkv",
+      "severity": "blocker",
+      "source": "APK scan (APK); package from known table",
+      "title": "react-native-mmkv: libreactnativemmkv.so not 16 KB page-size compatible",
+    },
+    {
+      "detail": "ELF segments aligned to 4 KB instead of 16 KB. ABIs: arm64-v8a. Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes (since 1 Nov 2025, for new apps and updates).",
+      "fix": "Upgrade react-native-reanimated to a release built with NDK r28+ (or linked with -Wl,-z,max-page-size=16384).",
+      "id": "apk-16kb:react-native-reanimated",
+      "package": "react-native-reanimated",
+      "severity": "blocker",
+      "source": "APK scan (APK); package from known table",
+      "title": "react-native-reanimated: libreanimated.so not 16 KB page-size compatible",
+    },
+  ],
+  "meta": {
+    "apk": "<tmp>/bad.apk",
+    "cwd": "<repo>/examples/09-16kb-apk",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 3,
+    "info": 0,
+    "warnings": 0,
+  },
+}
+`;
+
+exports[`examples > 09 16 KB (good.apk) 1`] = `
+{
+  "apk": {
+    "file": "<tmp>/good.apk",
+    "kind": "apk",
+    "libs": [
+      {
+        "abi": "arm64-v8a",
+        "elfOk": true,
+        "is64Bit": true,
+        "loadAlign": 16384,
+        "name": "libreactnative.so",
+        "package": "react-native",
+        "packageSource": "known table (React Native core)",
+        "path": "lib/arm64-v8a/libreactnative.so",
+        "stored": true,
+        "zipAligned": true,
+      },
+      {
+        "abi": "arm64-v8a",
+        "elfOk": true,
+        "is64Bit": true,
+        "loadAlign": 16384,
+        "name": "libreanimated.so",
+        "package": "react-native-reanimated",
+        "packageSource": "known table",
+        "path": "lib/arm64-v8a/libreanimated.so",
+        "stored": true,
+        "zipAligned": true,
+      },
+      {
+        "abi": "arm64-v8a",
+        "elfOk": true,
+        "is64Bit": true,
+        "loadAlign": 16384,
+        "name": "libreactnativemmkv.so",
+        "package": "react-native-mmkv",
+        "packageSource": "known table",
+        "path": "lib/arm64-v8a/libreactnativemmkv.so",
+        "stored": true,
+        "zipAligned": true,
+      },
+      {
+        "abi": "x86_64",
+        "elfOk": true,
+        "is64Bit": true,
+        "loadAlign": 16384,
+        "name": "libreactnative.so",
+        "package": "react-native",
+        "packageSource": "known table (React Native core)",
+        "path": "lib/x86_64/libreactnative.so",
+        "stored": true,
+        "zipAligned": true,
+      },
+      {
+        "abi": "armeabi-v7a",
+        "elfOk": true,
+        "is64Bit": false,
+        "loadAlign": 4096,
+        "name": "libreactnative.so",
+        "package": "react-native",
+        "packageSource": "known table (React Native core)",
+        "path": "lib/armeabi-v7a/libreactnative.so",
+        "stored": false,
+      },
+    ],
+  },
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^4.7.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.7.1",
+      "name": "react-native-reanimated",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.7.1",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "id": "apk-16kb-ok",
+      "severity": "info",
+      "source": "APK scan (APK)",
+      "title": "All 4 64-bit native libraries are 16 KB page-size compatible",
+    },
+  ],
+  "meta": {
+    "apk": "<tmp>/good.apk",
+    "cwd": "<repo>/examples/09-16kb-apk",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 1,
+    "warnings": 0,
+  },
+}
+`;
+
+exports[`examples > 09 16 KB (no APK) 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "19.3.0",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.87.1",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.87.1",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.3.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.3.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^4.7.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "4.7.1",
+      "name": "react-native-reanimated",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.7.1",
+        },
+      },
+    },
+  ],
+  "findings": [],
+  "meta": {
+    "cwd": "<repo>/examples/09-16kb-apk",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.87.1",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 0,
+    "warnings": 0,
+  },
+}
+`;
+
+exports[`examples > 10 everything broken 1`] = `
+{
+  "android": {
+    "compileSdk": 33,
+    "files": [
+      "android/build.gradle",
+      "android/app/build.gradle",
+      "android/gradle.properties",
+      "android/gradle/wrapper/gradle-wrapper.properties",
+    ],
+    "gradleVersion": "7.5.1",
+    "hermesEnabled": false,
+    "minSdk": 21,
+    "newArchEnabled": false,
+    "targetSdk": 34,
+  },
+  "dependencies": [
+    {
+      "declared": "^0.9.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": true,
+        },
+      },
+      "installed": "0.9.2",
+      "name": "@demo/abandoned-picker",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.9.2",
+        },
+      },
+    },
+    {
+      "declared": "^2.1.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "2.1.0",
+      "name": "@demo/js-utils",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "3.0.0",
+        },
+      },
+    },
+    {
+      "declared": "^2.4.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "unsupported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "2.4.0",
+      "name": "@demo/legacy-maps",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "2.4.0",
+        },
+      },
+    },
+    {
+      "declared": "^1.3.0",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "untested",
+          "unmaintained": false,
+        },
+      },
+      "installed": "1.3.0",
+      "name": "@demo/untested-charts",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "1.3.0",
+        },
+      },
+    },
+    {
+      "declared": "^8.0.1",
+      "dev": true,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "8.0.1",
+      "name": "patch-package",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "8.0.1",
+        },
+      },
+    },
+    {
+      "declared": "17.0.2",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "17.0.2",
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "0.68.7",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "0.68.7",
+      "name": "react-native",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "0.87.1",
+        },
+      },
+    },
+    {
+      "declared": "^4.2.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "untested",
+          "unmaintained": true,
+        },
+      },
+      "installed": "4.2.1",
+      "name": "react-native-camera",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.2.1",
+        },
+      },
+    },
+    {
+      "declared": "^8.3.1",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "unsupported",
+          "unmaintained": true,
+        },
+      },
+      "installed": "8.3.1",
+      "name": "react-native-code-push",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "deprecated": "Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.",
+          "latest": "9.0.1",
+        },
+      },
+    },
+    {
+      "declared": "^8.6.3",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "unsupported",
+          "unmaintained": true,
+        },
+      },
+      "installed": "8.6.3",
+      "name": "react-native-fast-image",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "10.0.0",
+        },
+      },
+    },
+    {
+      "declared": "^2.12.2",
+      "dev": false,
+      "directory": {
+        "source": "React Native Directory (cache)",
+        "value": {
+          "newArchitecture": "supported",
+          "unmaintained": false,
+        },
+      },
+      "installed": "2.12.2",
+      "name": "react-native-mmkv",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "4.3.2",
+        },
+      },
+    },
+    {
+      "declared": "^2.88.2",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "installed": "2.88.2",
+      "name": "request",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "deprecated": "request has been deprecated, see https://github.com/request/request/issues/3142",
+          "latest": "2.88.2",
+        },
+      },
+    },
+  ],
+  "findings": [
+    {
+      "fix": "Set compileSdkVersion to at least targetSdkVersion.",
+      "id": "android-compile-sdk",
+      "severity": "warning",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "compileSdkVersion 33 is lower than targetSdkVersion 34",
+    },
+    {
+      "detail": "JavaScriptCore is no longer part of React Native core (it moved to a community package). Hermes is the default engine.",
+      "fix": "Switch to Hermes, or add the community JSC package when you upgrade.",
+      "id": "android-hermes-off",
+      "severity": "info",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "hermesEnabled=false: the app uses JavaScriptCore on Android",
+    },
+    {
+      "fix": "Raise minSdkVersion to 24; check how many of your users are on older Android versions first.",
+      "id": "android-min-sdk",
+      "severity": "warning",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties) + rules",
+      "title": "minSdkVersion 21 is below 24, required by React Native 0.76+",
+    },
+    {
+      "detail": "The flag is ignored from React Native 0.82: the app will run on the New Architecture.",
+      "fix": "Turn it on and test before upgrading.",
+      "id": "android-new-arch-off",
+      "severity": "warning",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "newArchEnabled=false in android/gradle.properties",
+    },
+    {
+      "detail": "Google Play requires app updates to target API 35 (Android 15) or higher since 31 Aug 2025.",
+      "fix": "Set targetSdkVersion (and compileSdkVersion) to 35 or higher in android/build.gradle.",
+      "id": "android-target-sdk",
+      "severity": "blocker",
+      "source": "android/ (android/build.gradle, android/app/build.gradle, android/gradle.properties, android/gradle/wrapper/gradle-wrapper.properties)",
+      "title": "targetSdkVersion 34 is below Google Play's minimum (35)",
+    },
+    {
+      "detail": "request has been deprecated, see https://github.com/request/request/issues/3142",
+      "id": "dep-deprecated:request",
+      "package": "request",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "request is deprecated on npm",
+    },
+    {
+      "fix": "Test it with the New Architecture on, or check the library issues for New Architecture reports.",
+      "id": "dep-new-arch-untested:@demo/untested-charts",
+      "package": "@demo/untested-charts",
+      "severity": "warning",
+      "source": "React Native Directory (cache)",
+      "title": "@demo/untested-charts: New Architecture support is untested",
+    },
+    {
+      "detail": "React Native 0.82+ has no legacy architecture, so this library will not work after the upgrade.",
+      "fix": "Find a maintained alternative on reactnative.directory, or patch the library.",
+      "id": "dep-new-arch:@demo/legacy-maps",
+      "package": "@demo/legacy-maps",
+      "severity": "blocker",
+      "source": "React Native Directory (cache)",
+      "title": "@demo/legacy-maps does not support the New Architecture",
+    },
+    {
+      "detail": "React Native 0.82+ has no legacy architecture, so this library will not work after the upgrade.",
+      "fix": "Replace with expo-updates or a self-hosted CodePush server.",
+      "id": "dep-new-arch:react-native-code-push",
+      "package": "react-native-code-push",
+      "severity": "blocker",
+      "source": "React Native Directory (cache)",
+      "title": "react-native-code-push does not support the New Architecture",
+    },
+    {
+      "detail": "React Native 0.82+ has no legacy architecture, so this library will not work after the upgrade.",
+      "fix": "Replace with @d11/react-native-fast-image (maintained fork) or expo-image.",
+      "id": "dep-new-arch:react-native-fast-image",
+      "package": "react-native-fast-image",
+      "severity": "blocker",
+      "source": "React Native Directory (cache)",
+      "title": "react-native-fast-image does not support the New Architecture",
+    },
+    {
+      "id": "dep-outdated:@demo/js-utils",
+      "package": "@demo/js-utils",
+      "severity": "info",
+      "source": "npm registry (cache)",
+      "title": "@demo/js-utils 2.1.0 is 1 major version behind 3.0.0",
+    },
+    {
+      "id": "dep-outdated:react",
+      "package": "react",
+      "severity": "info",
+      "source": "npm registry (cache)",
+      "title": "react 17.0.2 is 2 major versions behind 19.3.0",
+    },
+    {
+      "fix": "Read its changelog for React Native version requirements and upgrade it together with React Native.",
+      "id": "dep-outdated:react-native-code-push",
+      "package": "react-native-code-push",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "react-native-code-push 8.3.1 is 1 major version behind 9.0.1",
+    },
+    {
+      "fix": "Read its changelog for React Native version requirements and upgrade it together with React Native.",
+      "id": "dep-outdated:react-native-fast-image",
+      "package": "react-native-fast-image",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "react-native-fast-image 8.6.3 is 2 major versions behind 10.0.0",
+    },
+    {
+      "fix": "Read its changelog for React Native version requirements and upgrade it together with React Native.",
+      "id": "dep-outdated:react-native-mmkv",
+      "package": "react-native-mmkv",
+      "severity": "warning",
+      "source": "npm registry (cache)",
+      "title": "react-native-mmkv 2.12.2 is 2 major versions behind 4.3.2",
+    },
+    {
+      "fix": "Move to react-native-vision-camera.",
+      "id": "dep-replace:react-native-camera",
+      "package": "react-native-camera",
+      "severity": "warning",
+      "source": "rules (known libraries)",
+      "title": "react-native-camera: Deprecated by its maintainers.",
+    },
+    {
+      "fix": "Move to expo-updates or a self-hosted CodePush server.",
+      "id": "dep-replace:react-native-code-push",
+      "package": "react-native-code-push",
+      "severity": "warning",
+      "source": "rules (known libraries)",
+      "title": "react-native-code-push: Visual Studio App Center, which CodePush depends on, was retired on 31 March 2025.",
+    },
+    {
+      "fix": "Move to @d11/react-native-fast-image (maintained fork) or expo-image.",
+      "id": "dep-replace:react-native-fast-image",
+      "package": "react-native-fast-image",
+      "severity": "warning",
+      "source": "rules (known libraries)",
+      "title": "react-native-fast-image: The original package is unmaintained.",
+    },
+    {
+      "fix": "Look for a maintained fork or alternative on reactnative.directory.",
+      "id": "dep-unmaintained:@demo/abandoned-picker",
+      "package": "@demo/abandoned-picker",
+      "severity": "warning",
+      "source": "React Native Directory (cache)",
+      "title": "@demo/abandoned-picker is marked unmaintained",
+    },
+    {
+      "fix": "Use \`platform :ios, min_ios_version_supported\` in the Podfile so it follows React Native, or raise it by hand.",
+      "id": "ios-min-version",
+      "severity": "warning",
+      "source": "ios/Podfile, ios/Podfile.lock + rules",
+      "title": "iOS deployment target 11.0 is below 15.1, required by React Native 0.76+",
+    },
+    {
+      "detail": "It is ignored from React Native 0.82: the app will run on the New Architecture.",
+      "fix": "Remove the override, run pod install and test before upgrading.",
+      "id": "ios-new-arch-off",
+      "severity": "warning",
+      "source": "ios/Podfile, ios/Podfile.lock",
+      "title": "RCT_NEW_ARCH_ENABLED is '0' in the Podfile",
+    },
+    {
+      "fix": "Run \`cd ios && pod install\` and commit Podfile.lock.",
+      "id": "ios-pods-out-of-sync",
+      "severity": "warning",
+      "source": "ios/Podfile, ios/Podfile.lock",
+      "title": "Podfile.lock has React Native 0.68.2, node_modules has 0.68.7",
+    },
+    {
+      "fix": "Re-create the patch against the installed version, or delete it if the fix is now upstream.",
+      "id": "patch:@demo/js-utils",
+      "package": "@demo/js-utils",
+      "severity": "warning",
+      "source": "patches/@demo+js-utils+2.0.0.patch",
+      "title": "Patch for @demo/js-utils@2.0.0 but 2.1.0 is installed",
+    },
+    {
+      "fix": "After upgrading, check whether the fix is upstream; if not, re-create the patch for the new version.",
+      "id": "patch:react-native-mmkv",
+      "package": "react-native-mmkv",
+      "severity": "info",
+      "source": "patches/react-native-mmkv+2.12.2.patch",
+      "title": "react-native-mmkv is patched (patches/react-native-mmkv+2.12.2.patch); re-check the patch when you upgrade it",
+    },
+    {
+      "detail": "Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes (since 1 Nov 2025, for new apps and updates).",
+      "fix": "Upgrade to React Native 0.77.0 or newer, then scan the release build with --apk.",
+      "id": "rn-16kb",
+      "package": "react-native",
+      "severity": "warning",
+      "source": "rules (React Native release notes, Google Play policy)",
+      "title": "React Native 0.68.7 is older than 0.77.0, the first release built for 16 KB page sizes",
+    },
+    {
+      "detail": "Your version predates the New Architecture default (0.76.0). Every native library must support it.",
+      "fix": "Turn on newArchEnabled (Android) and RCT_NEW_ARCH_ENABLED (iOS) on your current version first and fix what breaks, then upgrade.",
+      "id": "rn-new-arch-only",
+      "severity": "warning",
+      "source": "rules (React Native release notes)",
+      "title": "React Native 0.82+ runs only on the New Architecture",
+    },
+    {
+      "detail": "Each React Native minor release can contain breaking changes to native project files.",
+      "fix": "Follow the upgrade helper diff: https://react-native-community.github.io/upgrade-helper/?from=0.68.7&to=0.87.1",
+      "id": "rn-version-gap",
+      "package": "react-native",
+      "severity": "warning",
+      "source": "lockfile + npm registry (cache)",
+      "title": "React Native 0.68.7 is 19 releases behind 0.87.1",
+    },
+  ],
+  "ios": {
+    "cocoapodsVersion": "1.11.3",
+    "files": [
+      "ios/Podfile",
+      "ios/Podfile.lock",
+    ],
+    "hermesEnabled": false,
+    "minIos": "11.0",
+    "newArchEnabled": false,
+    "podsReactNativeVersion": "0.68.2",
+    "usesRnMinIos": false,
+  },
+  "meta": {
+    "cwd": "<repo>/examples/10-everything-broken",
+    "latestReactNative": "0.87.1",
+    "latestReactNativeSource": "npm registry (cache)",
+    "offline": true,
+    "packageManager": "npm",
+    "reactNativeVersion": "0.68.7",
+    "reactNativeVersionSource": "lockfile",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "upgradeHelperUrl": "https://react-native-community.github.io/upgrade-helper/?from=0.68.7&to=0.87.1",
+    "version": "<version>",
+  },
+  "patches": [
+    {
+      "file": "patches/@demo+js-utils+2.0.0.patch",
+      "package": "@demo/js-utils",
+      "version": "2.0.0",
+    },
+    {
+      "file": "patches/react-native-mmkv+2.12.2.patch",
+      "package": "react-native-mmkv",
+      "version": "2.12.2",
+    },
+  ],
+  "summary": {
+    "blockers": 4,
+    "info": 4,
+    "warnings": 19,
+  },
+}
+`;
+
+exports[`examples > 11 unknown RN version 1`] = `
+{
+  "dependencies": [
+    {
+      "declared": "19.3.0",
+      "dev": false,
+      "directory": {
+        "source": "not listed in React Native Directory",
+      },
+      "name": "react",
+      "npm": {
+        "source": "npm registry (cache)",
+        "value": {
+          "latest": "19.3.0",
+        },
+      },
+    },
+    {
+      "declared": "github:facebook/react-native#main",
+      "dev": false,
+      "directory": {
+        "source": "skipped (not from the npm registry)",
+      },
+      "name": "react-native",
+      "npm": {
+        "source": "skipped (not from the npm registry)",
+      },
+    },
+  ],
+  "findings": [
+    {
+      "fix": "Pin react-native to a version number in package.json and install, so the lockfile records it.",
+      "id": "rn-version-unknown",
+      "severity": "warning",
+      "source": "package.json",
+      "title": "Could not read the React Native version from "github:facebook/react-native#main"",
+    },
+  ],
+  "meta": {
+    "cwd": "<repo>/examples/11-unknown-rn-version",
+    "latestReactNativeSource": "skipped (not from the npm registry)",
+    "offline": true,
+    "reactNativeVersionSource": "package.json",
+    "scannedAt": "<time>",
+    "tool": "rn-upgrade-doctor",
+    "version": "<version>",
+  },
+  "patches": [],
+  "summary": {
+    "blockers": 0,
+    "info": 0,
+    "warnings": 1,
+  },
+}
+`;

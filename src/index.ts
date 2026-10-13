@@ -24,13 +24,14 @@ export interface RunScanDeps {
 export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Promise<Report> {
   const ctx = await buildProjectContext(options.cwd);
   const pkg = await readPackageJson(ctx.cwd);
-  const registry: RegistryOptions = { offline: options.offline, cache: new FileCache(), ...deps.registry };
+  const registry: RegistryOptions = { offline: options.offline, cache: new FileCache(options.cacheDir), ...deps.registry };
 
   const [dependencies, android, ios, patches, apk] = await Promise.all([
     lookupDependencies(ctx, registry),
     readAndroidConfig(ctx.cwd),
     readIosConfig(ctx.cwd),
     readPatches(ctx.cwd, pkg),
+    // Like --cwd, a relative --apk path is relative to the folder the command runs in, not to the project.
     options.apk ? scanApk(options.apk, ctx.cwd) : Promise.resolve(undefined),
   ]);
 

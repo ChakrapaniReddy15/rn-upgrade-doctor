@@ -2,8 +2,8 @@ node_modules/
 dist/
 coverage/
 fixtures/*/
-fixtures/**/*.apk
-fixtures/**/*.aab
+*.apk
+*.aab
 *.log
 .DS_Store
 .env

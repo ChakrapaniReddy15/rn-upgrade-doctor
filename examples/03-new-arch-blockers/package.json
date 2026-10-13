@@ -1,0 +1,12 @@
+{
+  "name": "demo-maps",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "react": "19.3.0",
+    "react-native": "0.87.1",
+    "react-native-fast-image": "^8.6.3",
+    "@demo/legacy-maps": "^2.4.0",
+    "@demo/untested-charts": "^1.3.0"
+  }
+}

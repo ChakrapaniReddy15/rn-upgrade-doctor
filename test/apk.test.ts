@@ -65,7 +65,7 @@ describe('scanApk', () => {
       ]),
     });
 
-    const apk = await scanApk('app.apk', dir);
+    const apk = await scanApk(path.join(dir, 'app.apk'), dir);
     expect(apk.kind).toBe('apk');
     const byPath = Object.fromEntries(apk.libs.map((l) => [l.path, l]));
 
@@ -103,6 +103,6 @@ describe('scanApk', () => {
   });
 
   it('throws a clear error for a missing file', async () => {
-    await expect(scanApk('missing.apk', dir)).rejects.toThrow(/APK\/AAB not found/);
+    await expect(scanApk(path.join(dir, 'missing.apk'), dir)).rejects.toThrow(/APK\/AAB not found/);
   });
 });

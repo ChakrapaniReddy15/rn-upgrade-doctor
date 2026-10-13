@@ -56,6 +56,8 @@ export interface ZipInput {
   stored?: boolean;
   /** For stored entries: pad the local header so the data starts at a multiple of this. */
   alignTo?: number;
+  /** Extra bytes added after aligning to `alignTo`, to place the data deliberately off the boundary. */
+  misalignBy?: number;
 }
 
 /** Build a zip file in memory (enough of the format for yauzl). */
@@ -71,7 +73,7 @@ export function makeZip(inputs: ZipInput[]): Buffer {
     let extra = Buffer.alloc(0);
     if (input.stored && input.alignTo) {
       const dataStart = offset + 30 + name.length;
-      const pad = (input.alignTo - (dataStart % input.alignTo)) % input.alignTo;
+      const pad = ((input.alignTo - (dataStart % input.alignTo)) % input.alignTo) + (input.misalignBy ?? 0);
       // An extra field needs a 4-byte header, so pad to the next aligned offset that leaves room for one.
       const size = pad === 0 ? 0 : pad < 4 ? pad + input.alignTo : pad;
       extra = Buffer.alloc(size);

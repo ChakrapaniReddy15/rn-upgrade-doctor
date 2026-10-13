@@ -1,0 +1,17 @@
+{
+  "name": "demo-recipes",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "postinstall": "patch-package"
+  },
+  "dependencies": {
+    "react": "19.3.0",
+    "react-native": "0.87.1",
+    "react-native-mmkv": "^4.3.2",
+    "@demo/js-utils": "^2.1.0"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1"
+  }
+}

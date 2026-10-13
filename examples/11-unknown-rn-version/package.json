@@ -1,0 +1,9 @@
+{
+  "name": "demo-prototype",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "react": "19.3.0",
+    "react-native": "github:facebook/react-native#main"
+  }
+}

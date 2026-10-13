@@ -3,7 +3,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { renderReport, runScan, writeReports } from '../src/index.js';
 import { FileCache } from '../src/registry/index.js';
-import { tempDir, writeTree } from './helpers.js';
+import { makeElf, makeZip, tempDir, writeTree } from './helpers.js';
 
 let dir: string;
 let cleanup: () => Promise<void>;
@@ -70,6 +70,26 @@ describe('runScan', () => {
     expect(html).toContain('legacy-&lt;lib&gt;');
     expect(html).not.toContain('legacy-<lib>');
     expect(JSON.parse(await readFile(written[2], 'utf8')).summary.blockers).toBe(1);
+  });
+
+  it('resolves a relative --apk path from the process folder, not from --cwd', async () => {
+    const lib = makeElf({ is64Bit: true, loadAligns: [16384] });
+    await writeTree(dir, { 'builds/app.apk': makeZip([{ name: 'lib/arm64-v8a/libreactnative.so', data: lib }]) });
+    const apk = path.join(dir, 'builds', 'app.apk');
+    const report = await runScan(
+      { cwd: dir, apk: path.relative(process.cwd(), apk), format: ['json'], ci: true, offline: true },
+      { registry: { cache: new FileCache(path.join(dir, '.empty-cache')) } },
+    );
+    expect(report.apk?.file).toBe(apk);
+    expect(report.meta.apk).toBe(apk);
+  });
+
+  it('uses the cacheDir option for registry data', async () => {
+    await writeTree(dir, {
+      'snapshot/npm-latest/react-native.json': { fetchedAt: 0, value: { latest: '0.87.1' } },
+    });
+    const report = await runScan({ cwd: dir, format: ['json'], ci: true, offline: true, cacheDir: path.join(dir, 'snapshot') });
+    expect(report.meta).toMatchObject({ latestReactNative: '0.87.1', latestReactNativeSource: 'npm registry (cache)' });
   });
 
   it('works offline with an empty cache', async () => {

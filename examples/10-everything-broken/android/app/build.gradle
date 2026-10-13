@@ -1,0 +1,15 @@
+apply plugin: "com.android.application"
+apply plugin: "com.facebook.react"
+
+android {
+    compileSdkVersion 33
+
+    namespace "com.demo.legacycrm"
+    defaultConfig {
+        applicationId "com.demo.legacycrm"
+        minSdkVersion 21
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0"
+    }
+}

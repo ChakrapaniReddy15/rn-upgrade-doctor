@@ -5,7 +5,8 @@
 - [x] Check the npm name `rn-upgrade-doctor` is free (else pick another and rename everywhere)
 - [x] Create empty public GitHub repo and push (owner does the push)
 - [x] `npm install`; `npm run build` and `npm test` pass on the skeleton
-- [ ] Create 4–5 fresh sample RN apps (public templates) at different versions under fixtures/ (gitignored) and build APKs
+- [x] Sample apps / scenarios: text-only example projects in examples/ covering every finding id (offline, registry snapshot)
+- [ ] Create 1–2 real buildable RN apps (public templates) under fixtures/ (gitignored) with release APKs, for the GIF and to compare with Google's 16 KB check
 
 ## Week 1 — version gap + dependency report
 - [x] `src/project`: read package.json, detect RN version, detect package manager

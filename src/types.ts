@@ -19,6 +19,8 @@ export interface ScanOptions {
   format: ReportFormat[];
   ci: boolean;
   offline: boolean;
+  /** Registry cache folder. Default: $RN_UPGRADE_DOCTOR_CACHE_DIR, else ~/.cache/rn-upgrade-doctor. */
+  cacheDir?: string;
 }
 
 /** A value fetched from a remote source, labelled with where it came from. */

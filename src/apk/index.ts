@@ -9,9 +9,12 @@ export { PAGE_16K, parseElf, programHeadersEnd } from './elf.js';
 export { buildSoIndex, cmakeSharedLibraries, findSoOwner } from './mapping.js';
 export { readNativeLibs } from './zip.js';
 
-/** 16 KB page-size scan of a built APK or AAB, with each native library mapped to the npm package behind it. */
+/**
+ * 16 KB page-size scan of a built APK or AAB, with each native library mapped to the npm package behind it.
+ * `file` is resolved against the process working directory; `cwd` is the project whose node_modules are searched.
+ */
 export async function scanApk(file: string, cwd: string): Promise<ApkReport> {
-  const resolved = path.resolve(cwd, file);
+  const resolved = path.resolve(file);
   try {
     await access(resolved);
   } catch {

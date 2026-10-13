@@ -12,6 +12,16 @@ function parseFormats(value: string): ReportFormat[] {
   return formats as ReportFormat[];
 }
 
+interface ScanFlags {
+  cwd: string;
+  apk?: string;
+  format: ReportFormat[];
+  out?: string;
+  ci: boolean;
+  offline: boolean;
+  cacheDir?: string;
+}
+
 const program = new Command();
 
 program
@@ -21,20 +31,23 @@ program
 program
   .command('scan', { isDefault: true })
   .description('scan a React Native project (default command)')
+  .argument('[path]', 'React Native project folder (same as --cwd)')
   .option('--cwd <path>', 'React Native project folder', process.cwd())
   .option('--apk <path>', 'built APK or AAB to scan for 16 KB page-size support')
   .option('--format <list>', 'comma-separated: terminal,html,md,json', parseFormats, ['terminal', 'html'] as ReportFormat[])
   .option('--out <dir>', 'folder for html/md/json reports (default: the project folder)')
   .option('--ci', 'CI mode: no colours, exit 1 on blockers', false)
   .option('--offline', 'skip network lookups (use cache only)', false)
-  .action(async (opts: { cwd: string; apk?: string; format: ReportFormat[]; out?: string; ci: boolean; offline: boolean }) => {
+  .option('--cache-dir <dir>', 'registry cache folder (default: $RN_UPGRADE_DOCTOR_CACHE_DIR or ~/.cache/rn-upgrade-doctor)')
+  .action(async (projectPath: string | undefined, opts: ScanFlags) => {
     try {
       const report = await runScan({
-        cwd: opts.cwd,
+        cwd: projectPath ?? opts.cwd,
         apk: opts.apk,
         format: opts.format,
         ci: opts.ci,
         offline: opts.offline,
+        cacheDir: opts.cacheDir === undefined ? undefined : path.resolve(opts.cacheDir),
       });
 
       if (opts.format.includes('terminal')) {
