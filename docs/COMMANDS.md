@@ -49,6 +49,7 @@ Text-only sample projects, one per check. They run offline against the frozen da
 |---|---|
 | `npm run examples` | Generates the two test APKs, runs every example and prints each report. Ends with "18/18 examples exited as expected". |
 | `npx tsx scripts/make-example-apks.ts` | Only (re)generates `examples/09-16kb-apk/good.apk` and `bad.apk` (gitignored). |
+| `npm run demo` | Re-records `docs/demo.gif` from `docs/demo.tape` (needs [vhs](https://github.com/charmbracelet/vhs): `brew install vhs`). Uses the examples, so no local paths appear. |
 | `node dist/cli.js examples/10-everything-broken --offline --cache-dir examples/registry-snapshot` | One example with every problem at once. Good for screenshots and the README GIF. |
 | `node dist/cli.js examples/09-16kb-apk --apk examples/09-16kb-apk/bad.apk --offline --cache-dir examples/registry-snapshot` | The 16 KB page-size scan on an APK with problems. Run `npm run examples` once first to create the APK. |
 | `node dist/cli.js examples/14-monorepo/apps/mobile --offline --cache-dir examples/registry-snapshot` | A monorepo app: lockfile and patches come from the workspace root (`../../`). |

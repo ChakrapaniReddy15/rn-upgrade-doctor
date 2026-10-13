@@ -21,7 +21,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
-    "examples": "tsx scripts/make-example-apks.ts && tsx scripts/run-examples.ts"
+    "examples": "tsx scripts/make-example-apks.ts && tsx scripts/run-examples.ts",
+    "demo": "npm run build && tsx scripts/make-example-apks.ts && vhs docs/demo.tape"
   },
   "keywords": [
     "react-native",

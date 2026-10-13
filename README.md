@@ -1,6 +1,12 @@
 # rn-upgrade-doctor
 
+[![npm](https://img.shields.io/npm/v/rn-upgrade-doctor)](https://www.npmjs.com/package/rn-upgrade-doctor)
+[![CI](https://github.com/ChakrapaniReddy15/rn-upgrade-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/ChakrapaniReddy15/rn-upgrade-doctor/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ChakrapaniReddy15/rn-upgrade-doctor/blob/main/LICENSE)
+
 One command to see what will break when you upgrade a React Native app, and what to fix first.
+
+![rn-upgrade-doctor: blockers first, findings grouped per package, and the 16 KB page-size scan of a release APK](https://raw.githubusercontent.com/ChakrapaniReddy15/rn-upgrade-doctor/main/docs/demo.gif)
 
 Requires Node.js 20 or newer. Works with npm, Yarn (classic and Berry) and pnpm projects, including monorepos.
 Expo-managed projects are not supported yet.
@@ -70,6 +76,17 @@ target version. Statuses: *below the minimum* (minSdk, iOS target, Play's target
 *behind your RN version* (drift you already have), *newer* (fine). Template values other than the minimums are
 recommendations, not hard rules.
 
+## What it sends over the network
+
+No source code and no APK ever leave your machine. Online runs only send:
+
+- **package names** to the npm registry (`registry.npmjs.org`), to get each package's latest version;
+- **package names** to React Native Directory (`reactnative.directory`), for New Architecture support and maintenance;
+- **React Native version numbers** to GitHub (`raw.githubusercontent.com`), to read the official app template for that
+  version.
+
+With `--offline` nothing is sent; only the local cache is used.
+
 ## GitHub Action
 
 Adds the Markdown report to the job summary, can comment on the pull request, and fails the job on blockers.
@@ -93,12 +110,33 @@ const report = await runScan({ cwd: '.', format: ['json'], ci: true, offline: fa
 console.log(report.summary, renderReport(report, 'md'));
 ```
 
+## How it compares
+
+| Tool | What it does | What rn-upgrade-doctor adds |
+|---|---|---|
+| [React Native Upgrade Helper](https://react-native-community.github.io/upgrade-helper/) | Diff of the template files between two React Native versions | Looks at *your* project: dependencies, your Android/iOS settings, your built app; links to the helper diff |
+| [React Native Directory](https://reactnative.directory) | New Architecture support and maintenance per library | Installed vs latest for every dependency, one ranked report, a CLI and CI gate |
+| `expo doctor` | Health checks for Expo projects | Bare React Native apps and monorepos, native settings vs the template, 16 KB scan of the built app |
+| Google's 16 KB checks (`zipalign -c -P 16`, ELF alignment script) | Alignment of each `.so` file in an APK | Names the npm package behind each failing library and the fix, and says when one build setting fixes all of them |
+
+## Limitations
+
+- **Expo-managed apps** (no `android/` and `ios/` folders) are not supported yet.
+- **Template values** other than the minimums (minSdk, iOS deployment target, Play's targetSdk) are recommendations:
+  being behind the template is a warning, not a blocker.
+- **Mapping `.so` files to packages** needs your dependencies installed (`node_modules`). Libraries that come from
+  Maven are matched through a known table; anything else is reported as an unknown package.
+- **The 16 KB check needs a built APK or AAB** (`--apk`); without it the report says the check did not run.
+- **Registry data** can be missing (offline without a cache, or a service that cannot be reached). The report says so
+  instead of treating it as a clean result.
+
 ## Development
 
 ```bash
 npm install
 npm run dev -- ../my-rn-app         # run from source (no build needed)
 npm run examples                    # run every example scenario
+npm run demo                        # re-record docs/demo.gif (needs vhs)
 npm test                            # Vitest
 npm run lint                        # type-check src and tests
 npm run build                       # compile to dist/

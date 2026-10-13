@@ -132,8 +132,17 @@ describe('runScan', () => {
 });
 
 describe('cli', () => {
-  const cli = (...args: string[]) =>
-    promisify(execFile)(process.execPath, ['--import', 'tsx', 'src/cli.ts', ...args], { cwd: path.resolve(__dirname, '..') });
+  const cli = (...args: string[]) => cliWithEnv({}, ...args);
+  const cliWithEnv = (env: Record<string, string>, ...args: string[]) =>
+    promisify(execFile)(process.execPath, ['--import', 'tsx', 'src/cli.ts', ...args], {
+      cwd: path.resolve(__dirname, '..'),
+      env: { ...withoutColorVars(process.env), ...env },
+    });
+  // Remove (not empty) the colour variables: an empty FORCE_COLOR still means "force colours".
+  const withoutColorVars = (env: NodeJS.ProcessEnv) => {
+    const { NO_COLOR: _noColor, FORCE_COLOR: _forceColor, ...rest } = env;
+    return rest;
+  };
 
   it('prints the version', async () => {
     const { version } = JSON.parse(await readFile(path.resolve(__dirname, '../package.json'), 'utf8')) as { version: string };
@@ -143,6 +152,13 @@ describe('cli', () => {
   it('shows every option in the top-level help', async () => {
     const { stdout } = await cli('--help');
     for (const flag of ['[path]', '--apk', '--format', '--out', '--ci', '--offline', '--cache-dir', 'Exit codes']) expect(stdout).toContain(flag);
+  });
+
+  it('keeps colours in piped output with FORCE_COLOR, but never with --ci', async () => {
+    const args = ['examples/08-lockfiles/npm', '--offline', '--cache-dir', 'examples/registry-snapshot'];
+    expect((await cliWithEnv({ FORCE_COLOR: '1' }, ...args)).stdout).toContain('\u001b[');
+    expect((await cliWithEnv({}, ...args)).stdout).not.toContain('\u001b[');
+    expect((await cliWithEnv({ FORCE_COLOR: '1' }, ...args, '--ci')).stdout).not.toContain('\u001b[');
   });
 
   it('still accepts the old "scan" form and defaults to terminal output only', async () => {

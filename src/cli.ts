@@ -22,6 +22,16 @@ interface ScanFlags {
   cacheDir?: string;
 }
 
+/**
+ * Colours follow the usual conventions: FORCE_COLOR (not "0") turns them on even when output is piped,
+ * NO_COLOR turns them off, otherwise only an interactive terminal gets colours.
+ */
+export function useColor(env: NodeJS.ProcessEnv, isTTY: boolean): boolean {
+  if (env.FORCE_COLOR !== undefined && env.FORCE_COLOR !== '0' && env.FORCE_COLOR !== 'false') return true;
+  if (env.NO_COLOR) return false;
+  return isTTY;
+}
+
 const program = new Command();
 
 program
@@ -58,7 +68,7 @@ Examples:
       });
 
       if (opts.format.includes('terminal')) {
-        const color = !opts.ci && Boolean(process.stdout.isTTY) && !process.env.NO_COLOR;
+        const color = !opts.ci && useColor(process.env, Boolean(process.stdout.isTTY));
         console.log(renderReport(report, 'terminal', { color }));
       }
       const written = await writeReports(report, opts.format, path.resolve(opts.out ?? report.meta.cwd));
