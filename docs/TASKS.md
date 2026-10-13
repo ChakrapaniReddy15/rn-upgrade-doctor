@@ -33,6 +33,7 @@
 ## Release
 - [x] Play policy checked 2026-10-13: target API 36 since 31 Aug 2026; 16 KB required for updates from 1 Feb 2027
 - [ ] README with a demo GIF
+- [x] Release prep: version 0.1.0, CHANGELOG, README
 - [ ] Publish v0.1 to npm; tag `v0.1.0`
 
 ## Later

@@ -99,9 +99,9 @@ After code changes, run `npm run build` again; the linked command uses `dist/`.
 | Command | What it does |
 |---|---|
 | `npm pack --dry-run` | Lists the files that would be published (should be `dist/`, `README.md`, `LICENSE`, `package.json`). Nothing is uploaded. |
-| `npm pack --pack-destination /tmp` | Builds the real package file, `/tmp/rn-upgrade-doctor-0.0.1.tgz`. |
-| `npx --yes /tmp/rn-upgrade-doctor-0.0.1.tgz --version` | Installs that file in a temporary place and runs it, just like `npx rn-upgrade-doctor` after publishing. |
-| `npx --yes /tmp/rn-upgrade-doctor-0.0.1.tgz "/path/to/your-rn-app"` | Scans a project with the packed version. |
+| `npm pack --pack-destination /tmp` | Builds the real package file, `/tmp/rn-upgrade-doctor-0.1.0.tgz`. |
+| `npx --yes --package /tmp/rn-upgrade-doctor-0.1.0.tgz rn-upgrade-doctor --version` | Installs that file in a temporary place and runs it, just like `npx rn-upgrade-doctor` after publishing. |
+| `npx --yes --package /tmp/rn-upgrade-doctor-0.1.0.tgz rn-upgrade-doctor "/path/to/your-rn-app"` | Scans a project with the packed version. |
 
 ## 7. Registry cache
 

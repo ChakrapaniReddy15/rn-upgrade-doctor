@@ -1,8 +1,9 @@
 # rn-upgrade-doctor
 
-> Work in progress — not published to npm yet. Run it from source (see [Development](#development)).
-
 One command to see what will break when you upgrade a React Native app, and what to fix first.
+
+Requires Node.js 20 or newer. Works with npm, Yarn (classic and Berry) and pnpm projects, including monorepos.
+Expo-managed projects are not supported yet.
 
 ```bash
 npx rn-upgrade-doctor                                   # scan the project in the current folder
@@ -77,7 +78,7 @@ See [docs/examples/rn-upgrade-doctor.yml](docs/examples/rn-upgrade-doctor.yml).
 
 ```yaml
 - uses: actions/checkout@v4
-- uses: ChakrapaniReddy15/rn-upgrade-doctor@main
+- uses: ChakrapaniReddy15/rn-upgrade-doctor@v0.1.0
   with:
     comment: true            # needs permissions: pull-requests: write
     fail-on-blockers: true

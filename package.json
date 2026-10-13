@@ -1,13 +1,20 @@
 {
   "name": "rn-upgrade-doctor",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "One command to see what breaks when you upgrade a React Native app: dependencies, New Architecture, Android/iOS config and 16 KB page-size checks.",
   "type": "module",
-  "bin": { "rn-upgrade-doctor": "dist/cli.js" },
+  "bin": {
+    "rn-upgrade-doctor": "dist/cli.js"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
-  "engines": { "node": ">=20" },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "tsx src/cli.ts",
     "build": "tsc -p tsconfig.json",
@@ -16,11 +23,24 @@
     "lint": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
     "examples": "tsx scripts/make-example-apks.ts && tsx scripts/run-examples.ts"
   },
-  "keywords": ["react-native", "upgrade", "cli", "new-architecture", "16kb", "android", "doctor"],
+  "keywords": [
+    "react-native",
+    "upgrade",
+    "cli",
+    "new-architecture",
+    "16kb",
+    "android",
+    "doctor"
+  ],
   "author": "Sunkesula Chakrapani Reddy",
-  "repository": { "type": "git", "url": "git+https://github.com/ChakrapaniReddy15/rn-upgrade-doctor.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChakrapaniReddy15/rn-upgrade-doctor.git"
+  },
   "homepage": "https://github.com/ChakrapaniReddy15/rn-upgrade-doctor#readme",
-  "bugs": { "url": "https://github.com/ChakrapaniReddy15/rn-upgrade-doctor/issues" },
+  "bugs": {
+    "url": "https://github.com/ChakrapaniReddy15/rn-upgrade-doctor/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "cli-table3": "^0.6.5",
