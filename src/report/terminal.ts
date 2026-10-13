@@ -1,6 +1,8 @@
 import Table from 'cli-table3';
 import pc from 'picocolors';
+import { PLAY_POLICY } from '../rules/index.js';
 import type { Report, Severity } from '../types.js';
+import { ELF_FIX, googleCheck, plural, problemText, scopeText, summarizeApk, verdictText } from './apkSummary.js';
 import {
   NATIVE_STATUS_LABEL,
   SIXTEEN_KB_NOT_CHECKED,
@@ -90,14 +92,31 @@ export function renderTerminal(report: Report, options: { color: boolean }): str
     out.push(c.dim(`  ${section.files.join(', ')}`), table.toString());
   }
 
-  if (report.apk) {
-    const libs64 = report.apk.libs.filter((l) => l.is64Bit);
-    const bad = libs64.filter((l) => !l.elfOk || l.zipAligned === false);
-    out.push(
-      '',
-      c.bold('16 KB page size'),
-      `${report.apk.file}: ${libs64.length} 64-bit native libraries, ${bad.length === 0 ? c.green('all compatible') : c.red(`${bad.length} not compatible`)}`,
-    );
+  const apk = summarizeApk(report);
+  if (apk) {
+    const verdict = verdictText(apk);
+    out.push('', `${c.bold('16 KB page size')}  ${apk.ok ? c.green(`✓ ${verdict}`) : c.red(`✖ ${verdict}`)}`, c.dim(`  ${scopeText(apk)}`));
+    if (!apk.ok) {
+      const count = (n: number) => String(n).padStart(String(apk.total).length);
+      out.push('', `  ${c.green('✓')} ${count(apk.ready)} ${plural(apk.ready, 'library', 'libraries')} ready`);
+      if (apk.zipOnly > 0) {
+        out.push(`  ${c.red('✖')} ${count(apk.zipOnly)} stored without 16 KB zip alignment`);
+        out.push(`  ${' '.repeat(String(apk.total).length + 3)}${c.green('→')} One build fix for all: ${PLAY_POLICY.zipAlignFix}`);
+      }
+      if (apk.elf > 0) {
+        out.push(`  ${c.red('✖')} ${count(apk.elf)} built with 4 KB ELF segments`);
+        out.push(`  ${' '.repeat(String(apk.total).length + 3)}${c.green('→')} ${ELF_FIX}`);
+      }
+      const width = Math.max(...apk.byPackage.map((g) => (g.package ?? 'unknown package').length));
+      out.push('', '  By package (details in "What to fix first"):');
+      for (const g of apk.byPackage) {
+        const libs = `${g.libs.length} ${plural(g.libs.length, 'library', 'libraries')}`.padEnd(13);
+        const names = g.package ? '' : `: ${g.libs.join(', ')}`;
+        out.push(`    ${(g.package ?? 'unknown package').padEnd(width)}  ${libs}  ${problemText(g.problems)}${names}`);
+      }
+    }
+    const check = googleCheck(apk);
+    if (check) out.push('', c.dim(`  Check with Google's tool (Android SDK build-tools): ${check}`));
   } else if (sixteenKbNotChecked(report)) {
     out.push('', c.bold('16 KB page size'), c.yellow(SIXTEEN_KB_NOT_CHECKED));
   }

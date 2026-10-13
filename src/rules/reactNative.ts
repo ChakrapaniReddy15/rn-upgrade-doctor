@@ -33,6 +33,11 @@ export const PLAY_POLICY = {
   minTargetSdkNote:
     'Since 31 Aug 2026, Google Play requires new apps and app updates to target API 36 (Android 16) or higher ' +
     '(an extension to 1 Nov 2026 can be requested). Existing apps below API 35 are hidden from new users on newer Android versions.',
+  /** One-line form for report headings. */
+  sixteenKbShort: 'from 1 Feb 2027, Google Play blocks app updates without 16 KB support',
+  /** The fix when uncompressed libraries are not 16 KB aligned in the APK: one build setting, not a per-library fix. */
+  zipAlignFix:
+    'Build with Android Gradle Plugin 8.5.1 or newer; if you align or sign the APK yourself, run `zipalign -P 16` before `apksigner`.',
   sixteenKbNote:
     'Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes on 64-bit devices; ' +
     'from 1 Feb 2027, app updates that do not cannot be released.',

@@ -1705,7 +1705,7 @@ exports[`examples > 09 16 KB (bad.apk) 1`] = `
     },
     {
       "detail": "stored uncompressed at an offset that is not 16 KB aligned in the APK. ABIs: arm64-v8a. Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes on 64-bit devices; from 1 Feb 2027, app updates that do not cannot be released.",
-      "fix": "Use Android Gradle Plugin 8.5.1 or newer, which aligns uncompressed native libraries to 16 KB.",
+      "fix": "Build with Android Gradle Plugin 8.5.1 or newer; if you align or sign the APK yourself, run \`zipalign -P 16\` before \`apksigner\`.",
       "id": "apk-16kb:react-native-mmkv",
       "package": "react-native-mmkv",
       "severity": "blocker",

@@ -65,6 +65,6 @@ function fixFor(pkg: string, elf: boolean, zip: boolean): string {
           : 'Find which dependency ships this library and upgrade it to a 16 KB compatible release.',
     );
   }
-  if (zip) steps.push('Use Android Gradle Plugin 8.5.1 or newer, which aligns uncompressed native libraries to 16 KB.');
+  if (zip) steps.push(PLAY_POLICY.zipAlignFix);
   return steps.join(' ');
 }

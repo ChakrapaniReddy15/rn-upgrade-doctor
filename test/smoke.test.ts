@@ -117,7 +117,7 @@ describe('runScan', () => {
     await writeTree(dir, { 'app.apk': makeZip([{ name: 'lib/arm64-v8a/libreactnative.so', data: lib }]) });
     const withApk = await runScan({ ...options, format: ['json'], apk: path.join(dir, 'app.apk') });
     expect(renderReport(withApk, 'terminal')).not.toContain('Not checked: pass');
-    expect(renderReport(withApk, 'terminal')).toContain('all compatible');
+    expect(renderReport(withApk, 'terminal')).toContain('Ready: the only native library supports 16 KB pages');
   });
 
   it('works offline with an empty cache', async () => {
