@@ -4,6 +4,7 @@ import type { Report, Severity } from '../types.js';
 import {
   NATIVE_STATUS_LABEL,
   dataSources,
+  groupFindings,
   headline,
   interestingDependencies,
   maintenanceLabel,
@@ -29,11 +30,23 @@ export function renderTerminal(report: Report, options: { color: boolean }): str
 
   if (report.findings.length > 0) {
     out.push('', c.bold('What to fix first'));
-    report.findings.forEach((f, i) => {
-      out.push(`${String(i + 1).padStart(3)}. ${icon[f.severity]} ${f.title}`);
-      if (f.detail) out.push(c.dim(`       ${f.detail}`));
-      if (f.fix) out.push(`       ${c.green('→')} ${f.fix}`);
-      out.push(c.dim(`       source: ${f.source}`));
+    groupFindings(report.findings).forEach((group, i) => {
+      const n = `${String(i + 1).padStart(3)}.`;
+      if (group.findings.length === 1) {
+        const f = group.findings[0];
+        out.push(`${n} ${icon[f.severity]} ${f.title}`);
+        if (f.detail) out.push(c.dim(`       ${oneLine(f.detail)}`));
+        if (f.fix) out.push(`       ${c.green('→')} ${f.fix}`);
+        out.push(c.dim(`       source: ${f.source}`));
+        return;
+      }
+      out.push(`${n} ${icon[group.severity]} ${c.bold(group.package!)}: ${group.findings.length} problems`);
+      for (const f of group.findings) {
+        out.push(`       ${icon[f.severity]} ${f.title}`);
+        if (f.detail) out.push(c.dim(`         ${oneLine(f.detail)}`));
+        if (f.fix) out.push(`         ${c.green('→')} ${f.fix}`);
+        out.push(c.dim(`         source: ${f.source}`));
+      }
     });
   }
 
@@ -94,4 +107,9 @@ function colorStatus(label: string, c: ReturnType<typeof pc.createColors>): stri
   if (label === 'untested') return c.yellow(label);
   if (label.startsWith('yes') || label === 'ok') return c.green(label);
   return c.dim(label);
+}
+
+/** npm deprecation messages can span several lines; keep the terminal layout intact. */
+function oneLine(text: string): string {
+  return text.replace(/\s*\n\s*/g, ' ').trim();
 }

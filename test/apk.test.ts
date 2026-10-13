@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { cmakeSharedLibraries, parseElf, programHeadersEnd, readNativeLibs, scanApk } from '../src/apk/index.js';
+import { buildSoIndex, cmakeSharedLibraries, findSoOwner, parseElf, programHeadersEnd, readNativeLibs, scanApk } from '../src/apk/index.js';
 import { checkApk } from '../src/checks/index.js';
 import type { ProjectContext } from '../src/types.js';
 import { makeElf, makeZip, tempDir, writeTree } from './helpers.js';
@@ -34,6 +34,26 @@ add_library(\${PROJECT_NAME}Extra SHARED src/b.cpp)
 add_library(helper STATIC src/c.cpp)
 `;
     expect(cmakeSharedLibraries(cmake)).toEqual(['thing', 'NativeThingExtra']);
+  });
+});
+
+describe('findSoOwner', () => {
+  it('maps codegen libraries to the package that declares codegenConfig.name, and Fresco to React Native', async () => {
+    const { dir, cleanup } = await tempDir('codegen');
+    try {
+      await writeTree(dir, {
+        'node_modules/react-native-safe-area-context/package.json': { name: 'react-native-safe-area-context', codegenConfig: { name: 'safeareacontext' } },
+      });
+      const index = await buildSoIndex(dir);
+      expect(findSoOwner('libreact_codegen_safeareacontext.so', index)).toEqual({
+        package: 'react-native-safe-area-context',
+        source: 'node_modules (codegenConfig)',
+      });
+      expect(findSoOwner('libreact_codegen_unknownlib.so', index)?.package).toBe('react-native');
+      expect(findSoOwner('libimagepipeline.so', index)).toEqual({ package: 'react-native', source: 'known table (Fresco, bundled with React Native)' });
+    } finally {
+      await cleanup();
+    }
   });
 });
 

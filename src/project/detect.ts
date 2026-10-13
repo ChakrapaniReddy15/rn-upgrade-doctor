@@ -1,6 +1,7 @@
 import { access } from 'node:fs/promises';
 import path from 'node:path';
 import type { ProjectContext } from '../types.js';
+import { minVersionOf } from '../rules/semver.js';
 import type { PackageJson } from './packageJson.js';
 
 type PackageManager = NonNullable<ProjectContext['packageManager']>;
@@ -41,8 +42,6 @@ export interface ReactNativeVersion {
   version?: string;
 }
 
-const VERSION_RE = /(\d+)\.(\d+)(?:\.(\d+|[xX*]))?(-[0-9A-Za-z.-]+)?/;
-
 /**
  * React Native version declared in package.json. This is the declared range only;
  * the exact installed version comes from the lockfile.
@@ -50,15 +49,8 @@ const VERSION_RE = /(\d+)\.(\d+)(?:\.(\d+|[xX*]))?(-[0-9A-Za-z.-]+)?/;
 export function detectReactNativeVersion(pkg: PackageJson): ReactNativeVersion | undefined {
   const range = pkg.dependencies?.['react-native'] ?? pkg.devDependencies?.['react-native'];
   if (range === undefined) return undefined;
-
-  // Aliases such as "npm:react-native-tvos@0.76.0-0" carry the version after the last "@".
-  const spec = range.startsWith('npm:') ? range.slice(range.lastIndexOf('@') + 1) : range;
-  const match = VERSION_RE.exec(spec);
-  if (!match) return { range };
-
-  const [, major, minor, patch, prerelease = ''] = match;
-  const patchNumber = patch === undefined || /^[xX*]$/.test(patch) ? '0' : patch;
-  return { range, version: `${major}.${minor}.${patchNumber}${prerelease}` };
+  const version = minVersionOf(range);
+  return version === undefined ? { range } : { range, version };
 }
 
 async function exists(file: string): Promise<boolean> {

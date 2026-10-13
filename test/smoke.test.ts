@@ -4,6 +4,7 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { renderReport, runScan, writeReports } from '../src/index.js';
+import { groupFindings } from '../src/report/shared.js';
 import { FileCache } from '../src/registry/index.js';
 import { makeElf, makeZip, tempDir, writeTree } from './helpers.js';
 
@@ -18,7 +19,7 @@ beforeEach(async () => {
       lockfileVersion: 3,
       packages: { 'node_modules/react-native': { version: '0.76.9' }, 'node_modules/legacy-<lib>': { version: '1.0.0' } },
     },
-    'android/build.gradle': 'ext {\n  minSdkVersion = 24\n  compileSdkVersion = 35\n  targetSdkVersion = 35\n}\n',
+    'android/build.gradle': 'ext {\n  minSdkVersion = 24\n  compileSdkVersion = 36\n  targetSdkVersion = 36\n}\n',
   });
 });
 
@@ -50,7 +51,7 @@ describe('runScan', () => {
     });
     expect(report.findings[0]).toMatchObject({ severity: 'blocker', id: 'dep-new-arch:legacy-<lib>' });
     expect(report.summary.blockers).toBe(1);
-    expect(report.android).toMatchObject({ targetSdk: 35 });
+    expect(report.android).toMatchObject({ targetSdk: 36 });
   });
 
   it('renders every format and escapes HTML', async () => {
@@ -134,5 +135,17 @@ describe('cli', () => {
     const { stdout } = await cli('scan', 'examples/08-lockfiles/npm', '--offline', '--cache-dir', 'examples/registry-snapshot');
     expect(stdout).toContain('React Native 0.85.2 → 0.87.1');
     expect(stdout).not.toContain('Report written');
+  });
+});
+
+describe('groupFindings', () => {
+  it('lists findings for the same package together, at the position of the most severe one', () => {
+    const f = (id: string, severity: 'blocker' | 'warning' | 'info', pkg?: string) => ({ id, severity, title: id, package: pkg, source: 't' });
+    const groups = groupFindings([f('1', 'blocker', 'a'), f('2', 'warning'), f('3', 'warning', 'a'), f('4', 'info', 'b')]);
+    expect(groups.map((g) => [g.severity, g.package, g.findings.map((x) => x.id)])).toEqual([
+      ['blocker', 'a', ['1', '3']],
+      ['warning', undefined, ['2']],
+      ['info', 'b', ['4']],
+    ]);
   });
 });

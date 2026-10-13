@@ -28,11 +28,15 @@ const CHECKS: Array<(ctx: ProjectContext) => Finding[]> = [
 
 const SEVERITY_RANK: Record<Severity, number> = { blocker: 0, warning: 1, info: 2 };
 
-/** Run every check and rank the findings: by severity, then by check order (stable sort keeps it). */
+/**
+ * Run every check and rank the findings: by severity; within a severity, findings about dev-only packages (tooling that
+ * is not shipped in the app) come last; otherwise check order is kept (the sort is stable).
+ */
 export function runChecks(ctx: ProjectContext): Finding[] {
-  return rankFindings(CHECKS.flatMap((check) => check(ctx)));
+  const devOnly = new Set(ctx.devOnly);
+  return rankFindings(CHECKS.flatMap((check) => check(ctx)), (f) => (f.package !== undefined && devOnly.has(f.package) ? 1 : 0));
 }
 
-export function rankFindings(findings: Finding[]): Finding[] {
-  return [...findings].sort((a, b) => SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity]);
+export function rankFindings(findings: Finding[], tieBreak: (finding: Finding) => number = () => 0): Finding[] {
+  return [...findings].sort((a, b) => SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity] || tieBreak(a) - tieBreak(b));
 }

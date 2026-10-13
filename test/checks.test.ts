@@ -9,7 +9,7 @@ import {
   checkReactNative,
   rankFindings,
 } from '../src/checks/index.js';
-import { breakingDistance, compareVersions } from '../src/rules/index.js';
+import { breakingDistance, compareVersions, minVersionOf } from '../src/rules/index.js';
 import type { DependencyInfo, Finding, ProjectContext } from '../src/types.js';
 
 function ctx(overrides: Partial<ProjectContext> = {}): ProjectContext {
@@ -45,6 +45,13 @@ describe('semver helpers', () => {
     expect(compareVersions('0.76.9', '0.76.10')).toBeLessThan(0);
     expect(compareVersions('0.77.0-rc.1', '0.77.0')).toBeLessThan(0);
     expect(compareVersions('1.0.0', '1.0.0')).toBe(0);
+  });
+
+  it('reads the lowest version of a range', () => {
+    expect(minVersionOf('^7.25.2')).toBe('7.25.2');
+    expect(minVersionOf('0.75.x')).toBe('0.75.0');
+    expect(minVersionOf('npm:react-native-tvos@0.76.0-0')).toBe('0.76.0-0');
+    expect(minVersionOf('latest')).toBeUndefined();
   });
 
   it('counts minors for 0.x and majors otherwise', () => {
@@ -203,5 +210,54 @@ describe('exitCodeFor', () => {
     expect(exitCodeFor(report(0, 'npm registry unreachable'), { ci: true })).toBe(2);
     expect(exitCodeFor(report(0, 'npm registry unreachable'), { ci: false })).toBe(0);
     expect(exitCodeFor(report(0, 'offline, not cached'), { ci: true })).toBe(0);
+  });
+});
+
+describe('dependencies and the React Native template', () => {
+  const templates = (packages: Record<string, string>) => ({
+    currentVersion: '0.87.1',
+    current: { value: { version: '0.87.1', android: {}, packages }, source: 'React Native template' },
+    targetVersion: '0.87.1',
+    target: { value: { version: '0.87.1', android: {}, packages }, source: 'React Native template' },
+  });
+
+  it('compares template-pinned packages with the template, not npm latest', () => {
+    const findings = checkDependencies(
+      ctx({
+        templates: templates({ eslint: '^8.19.0', react: '19.2.3' }),
+        dependencies: [
+          // npm latest is 10, but the template still uses 8: no finding.
+          dep('eslint', { dev: true, installed: '8.57.1', npm: { value: { latest: '10.12.0' }, source: 'npm' }, directory: { source: 'not listed' } }),
+          // Behind the template: a warning for a runtime dependency.
+          dep('react', { installed: '17.0.2', npm: { value: { latest: '19.3.0' }, source: 'npm' }, directory: { source: 'not listed' } }),
+        ],
+      }),
+    );
+    expect(ids(findings)).toEqual(['warning:dep-outdated:react']);
+    expect(findings[0].title).toBe('react 17.0.2 is behind 19.2.3, used by the React Native 0.87.1 template');
+  });
+
+  it('reports dev-only dependencies as info', () => {
+    const findings = checkDependencies(
+      ctx({
+        dependencies: [
+          dep('metro-react-native-babel-preset', { dev: true, directory: { source: 'not listed' } }),
+          dep('old-dev-tool', { dev: true, installed: '1.0.0', npm: { value: { latest: '3.0.0', deprecated: 'moved' }, source: 'npm' }, directory: { source: 'not listed' } }),
+        ],
+      }),
+    );
+    expect(ids(findings)).toEqual([
+      'info:dep-replace:metro-react-native-babel-preset',
+      'info:dep-deprecated:old-dev-tool',
+      'info:dep-outdated:old-dev-tool',
+    ]);
+  });
+});
+
+describe('ranking with a tie-break', () => {
+  it('puts dev-only packages last within a severity', () => {
+    const f = (id: string, pkg?: string): Finding => ({ id, severity: 'warning', title: id, package: pkg, source: 'test' });
+    const ranked = rankFindings([f('a', 'dev-tool'), f('b', 'runtime-lib'), f('c')], (x) => (x.package === 'dev-tool' ? 1 : 0));
+    expect(ranked.map((x) => x.id)).toEqual(['b', 'c', 'a']);
   });
 });

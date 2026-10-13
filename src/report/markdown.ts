@@ -3,6 +3,7 @@ import {
   NATIVE_STATUS_LABEL,
   SEVERITY_LABEL,
   dataSources,
+  groupFindings,
   headline,
   interestingDependencies,
   maintenanceLabel,
@@ -23,9 +24,12 @@ export function renderMarkdown(report: Report): string {
 
   if (report.findings.length > 0) {
     out.push('### What to fix first', '', '| # | Severity | Finding | Fix | Source |', '|---|---|---|---|---|');
-    report.findings.forEach((f, i) => {
-      const finding = f.detail ? `**${cell(f.title)}**<br>${cell(f.detail)}` : `**${cell(f.title)}**`;
-      out.push(`| ${i + 1} | ${ICON[f.severity]} ${SEVERITY_LABEL[f.severity]} | ${finding} | ${cell(f.fix ?? '')} | ${cell(f.source)} |`);
+    groupFindings(report.findings).forEach((group, i) => {
+      group.findings.forEach((f, j) => {
+        const finding = f.detail ? `**${cell(f.title)}**<br>${cell(f.detail)}` : `**${cell(f.title)}**`;
+        // Later findings for the same package share the number of the first one.
+        out.push(`| ${j === 0 ? i + 1 : '↳'} | ${ICON[f.severity]} ${SEVERITY_LABEL[f.severity]} | ${finding} | ${cell(f.fix ?? '')} | ${cell(f.source)} |`);
+      });
     });
     out.push('');
   }

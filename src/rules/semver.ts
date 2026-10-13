@@ -42,3 +42,16 @@ export function breakingDistance(from: string, to: string): number {
   if (a.major === 0 && b.major === 0) return Math.max(0, b.minor - a.minor);
   return Math.max(0, b.major - a.major);
 }
+
+const RANGE_VERSION_RE = /(\d+)\.(\d+)(?:\.(\d+|[xX*]))?(-[0-9A-Za-z.-]+)?/;
+
+/** Lowest version a range allows, e.g. "^0.74.0" -> "0.74.0", "0.75.x" -> "0.75.0"; undefined for "latest", git URLs, ... */
+export function minVersionOf(range: string): string | undefined {
+  // Aliases such as "npm:react-native-tvos@0.76.0-0" carry the version after the last "@".
+  const spec = range.startsWith('npm:') ? range.slice(range.lastIndexOf('@') + 1) : range;
+  const match = RANGE_VERSION_RE.exec(spec);
+  if (!match) return undefined;
+  const [, major, minor, patch, prerelease = ''] = match;
+  const patchNumber = patch === undefined || /^[xX*]$/.test(patch) ? '0' : patch;
+  return `${major}.${minor}.${patchNumber}${prerelease}`;
+}

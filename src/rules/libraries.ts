@@ -47,6 +47,22 @@ export const LIBRARY_ADVICE: Record<string, LibraryAdvice> = {
     reason: 'Unmaintained.',
     replacement: 'react-native-bootsplash',
   },
+  'react-native-vector-icons': {
+    reason: 'Deprecated: the package moved to one package per icon family.',
+    replacement: '@react-native-vector-icons/<family> packages (see the project MIGRATION.md)',
+  },
+  'metro-react-native-babel-preset': {
+    reason: 'Deprecated by the React Native team.',
+    replacement: '@react-native/babel-preset',
+  },
+  '@types/react-native': {
+    reason: 'Deprecated stub: react-native ships its own TypeScript types.',
+    replacement: 'nothing; remove it',
+  },
+  'redux-devtools-extension': {
+    reason: 'Deprecated: the package moved.',
+    replacement: '@redux-devtools/extension',
+  },
 };
 
 /**
@@ -76,6 +92,9 @@ export const REACT_NATIVE_CORE_LIBS: Array<string | RegExp> = [
 
 /** The NDK C++ runtime, packaged by whichever native library needs it (usually React Native). */
 export const NDK_LIBS: string[] = ['libc++_shared.so'];
+
+/** Fresco, the image library React Native depends on for Android (pulled from Maven, not node_modules). */
+export const FRESCO_LIBS: string[] = ['libimagepipeline.so', 'libnative-filters.so', 'libnative-imagetranscoder.so'];
 
 /** Library file names of popular packages whose names do not match a CMake target in node_modules. */
 export const KNOWN_SO_PACKAGES: Record<string, string> = {

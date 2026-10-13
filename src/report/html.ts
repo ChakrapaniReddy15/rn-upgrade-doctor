@@ -3,6 +3,7 @@ import {
   NATIVE_STATUS_LABEL,
   SEVERITY_LABEL,
   dataSources,
+  groupFindings,
   headline,
   interestingDependencies,
   maintenanceLabel,
@@ -16,14 +17,16 @@ export function renderHtml(report: Report): string {
   const { blockers, warnings, info } = report.summary;
   const deps = interestingDependencies(report);
 
-  const findings = report.findings
-    .map(
-      (f, i) => `<li class="finding ${f.severity}">
-  <div class="title"><span class="badge ${f.severity}">${SEVERITY_LABEL[f.severity]}</span> <span class="n">${i + 1}.</span> ${esc(f.title)}</div>
+  const item = (f: (typeof report.findings)[number]) => `<div class="title"><span class="badge ${f.severity}">${SEVERITY_LABEL[f.severity]}</span> ${esc(f.title)}</div>
   ${f.detail ? `<p class="detail">${esc(f.detail)}</p>` : ''}
   ${f.fix ? `<p class="fix">→ ${linkify(f.fix)}</p>` : ''}
-  <p class="source">source: ${esc(f.source)}</p>
-</li>`,
+  <p class="source">source: ${esc(f.source)}</p>`;
+  const findings = groupFindings(report.findings)
+    .map((group, i) =>
+      group.findings.length === 1
+        ? `<li class="finding ${group.severity}"><span class="n">${i + 1}.</span> ${item(group.findings[0])}</li>`
+        : `<li class="finding ${group.severity}"><div class="title"><span class="n">${i + 1}.</span> ${esc(group.package!)}: ${group.findings.length} problems</div>
+${group.findings.map((f) => `<div class="sub">${item(f)}</div>`).join('\n')}</li>`,
     )
     .join('\n');
 
@@ -81,6 +84,7 @@ ol { list-style: none; padding: 0; margin: 0; }
 .finding { border:1px solid var(--line); border-left-width:4px; border-radius:6px; padding:10px 14px; margin-bottom:10px; background: var(--card); }
 .finding.blocker { border-left-color: var(--red); } .finding.warning { border-left-color: var(--yellow); } .finding.info { border-left-color: var(--blue); }
 .finding p { margin: 4px 0 0; } .title { font-weight: 600; } .n { color: var(--dim); }
+.sub { margin: 8px 0 0 12px; padding-left: 10px; border-left: 2px solid var(--line); }
 .badge { font-size:.75rem; font-weight:600; padding:1px 6px; border-radius:10px; color:#fff; }
 .badge.blocker { background: var(--red); } .badge.warning { background: var(--yellow); } .badge.info { background: var(--blue); }
 .source { font-size: .8rem; } a { color: var(--blue); word-break: break-all; }

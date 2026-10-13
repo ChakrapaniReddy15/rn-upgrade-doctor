@@ -125,6 +125,7 @@ describe('getTemplate', () => {
     'android/gradle.properties': 'newArchEnabled=true\nhermesEnabled=true\n',
     'android/gradle/wrapper/gradle-wrapper.properties': 'distributionUrl=https\\://services.gradle.org/distributions/gradle-9.4.1-bin.zip\n',
     'ios/Podfile': 'platform :ios, min_ios_version_supported\n',
+    'package.json': JSON.stringify({ dependencies: { react: '19.2.3' }, devDependencies: { eslint: '^8.19.0' } }),
   };
 
   const fakeFetch = () =>
@@ -156,11 +157,19 @@ describe('getTemplate', () => {
           newArchEnabled: true,
           hermesEnabled: true,
         },
+        packages: { eslint: '^8.19.0', react: '19.2.3' },
       },
     });
     const calls = fetchText.mock.calls.length;
     expect((await getTemplate('0.87.1', { offline: true, cache, fetchText })).source).toBe('React Native template (cache)');
     expect(fetchText.mock.calls.length).toBe(calls);
+  });
+
+  it('refreshes a cached entry from before package.json was read', async () => {
+    await cache.set('rn-template', '0.87.1', { version: '0.87.1', android: { minSdk: 24 }, minIos: '15.1' });
+    const result = await getTemplate('0.87.1', { offline: false, cache, fetchText: fakeFetch() });
+    expect(result.source).toBe('React Native template');
+    expect(result.value?.packages).toEqual({ eslint: '^8.19.0', react: '19.2.3' });
   });
 
   it('reports a version without a template, offline without cache, and network failures', async () => {

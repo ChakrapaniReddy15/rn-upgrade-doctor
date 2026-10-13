@@ -1,9 +1,14 @@
-import { LIBRARY_ADVICE, NEW_ARCH_ONLY_SINCE, breakingDistance, gte } from '../rules/index.js';
+import { LIBRARY_ADVICE, NEW_ARCH_ONLY_SINCE, breakingDistance, gte, minVersionOf } from '../rules/index.js';
 import type { DependencyInfo, Finding, ProjectContext } from '../types.js';
 
-/** Per-dependency findings: New Architecture support, maintenance, deprecation and how far behind latest. */
+/**
+ * Per-dependency findings: New Architecture support, maintenance, deprecation and how far behind latest.
+ * Dev-only dependencies are not shipped in the app, so their deprecation, replacement and version findings are info.
+ * Packages the React Native template pins (Babel, ESLint, Jest, ...) are compared with the target template, not npm latest.
+ */
 export function checkDependencies(ctx: ProjectContext): Finding[] {
   const target = ctx.latestReactNative?.value ?? ctx.reactNativeVersion;
+  const template = ctx.templates?.target;
   const newArchRequired = target !== undefined && gte(target, NEW_ARCH_ONLY_SINCE);
   const findings: Finding[] = [];
 
@@ -38,7 +43,7 @@ export function checkDependencies(ctx: ProjectContext): Finding[] {
     if (advice) {
       findings.push({
         id: `dep-replace:${dep.name}`,
-        severity: 'warning',
+        severity: dep.dev ? 'info' : 'warning',
         title: `${dep.name}: ${advice.reason}`,
         package: dep.name,
         fix: `Move to ${advice.replacement}.`,
@@ -59,7 +64,7 @@ export function checkDependencies(ctx: ProjectContext): Finding[] {
     if (npm?.deprecated && !advice) {
       findings.push({
         id: `dep-deprecated:${dep.name}`,
-        severity: 'warning',
+        severity: dep.dev ? 'info' : 'warning',
         title: `${dep.name} is deprecated on npm`,
         detail: npm.deprecated,
         package: dep.name,
@@ -67,18 +72,35 @@ export function checkDependencies(ctx: ProjectContext): Finding[] {
       });
     }
 
-    const behind = majorsBehind(dep);
-    if (behind > 0) {
-      // Native libraries matter for an RN upgrade; plain JS packages rarely block one.
-      const native = dir !== undefined;
-      findings.push({
-        id: `dep-outdated:${dep.name}`,
-        severity: native ? 'warning' : 'info',
-        title: `${dep.name} ${dep.installed} is ${behind} major version${behind === 1 ? '' : 's'} behind ${npm?.latest}`,
-        package: dep.name,
-        fix: native ? 'Read its changelog for React Native version requirements and upgrade it together with React Native.' : undefined,
-        source: dep.npm.source,
-      });
+    const pinned = template?.value?.packages?.[dep.name];
+    const pinnedVersion = pinned === undefined ? undefined : minVersionOf(pinned);
+    if (pinned !== undefined) {
+      // The template decides which version goes with this React Native release; npm latest may not be supported yet.
+      const behind = dep.installed && pinnedVersion ? breakingDistance(dep.installed, pinnedVersion) : 0;
+      if (behind > 0) {
+        findings.push({
+          id: `dep-outdated:${dep.name}`,
+          severity: dep.dev ? 'info' : 'warning',
+          title: `${dep.name} ${dep.installed} is behind ${pinned}, used by the React Native ${template!.value!.version} template`,
+          package: dep.name,
+          fix: 'Upgrade it together with React Native, to the version the template uses.',
+          source: template!.source,
+        });
+      }
+    } else {
+      const behind = majorsBehind(dep);
+      if (behind > 0) {
+        // Native libraries matter for an RN upgrade; plain JS packages and dev tooling rarely block one.
+        const native = dir !== undefined && !dep.dev;
+        findings.push({
+          id: `dep-outdated:${dep.name}`,
+          severity: native ? 'warning' : 'info',
+          title: `${dep.name} ${dep.installed} is ${behind} major version${behind === 1 ? '' : 's'} behind ${npm?.latest}`,
+          package: dep.name,
+          fix: native ? 'Read its changelog for React Native version requirements and upgrade it together with React Native.' : undefined,
+          source: dep.npm.source,
+        });
+      }
     }
   }
   return findings;

@@ -5,8 +5,9 @@
 - [x] npm name `rn-upgrade-doctor` is free
 - [x] Public GitHub repository and CI (lint, test, build)
 - [x] Example scenarios: text-only projects in `examples/` covering every finding id (offline, registry snapshot)
-- [ ] 1–2 real buildable RN apps from the public template under `fixtures/` (git-ignored), with release APKs, to compare
-      the 16 KB scan with Google's own check
+- [x] A real app from the public RN 0.87.1 template under `fixtures/` (git-ignored) with a release APK: scan matches
+      Google's `zipalign -c -P 16` and `llvm-readelf` on all 22 libraries; clean report (0 findings) on the fresh app
+- [ ] A real app with a library that is *not* 16 KB ready, to see a real failing APK end to end
 
 ## Version gap and dependency report
 - [x] `src/project`: read package.json, detect RN version, detect package manager
@@ -30,14 +31,15 @@
 - [x] GitHub Action (composite) + example workflow
 
 ## Release
-- [ ] Verify the Play targetSdk minimum in `src/rules/reactNative.ts` (platform minimums now come from the template)
+- [x] Play policy checked 2026-10-13: target API 36 since 31 Aug 2026; 16 KB required for updates from 1 Feb 2027
 - [ ] README with a demo GIF
 - [ ] Publish v0.1 to npm; tag `v0.1.0`
 
 ## Later
-- [ ] Ranking within a severity (native runtime libraries first; deprecated dev dependencies as info)
-- [ ] One finding per package listing all its problems
-- [ ] More known replacements in `src/rules/libraries.ts`
+- [x] Ranking within a severity (dev-only packages last; their deprecation, replacement and version findings as info)
+- [x] One entry per package in the reports (JSON keeps one finding per problem)
+- [x] More known replacements in `src/rules/libraries.ts`
+- [x] Tooling pinned by the React Native template compared with the template, not npm latest
 - [ ] `--to <version>` to check against a chosen target instead of the latest React Native
 - [ ] GitHub client: archived repositories, last commit
 - [ ] Expo projects

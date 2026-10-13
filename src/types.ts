@@ -86,6 +86,8 @@ export interface TemplateInfo {
   android: Omit<AndroidConfig, 'files'>;
   /** Minimum iOS version: the Podfile literal, or React Native's own `min_ios_version_supported`. */
   minIos?: string;
+  /** dependencies + devDependencies of the template's package.json (name -> range). */
+  packages?: Record<string, string>;
 }
 
 /** Templates for the installed React Native version and for the upgrade target (the latest release). */

@@ -49,7 +49,8 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
 
   const rnNpm = dependencies.find((d) => d.name === 'react-native')?.npm;
   const latestReactNative: Sourced<string> = { value: rnNpm?.value?.latest, source: rnNpm?.source ?? 'unknown' };
-  const templates = android || ios ? await lookupTemplates(ctx.reactNativeVersion, latestReactNative.value, registry) : undefined;
+  // Templates are cached permanently; they give native settings and the tooling versions each release pins.
+  const templates = await lookupTemplates(ctx.reactNativeVersion, latestReactNative.value, registry);
   const full: ProjectContext = { ...ctx, latestReactNative, dependencies, android, ios, patches, apk, templates };
   const findings = runChecks(full);
 

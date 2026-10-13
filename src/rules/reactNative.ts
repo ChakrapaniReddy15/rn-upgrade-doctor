@@ -22,12 +22,20 @@ export const PLATFORM_MINIMUMS: Array<{ since: string; minSdk: number; minIos: s
   { since: '0.73.0', minSdk: 21, minIos: '13.4' },
 ];
 
+/**
+ * Google Play rules (phone and tablet apps). Checked 2026-10-13 against
+ * developer.android.com/google/play/requirements/target-sdk and developer.android.com/guide/practices/page-sizes.
+ * Play raises the target API level every August, so re-check this yearly.
+ */
 export const PLAY_POLICY = {
-  /** Lowest targetSdk Google Play accepts for app updates. Play raises this every August, so re-check it yearly. */
-  minTargetSdk: 35,
-  minTargetSdkNote: 'Google Play requires app updates to target API 35 (Android 15) or higher since 31 Aug 2025.',
+  /** Lowest targetSdk Google Play accepts for new apps and app updates. */
+  minTargetSdk: 36,
+  minTargetSdkNote:
+    'Since 31 Aug 2026, Google Play requires new apps and app updates to target API 36 (Android 16) or higher ' +
+    '(an extension to 1 Nov 2026 can be requested). Existing apps below API 35 are hidden from new users on newer Android versions.',
   sixteenKbNote:
-    'Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes (since 1 Nov 2025, for new apps and updates).',
+    'Google Play requires apps targeting Android 15+ to support 16 KB memory page sizes on 64-bit devices; ' +
+    'from 1 Feb 2027, app updates that do not cannot be released.',
 };
 
 export function upgradeHelperUrl(from: string, to: string): string {

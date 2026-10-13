@@ -1,6 +1,6 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { KNOWN_SO_PACKAGES, NDK_LIBS, REACT_NATIVE_CORE_LIBS } from '../rules/libraries.js';
+import { FRESCO_LIBS, KNOWN_SO_PACKAGES, NDK_LIBS, REACT_NATIVE_CORE_LIBS } from '../rules/libraries.js';
 
 export interface SoOwner {
   package: string;
@@ -23,6 +23,11 @@ export async function buildSoIndex(dirs: string | string[]): Promise<Map<string,
 
 async function indexModules(modules: string, index: Map<string, SoOwner>): Promise<void> {
   for (const pkg of await listPackages(modules)) {
+    // New Architecture libraries get a generated native library named after `codegenConfig.name` in package.json.
+    const codegenName = await readCodegenName(path.join(modules, pkg, 'package.json'));
+    const codegenLib = codegenName ? `libreact_codegen_${codegenName}.so` : undefined;
+    if (codegenLib && !index.has(codegenLib)) index.set(codegenLib, { package: pkg, source: 'node_modules (codegenConfig)' });
+
     const androidDir = path.join(modules, pkg, 'android');
     if (!(await isDir(androidDir))) continue;
     await walk(androidDir, 0, async (file) => {
@@ -41,6 +46,9 @@ async function indexModules(modules: string, index: Map<string, SoOwner>): Promi
 
 /** Owner of a native library: React Native core and the known table first, then the node_modules index. */
 export function findSoOwner(name: string, index: Map<string, SoOwner>): SoOwner | undefined {
+  // Generated code of a library (libreact_codegen_<name>.so) belongs to that library, not to React Native.
+  if (name.startsWith('libreact_codegen_') && index.has(name)) return index.get(name);
+  if (FRESCO_LIBS.includes(name)) return { package: 'react-native', source: 'known table (Fresco, bundled with React Native)' };
   if (REACT_NATIVE_CORE_LIBS.some((p) => (typeof p === 'string' ? p === name : p.test(name)))) {
     return { package: 'react-native', source: 'known table (React Native core)' };
   }
@@ -94,4 +102,13 @@ async function walk(dir: string, depth: number, onFile: (file: string) => Promis
 async function isDir(dir: string): Promise<boolean> {
   // stat follows symlinks, which pnpm uses for every package in node_modules.
   return stat(dir).then((s) => s.isDirectory(), () => false);
+}
+
+async function readCodegenName(packageJson: string): Promise<string | undefined> {
+  try {
+    const pkg = JSON.parse(await readFile(packageJson, 'utf8')) as { codegenConfig?: { name?: unknown } };
+    return typeof pkg.codegenConfig?.name === 'string' ? pkg.codegenConfig.name : undefined;
+  } catch {
+    return undefined;
+  }
 }

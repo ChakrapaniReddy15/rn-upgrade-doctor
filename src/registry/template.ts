@@ -27,8 +27,11 @@ const SOURCE = 'React Native template';
 export async function getTemplate(version: string, options: RegistryOptions): Promise<Sourced<TemplateInfo>> {
   const cache = options.cache ?? new FileCache();
   const cached = await cache.get<TemplateInfo | null>(NAMESPACE, version);
-  if (cached?.value) return { value: cached.value, source: `${SOURCE} (cache)` };
-  if (cached && (options.offline || Date.now() - cached.fetchedAt < MISSING_TTL_MS)) return { source: `no ${SOURCE.toLowerCase()} for ${version}` };
+  // Entries cached before `packages` was added are refreshed once when online.
+  if (cached?.value && (cached.value.packages || options.offline)) return { value: cached.value, source: `${SOURCE} (cache)` };
+  if (cached?.value === null && (options.offline || Date.now() - cached.fetchedAt < MISSING_TTL_MS)) {
+    return { source: `no ${SOURCE.toLowerCase()} for ${version}` };
+  }
   if (options.offline) return { source: 'offline, not cached' };
 
   const fetchText = options.fetchText ?? defaultFetchText;
@@ -41,12 +44,13 @@ export async function getTemplate(version: string, options: RegistryOptions): Pr
 
   try {
     const base = `${DIFF_PURGE}/release/${encodeURIComponent(version)}/RnDiffApp`;
-    const [root, app, properties, wrapper, podfile] = await Promise.all([
+    const [root, app, properties, wrapper, podfile, packageJson] = await Promise.all([
       get(`${base}/android/build.gradle`),
       get(`${base}/android/app/build.gradle`),
       get(`${base}/android/gradle.properties`),
       get(`${base}/android/gradle/wrapper/gradle-wrapper.properties`),
       get(`${base}/ios/Podfile`),
+      get(`${base}/package.json`),
     ]);
     if (root === undefined) {
       await cache.set(NAMESPACE, version, null);
@@ -63,7 +67,13 @@ export async function getTemplate(version: string, options: RegistryOptions): Pr
       }
     }
 
-    const value: TemplateInfo = { version, android: parseAndroidFiles({ root, app, properties, wrapper }), minIos };
+    const pkg = packageJson === undefined ? undefined : (JSON.parse(packageJson) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> });
+    const value: TemplateInfo = {
+      version,
+      android: parseAndroidFiles({ root, app, properties, wrapper }),
+      minIos,
+      packages: { ...pkg?.devDependencies, ...pkg?.dependencies },
+    };
     await cache.set(NAMESPACE, version, value);
     return { value, source: SOURCE };
   } catch {

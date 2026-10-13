@@ -2,8 +2,9 @@
 
 ## 1. Problem
 React Native upgrades are slow and risky because nobody knows upfront which libraries will break. Teams find out late,
-from build errors, crashes or a Play Store rejection. Since 1 Nov 2025 Google Play blocks updates for apps targeting
-Android 15+ that don't support 16 KB memory pages, and the error doesn't say which npm package caused it.
+from build errors, crashes or a Play Store rejection. Google Play requires apps targeting Android 15+ to support 16 KB
+memory pages (from 1 Feb 2027, updates that don't are blocked), and the error doesn't say which npm package caused it.
+Play also raises the required target API level every year (API 36 since 31 Aug 2026).
 
 **Who it's for:** React Native developers, tech leads planning an upgrade, agencies maintaining many apps.
 

@@ -1,4 +1,4 @@
-import type { DependencyInfo, NativeRow, NativeStatus, Report, Severity } from '../types.js';
+import type { DependencyInfo, Finding, NativeRow, NativeStatus, Report, Severity } from '../types.js';
 
 export const SEVERITY_LABEL: Record<Severity, string> = { blocker: 'Blocker', warning: 'Warning', info: 'Info' };
 
@@ -91,4 +91,31 @@ export function nativeSourceLine(report: Report): string {
   const { currentVersion, currentSource, targetVersion, targetSource } = report.native;
   if (!targetVersion || targetVersion === currentVersion) return `React Native template: ${targetSource}`;
   return `React Native templates: ${currentVersion ?? '?'} ${currentSource}; ${targetVersion} ${targetSource}`;
+}
+
+export interface FindingGroup {
+  /** Highest severity in the group (findings are already ranked, so it is the first one's). */
+  severity: Severity;
+  package?: string;
+  findings: Finding[];
+}
+
+/**
+ * One entry per package for display: findings about the same package are listed together at the position of its
+ * most severe finding. Findings without a package stay on their own. The JSON report keeps every finding separately.
+ */
+export function groupFindings(findings: Finding[]): FindingGroup[] {
+  const groups: FindingGroup[] = [];
+  const byPackage = new Map<string, FindingGroup>();
+  for (const finding of findings) {
+    const existing = finding.package ? byPackage.get(finding.package) : undefined;
+    if (existing) {
+      existing.findings.push(finding);
+      continue;
+    }
+    const group: FindingGroup = { severity: finding.severity, package: finding.package, findings: [finding] };
+    groups.push(group);
+    if (finding.package) byPackage.set(finding.package, group);
+  }
+  return groups;
 }
