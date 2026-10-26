@@ -1633,6 +1633,10 @@ exports[`examples > 09 16 KB (bad.apk) 1`] = `
         "zipAligned": true,
       },
     ],
+    "manifest": {
+      "available": false,
+      "reason": "AndroidManifest.xml is not a compiled (binary) manifest.",
+    },
   },
   "dependencies": [
     {
@@ -1829,6 +1833,10 @@ exports[`examples > 09 16 KB (good.apk) 1`] = `
         "stored": false,
       },
     ],
+    "manifest": {
+      "available": false,
+      "reason": "AndroidManifest.xml is not a compiled (binary) manifest.",
+    },
   },
   "dependencies": [
     {

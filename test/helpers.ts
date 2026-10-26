@@ -130,3 +130,116 @@ function crc32(data: Buffer): number {
   for (const byte of data) crc = CRC_TABLE[(crc ^ byte) & 0xff] ^ (crc >>> 8);
   return (crc ^ 0xffffffff) >>> 0;
 }
+
+export type AxmlAttrValue = string | number | boolean | { ref: number };
+
+export interface AxmlNodeInput {
+  name: string;
+  /** Attribute name -> value. Names starting with "android:" use the Android namespace and get a resource ID. */
+  attrs?: Record<string, AxmlAttrValue>;
+  children?: AxmlNodeInput[];
+}
+
+/** android.R.attr IDs for the attributes the tests use. */
+const ANDROID_ATTR_IDS: Record<string, number> = {
+  name: 0x01010003,
+  debuggable: 0x0101000f,
+  exported: 0x01010010,
+  minSdkVersion: 0x0101020c,
+  versionCode: 0x0101021b,
+  versionName: 0x0101021c,
+  targetSdkVersion: 0x01010270,
+  usesCleartextTraffic: 0x010104ec,
+  networkSecurityConfig: 0x01010527,
+};
+
+/**
+ * Build a binary XML (AXML) document like aapt2 does: string pool, resource map for android: attributes,
+ * namespace chunks and element chunks. `stripNames` empties the android: attribute names (as some shrinkers do),
+ * so readers must use the resource IDs.
+ */
+export function makeAxml(root: AxmlNodeInput, options: { utf8?: boolean; stripNames?: boolean } = {}): Buffer {
+  const ANDROID_NS = 'http://schemas.android.com/apk/res/android';
+  // Resource-mapped attribute names must come first in the string pool.
+  const androidAttrs = new Set<string>();
+  const collect = (n: AxmlNodeInput): void => {
+    for (const key of Object.keys(n.attrs ?? {})) if (key.startsWith('android:')) androidAttrs.add(key.slice(8));
+    n.children?.forEach(collect);
+  };
+  collect(root);
+  const mapped = [...androidAttrs];
+  const strings: string[] = mapped.map((a) => (options.stripNames ? '' : a));
+  const index = (s: string): number => {
+    const found = strings.indexOf(s, mapped.length);
+    if (found !== -1) return found;
+    strings.push(s);
+    return strings.length - 1;
+  };
+  const attrIndex = (key: string): number => (key.startsWith('android:') ? mapped.indexOf(key.slice(8)) : index(key));
+  const nsPrefix = index('android');
+  const nsUri = index(ANDROID_NS);
+
+  const u16 = (v: number) => { const b = Buffer.alloc(2); b.writeUInt16LE(v); return b; };
+  const u32 = (v: number) => { const b = Buffer.alloc(4); b.writeUInt32LE(v >>> 0); return b; };
+  const chunk = (type: number, headerSize: number, body: Buffer[]) => {
+    const content = Buffer.concat(body);
+    return Buffer.concat([u16(type), u16(headerSize), u32(8 + content.length), content]);
+  };
+  const node = (type: number, ext: Buffer[]) => chunk(type, 16, [u32(1), u32(0xffffffff), ...ext]);
+
+  const elements: Buffer[] = [];
+  const emit = (n: AxmlNodeInput): void => {
+    const attrs = Object.entries(n.attrs ?? {}).map(([key, value]) => {
+      const ns = key.startsWith('android:') ? nsUri : 0xffffffff;
+      let raw = 0xffffffff;
+      let dataType: number;
+      let data: number;
+      if (typeof value === 'string') {
+        dataType = 0x03;
+        data = index(value);
+        raw = data;
+      } else if (typeof value === 'boolean') {
+        dataType = 0x12;
+        data = value ? 0xffffffff : 0;
+      } else if (typeof value === 'number') {
+        dataType = 0x10;
+        data = value;
+      } else {
+        dataType = 0x01;
+        data = value.ref;
+      }
+      return Buffer.concat([u32(ns), u32(attrIndex(key)), u32(raw), u16(8), Buffer.from([0, dataType]), u32(data)]);
+    });
+    const nameIdx = index(n.name);
+    elements.push(
+      node(0x0102, [u32(0xffffffff), u32(nameIdx), u16(20), u16(20), u16(attrs.length), u16(0), u16(0), u16(0), ...attrs]),
+    );
+    n.children?.forEach(emit);
+    elements.push(node(0x0103, [u32(0xffffffff), u32(nameIdx)]));
+  };
+  emit(root);
+
+  const encoded = strings.map((s) => {
+    if (options.utf8) {
+      const bytes = Buffer.from(s, 'utf8');
+      return Buffer.concat([Buffer.from([s.length, bytes.length]), bytes, Buffer.from([0])]);
+    }
+    return Buffer.concat([u16(s.length), Buffer.from(s, 'utf16le'), u16(0)]);
+  });
+  const offsets: Buffer[] = [];
+  let offset = 0;
+  for (const e of encoded) {
+    offsets.push(u32(offset));
+    offset += e.length;
+  }
+  let stringData = Buffer.concat(encoded);
+  if (stringData.length % 4) stringData = Buffer.concat([stringData, Buffer.alloc(4 - (stringData.length % 4))]);
+  const pool = chunk(0x0001, 28, [
+    u32(strings.length), u32(0), u32(options.utf8 ? 0x100 : 0), u32(28 + strings.length * 4), u32(0),
+    ...offsets, stringData,
+  ]);
+  const resourceMap = chunk(0x0180, 8, mapped.map((a) => u32(ANDROID_ATTR_IDS[a] ?? 0)));
+  const nsStart = node(0x0100, [u32(nsPrefix), u32(nsUri)]);
+  const nsEnd = node(0x0101, [u32(nsPrefix), u32(nsUri)]);
+  return chunk(0x0003, 8, [pool, resourceMap, nsStart, ...elements, nsEnd]);
+}

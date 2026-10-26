@@ -145,10 +145,40 @@ export interface NativeLib {
   packageSource?: string;
 }
 
+/** An app component declared in the manifest. */
+export interface ManifestComponent {
+  type: 'activity' | 'activity-alias' | 'service' | 'receiver' | 'provider';
+  /** Fully qualified class name. */
+  name: string;
+  /** android:exported; undefined when the attribute is missing. */
+  exported?: boolean;
+  hasIntentFilter: boolean;
+}
+
+/** The parts of AndroidManifest.xml the Play Store checks need. Undefined = attribute not set. */
+export interface ApkManifest {
+  package?: string;
+  versionCode?: number;
+  versionName?: string;
+  minSdk?: number;
+  targetSdk?: number;
+  debuggable?: boolean;
+  usesCleartextTraffic?: boolean;
+  /** android:networkSecurityConfig is set on <application>. */
+  networkSecurityConfig: boolean;
+  /** uses-permission and uses-permission-sdk-23 names. */
+  permissions: string[];
+  components: ManifestComponent[];
+}
+
+export type ManifestResult = { available: true; manifest: ApkManifest } | { available: false; reason: string };
+
 export interface ApkReport {
   file: string;
   kind: 'apk' | 'aab';
   libs: NativeLib[];
+  /** The parsed AndroidManifest.xml (APK only), or why it could not be read. */
+  manifest?: ManifestResult;
 }
 
 export interface ProjectContext {
