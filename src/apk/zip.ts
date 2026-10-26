@@ -132,3 +132,17 @@ export async function readZipEntry(file: string, name: string): Promise<Buffer |
     zip.close();
   }
 }
+
+/** Names of all entries in the zip. */
+export async function listZipEntries(file: string): Promise<string[]> {
+  const zip = await new Promise<yauzl.ZipFile>((resolve, reject) =>
+    yauzl.open(file, { lazyEntries: true, autoClose: false }, (err, z) => (err ? reject(err) : resolve(z))),
+  );
+  try {
+    const names: string[] = [];
+    for await (const entry of entries(zip)) names.push(entry.fileName);
+    return names;
+  } finally {
+    zip.close();
+  }
+}

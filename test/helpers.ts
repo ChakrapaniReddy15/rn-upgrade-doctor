@@ -61,7 +61,14 @@ export interface ZipInput {
 }
 
 /** Build a zip file in memory (enough of the format for yauzl). */
-export function makeZip(inputs: ZipInput[]): Buffer {
+export interface ZipOptions {
+  /** APK Signing Block entries (id -> value), placed between the file data and the central directory. */
+  signingBlock?: Array<{ id: number; value: Buffer }>;
+  /** Zip comment at the end of the file. */
+  comment?: string;
+}
+
+export function makeZip(inputs: ZipInput[], options: ZipOptions = {}): Buffer {
   const locals: Buffer[] = [];
   const centrals: Buffer[] = [];
   let offset = 0;
@@ -109,14 +116,32 @@ export function makeZip(inputs: ZipInput[]): Buffer {
     offset += 30 + name.length + extra.length + body.length;
   }
 
+  const block = options.signingBlock ? makeSigningBlock(options.signingBlock) : Buffer.alloc(0);
   const centralDir = Buffer.concat(centrals);
+  const comment = Buffer.from(options.comment ?? '');
   const end = Buffer.alloc(22);
   end.writeUInt32LE(0x06054b50, 0);
   end.writeUInt16LE(inputs.length, 8);
   end.writeUInt16LE(inputs.length, 10);
   end.writeUInt32LE(centralDir.length, 12);
-  end.writeUInt32LE(offset, 16);
-  return Buffer.concat([...locals, centralDir, end]);
+  end.writeUInt32LE(offset + block.length, 16);
+  end.writeUInt16LE(comment.length, 20);
+  return Buffer.concat([...locals, block, centralDir, end, comment]);
+}
+
+/** APK Signing Block: uint64 size, ID-value pairs (uint64 length, uint32 id, value), uint64 size, magic. */
+function makeSigningBlock(pairs: Array<{ id: number; value: Buffer }>): Buffer {
+  const u64 = (v: number) => { const b = Buffer.alloc(8); b.writeBigUInt64LE(BigInt(v)); return b; };
+  const body = Buffer.concat(
+    pairs.map((p) => { const id = Buffer.alloc(4); id.writeUInt32LE(p.id >>> 0); return Buffer.concat([u64(4 + p.value.length), id, p.value]); }),
+  );
+  const size = body.length + 8 + 16;
+  return Buffer.concat([u64(size), body, u64(size), Buffer.from('APK Sig Block 42', 'ascii')]);
+}
+
+/** DER of an X.509 name attribute "CN=<name>", as found inside certificates. */
+export function derCommonName(name: string, tag: 0x0c | 0x13 = 0x0c): Buffer {
+  return Buffer.concat([Buffer.from([0x06, 0x03, 0x55, 0x04, 0x03, tag, name.length]), Buffer.from(name, 'ascii')]);
 }
 
 const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
@@ -242,4 +267,32 @@ export function makeAxml(root: AxmlNodeInput, options: { utf8?: boolean; stripNa
   const nsStart = node(0x0100, [u32(nsPrefix), u32(nsUri)]);
   const nsEnd = node(0x0101, [u32(nsPrefix), u32(nsUri)]);
   return chunk(0x0003, 8, [pool, resourceMap, nsStart, ...elements, nsEnd]);
+}
+
+/** A minimal PKCS#7 SignedData (as in META-INF/*.RSA) that carries the given DER certificates. */
+export function pkcs7(certs: Buffer[]): Buffer {
+  const der = (tag: number, content: Buffer): Buffer => {
+    const len = content.length;
+    const header = len < 0x80 ? Buffer.from([tag, len]) : len < 0x100 ? Buffer.from([tag, 0x81, len]) : Buffer.from([tag, 0x82, len >> 8, len & 0xff]);
+    return Buffer.concat([header, content]);
+  };
+  const oid = (bytes: number[]) => der(0x06, Buffer.from(bytes));
+  const signedDataOid = oid([0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07, 0x02]);
+  const dataOid = oid([0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07, 0x01]);
+  const signedData = der(0x30, Buffer.concat([
+    der(0x02, Buffer.from([1])), // version
+    der(0x31, Buffer.alloc(0)), // digestAlgorithms
+    der(0x30, dataOid), // encapContentInfo
+    der(0xa0, Buffer.concat(certs)), // [0] IMPLICIT certificates
+    der(0x31, Buffer.alloc(0)), // signerInfos
+  ]));
+  return der(0x30, Buffer.concat([signedDataOid, der(0xa0, signedData)]));
+}
+
+/** The value of a v2/v3 signing-block entry with one signer carrying the given DER certificates. */
+export function signerBlockValue(certs: Buffer[]): Buffer {
+  const prefixed = (b: Buffer) => { const l = Buffer.alloc(4); l.writeUInt32LE(b.length); return Buffer.concat([l, b]); };
+  const signedData = Buffer.concat([prefixed(Buffer.alloc(0)) /* digests */, prefixed(Buffer.concat(certs.map(prefixed)))]);
+  const signer = Buffer.concat([prefixed(signedData), prefixed(Buffer.alloc(0)) /* signatures */, prefixed(Buffer.alloc(0)) /* public key */]);
+  return prefixed(prefixed(signer));
 }

@@ -1637,6 +1637,12 @@ exports[`examples > 09 16 KB (bad.apk) 1`] = `
       "available": false,
       "reason": "AndroidManifest.xml is not a compiled (binary) manifest.",
     },
+    "signing": {
+      "certificates": [],
+      "debugSigned": false,
+      "schemes": [],
+      "unsigned": true,
+    },
   },
   "dependencies": [
     {
@@ -1836,6 +1842,12 @@ exports[`examples > 09 16 KB (good.apk) 1`] = `
     "manifest": {
       "available": false,
       "reason": "AndroidManifest.xml is not a compiled (binary) manifest.",
+    },
+    "signing": {
+      "certificates": [],
+      "debugSigned": false,
+      "schemes": [],
+      "unsigned": true,
     },
   },
   "dependencies": [

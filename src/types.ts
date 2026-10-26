@@ -171,6 +171,34 @@ export interface ApkManifest {
   components: ManifestComponent[];
 }
 
+export type SigningScheme = 'v1' | 'v2' | 'v3' | 'v3.1';
+
+/** A signer certificate, for comparing with the upload key shown in Play Console (Setup > App signing). */
+export interface SigningCertificate {
+  /** e.g. "CN=Demo Release, O=Demo, C=US" */
+  subject: string;
+  /** SHA-256 fingerprint as Play Console shows it: "AB:CD:...". */
+  sha256: string;
+  /** ISO dates. */
+  validFrom: string;
+  validTo: string;
+  /** Subject common name is "Android Debug". */
+  debug: boolean;
+  /** Schemes this certificate signs with. */
+  schemes: SigningScheme[];
+}
+
+/** How the APK is signed. AABs only have v1 (JAR) signatures. */
+export interface ApkSigning {
+  /** Signature schemes found, in the order v1, v2, v3, v3.1. */
+  schemes: SigningScheme[];
+  /** A certificate's subject is "CN=Android Debug": the key Android tooling creates for local builds. */
+  debugSigned: boolean;
+  unsigned: boolean;
+  /** Signer certificates, one entry per distinct certificate. */
+  certificates: SigningCertificate[];
+}
+
 export type ManifestResult = { available: true; manifest: ApkManifest } | { available: false; reason: string };
 
 export interface ApkReport {
@@ -179,6 +207,8 @@ export interface ApkReport {
   libs: NativeLib[];
   /** The parsed AndroidManifest.xml (APK only), or why it could not be read. */
   manifest?: ManifestResult;
+  /** Signature schemes and debug-key detection; undefined if the file could not be read for it. */
+  signing?: ApkSigning;
 }
 
 export interface ProjectContext {
