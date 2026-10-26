@@ -6,6 +6,7 @@ import { promisify } from 'node:util';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { exampleApks } from '../scripts/example-apks.js';
 import { EXAMPLES, exampleArgs, type ExampleRun } from '../scripts/examples.js';
+import { mapLimit } from '../src/registry/index.js';
 import type { Report } from '../src/types.js';
 import { tempDir } from './helpers.js';
 
@@ -60,9 +61,9 @@ describe('examples', () => {
   const results = new Map<string, Awaited<ReturnType<typeof scan>>>();
 
   beforeAll(async () => {
-    // The CLI runs are independent; run them in parallel to keep the suite fast.
-    await Promise.all(EXAMPLES.map(async (example) => results.set(example.name, await scan(example))));
-  }, 60_000);
+    // Each run starts a CLI process that compiles TypeScript; a few at a time keeps small CI machines responsive.
+    await mapLimit(EXAMPLES, 4, async (example) => results.set(example.name, await scan(example)));
+  }, 120_000);
 
   it.each(EXAMPLES.map((e) => [e.name, e] as const))('%s', (_name, example) => {
     const result = results.get(example.name)!;
