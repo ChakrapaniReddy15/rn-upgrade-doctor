@@ -2,7 +2,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { readAndroidConfig } from './android/index.js';
 import { scanApk } from './apk/index.js';
-import { compareNative, registryUnreachable, runChecks } from './checks/index.js';
+import { compareNative, playStoreVerdict, registryUnreachable, runChecks } from './checks/index.js';
 import { readIosConfig } from './ios/index.js';
 import { ProjectError, buildProjectContext, readPackageJson, type PackageJson } from './project/index.js';
 import { readPatches } from './project/patches.js';
@@ -92,6 +92,7 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
     native: compareNative(full),
     patches,
     apk,
+    playStore: apk ? playStoreVerdict(findings, apk) : undefined,
   };
 }
 
@@ -122,6 +123,7 @@ async function runApkOnlyScan(options: ScanOptions, apkPath: string): Promise<Re
     native: compareNative(ctx),
     patches: [],
     apk,
+    playStore: playStoreVerdict(findings, apk),
   };
 }
 

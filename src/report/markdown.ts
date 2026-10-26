@@ -1,6 +1,7 @@
 import { PLAY_POLICY } from '../rules/index.js';
 import type { Report, Severity } from '../types.js';
 import { ELF_FIX, googleCheck, plural, problemText, scopeText, summarizeApk, verdictText } from './apkSummary.js';
+import { PLAY_CONSOLE_HINT, playStoreSection } from './playStoreSection.js';
 import {
   NATIVE_STATUS_LABEL,
   SEVERITY_LABEL,
@@ -34,7 +35,8 @@ export function renderMarkdown(report: Report): string {
       group.findings.forEach((f, j) => {
         const finding = f.detail ? `**${cell(f.title)}**<br>${cell(f.detail)}` : `**${cell(f.title)}**`;
         // Later findings for the same package share the number of the first one.
-        out.push(`| ${j === 0 ? i + 1 : '↳'} | ${ICON[f.severity]} ${SEVERITY_LABEL[f.severity]} | ${finding} | ${cell(f.fix ?? '')} | ${cell(f.source)} |`);
+        const fix = [f.fix ? cell(f.fix) : '', f.docs ? `[docs](${f.docs})` : ''].filter(Boolean).join(' ');
+        out.push(`| ${j === 0 ? i + 1 : '↳'} | ${ICON[f.severity]} ${SEVERITY_LABEL[f.severity]} | ${finding} | ${fix} | ${cell(f.source)} |`);
       });
     });
     out.push('');
@@ -101,6 +103,20 @@ export function renderMarkdown(report: Report): string {
     if (check) out.push(`Check with Google's tool (Android SDK build-tools): \`${check}\``, '');
   } else if (sixteenKbNotChecked(report)) {
     out.push('### 16 KB page size', '', SIXTEEN_KB_NOT_CHECKED.replace('--apk', '`--apk`'), '');
+  }
+
+  const play = playStoreSection(report);
+  if (play) {
+    out.push(`### Play Store ready? ${play.heading}`, '');
+    if (play.app) out.push(`\`${play.app}\``, '');
+    for (const line of play.signedWith) out.push(`Signed: ${cell(line)}  `);
+    for (const sha of play.fingerprints) out.push(`SHA-256 \`${sha}\` (${PLAY_CONSOLE_HINT})  `);
+    if (play.signedWith.length > 0) out.push('');
+    for (const f of play.issues) {
+      out.push(`- ${f.severity === 'blocker' ? '❌' : '⚠️'} **${cell(f.title)}**${f.fix ? ` → ${cell(f.fix)}` : ''}${f.docs ? ` [docs](${f.docs})` : ''}`);
+    }
+    for (const f of play.notes) out.push(`- ℹ️ ${cell(f.title)}${f.docs ? ` [docs](${f.docs})` : ''}`);
+    out.push('');
   }
 
   out.push('<details><summary>Data sources</summary>', '', ...dataSources(report).map((s) => `- ${s}`), '', '</details>', '');

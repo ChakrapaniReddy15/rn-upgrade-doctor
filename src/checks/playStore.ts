@@ -1,5 +1,5 @@
 import { PLAY_DOCS, PLAY_POLICY, SENSITIVE_PERMISSIONS } from '../rules/index.js';
-import type { ApkManifest, ApkReport, Finding, ProjectContext } from '../types.js';
+import type { ApkManifest, ApkReport, Finding, PlayStoreVerdict, ProjectContext } from '../types.js';
 
 /** Finding ids of this check start with "play-"; 16 KB results reuse the existing "apk-16kb:" findings. */
 export const PLAY_ID_PREFIX = 'play-';
@@ -205,4 +205,41 @@ function signingFindings(apk: ApkReport, manifest: ApkManifest | undefined, now:
     }
   }
   return findings;
+}
+
+/** Findings that decide whether the build can go to Google Play: the play-* rules and the 16 KB blockers. */
+export function isPlayFinding(finding: Finding): boolean {
+  return finding.id.startsWith(PLAY_ID_PREFIX) || finding.id.startsWith('apk-16kb:');
+}
+
+/** The "Play Store ready?" verdict from the ranked findings of a scan with an APK/AAB. */
+export function playStoreVerdict(findings: Finding[], apk: ApkReport): PlayStoreVerdict {
+  const relevant = findings.filter(isPlayFinding);
+  const manifest = apk.manifest?.available ? apk.manifest.manifest : undefined;
+  const blockers = relevant.filter((f) => f.severity === 'blocker').length;
+  return {
+    ready: blockers === 0,
+    blockers,
+    warnings: relevant.filter((f) => f.severity === 'warning').length,
+    findingIds: relevant.map((f) => f.id),
+    ...(manifest
+      ? {
+          app: {
+            package: manifest.package,
+            versionName: manifest.versionName,
+            versionCode: manifest.versionCode,
+            minSdk: manifest.minSdk,
+            targetSdk: manifest.targetSdk,
+          },
+        }
+      : {}),
+    ...(apk.signing && !apk.signing.unsigned
+      ? {
+          signing: {
+            schemes: apk.signing.schemes,
+            certificates: apk.signing.certificates.map((c) => ({ subject: c.subject, sha256: c.sha256, validTo: c.validTo })),
+          },
+        }
+      : {}),
+  };
 }

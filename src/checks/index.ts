@@ -11,7 +11,7 @@ import { checkReactNative } from './reactNative.js';
 export { checkApk, checkAndroid, checkDataGaps, checkDependencies, checkIos, checkPatches, checkReactNative };
 export { registryUnreachable } from './data.js';
 export { checkNativeTemplate, compareNative } from './native.js';
-export { checkPlayStore, PLAY_ID_PREFIX } from './playStore.js';
+export { checkPlayStore, isPlayFinding, playStoreVerdict, PLAY_ID_PREFIX } from './playStore.js';
 
 /**
  * Order inside a severity: what blocks a release first, then gaps in the data (so a quiet report is not read as a

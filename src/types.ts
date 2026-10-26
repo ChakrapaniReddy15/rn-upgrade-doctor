@@ -213,6 +213,20 @@ export interface ApkReport {
   signing?: ApkSigning;
 }
 
+/** The "Play Store ready?" verdict for a scanned APK/AAB. */
+export interface PlayStoreVerdict {
+  /** No Play blockers (warnings still need review). */
+  ready: boolean;
+  blockers: number;
+  warnings: number;
+  /** Findings the verdict is based on: play-* rules and the 16 KB (apk-16kb:*) blockers, ranked. */
+  findingIds: string[];
+  /** From the manifest, when it could be read. */
+  app?: { package?: string; versionName?: string; versionCode?: number; minSdk?: number; targetSdk?: number };
+  /** Signing summary, to compare with the upload key in Play Console (Setup > App signing). */
+  signing?: { schemes: SigningScheme[]; certificates: Array<Pick<SigningCertificate, 'subject' | 'sha256' | 'validTo'>> };
+}
+
 export interface ProjectContext {
   cwd: string;
   /** 'apk-only' when --apk was given and the folder has no React Native project: only the APK is checked. */
@@ -273,4 +287,6 @@ export interface Report {
   native: NativeComparison;
   patches: PatchInfo[];
   apk?: ApkReport;
+  /** Present when an APK/AAB was scanned. */
+  playStore?: PlayStoreVerdict;
 }
