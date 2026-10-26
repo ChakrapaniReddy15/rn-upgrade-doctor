@@ -61,7 +61,8 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
   const latestReactNative: Sourced<string> = { value: rnNpm?.value?.latest, source: rnNpm?.source ?? 'unknown' };
   // Templates are cached permanently; they give native settings and the tooling versions each release pins.
   const templates = await lookupTemplates(ctx.reactNativeVersion, latestReactNative.value, registry);
-  const full: ProjectContext = { ...ctx, latestReactNative, dependencies, android, ios, patches, apk, templates };
+  const scannedAt = new Date().toISOString();
+  const full: ProjectContext = { ...ctx, latestReactNative, dependencies, android, ios, patches, apk, templates, now: scannedAt };
   const findings = runChecks(full);
 
   const current = ctx.reactNativeVersion;
@@ -70,7 +71,7 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
     meta: {
       tool: 'rn-upgrade-doctor',
       version: TOOL_VERSION,
-      scannedAt: new Date().toISOString(),
+      scannedAt,
       cwd: ctx.cwd,
       apk: apk?.file,
       mode: 'project',
@@ -102,13 +103,14 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
 async function runApkOnlyScan(options: ScanOptions, apkPath: string): Promise<Report> {
   const cwd = path.resolve(options.cwd);
   const apk = await scanApk(apkPath, []);
-  const ctx: ProjectContext = { cwd, mode: 'apk-only', installed: {}, declared: {}, devOnly: [], apk };
+  const scannedAt = new Date().toISOString();
+  const ctx: ProjectContext = { cwd, mode: 'apk-only', installed: {}, declared: {}, devOnly: [], apk, now: scannedAt };
   const findings = runChecks(ctx);
   return {
     meta: {
       tool: 'rn-upgrade-doctor',
       version: TOOL_VERSION,
-      scannedAt: new Date().toISOString(),
+      scannedAt,
       cwd,
       apk: apk.file,
       mode: 'apk-only',

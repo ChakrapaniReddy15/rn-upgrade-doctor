@@ -29,6 +29,7 @@ describe('APK-only mode', () => {
       'apk-16kb:libdemo_native.so',
       'apk-16kb:react-native-mmkv',
       'apk-16kb:react-native-reanimated',
+      'play-aab-required',
     ]);
     expect(report.dependencies).toEqual([]);
     expect(report.native.rows).toEqual([]);

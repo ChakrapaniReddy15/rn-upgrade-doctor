@@ -75,7 +75,13 @@ export const EXAMPLES: ExampleRun[] = [
   { name: '08 lockfiles (yarn)', folder: '08-lockfiles/yarn', exitCode: 0, findings: ['info:rn-version-gap'] },
   { name: '08 lockfiles (pnpm)', folder: '08-lockfiles/pnpm', exitCode: 0, findings: ['info:rn-version-gap'] },
   { name: '09 16 KB (no APK)', folder: '09-16kb-apk', exitCode: 0, findings: [] },
-  { name: '09 16 KB (good.apk)', folder: '09-16kb-apk', apk: 'good.apk', exitCode: 0, findings: ['info:apk-16kb-ok'] },
+  {
+    name: '09 16 KB (good.apk)',
+    folder: '09-16kb-apk',
+    apk: 'good.apk',
+    exitCode: 0,
+    findings: ['info:apk-16kb-ok', 'info:play-aab-required'],
+  },
   {
     name: '09 16 KB (bad.apk)',
     folder: '09-16kb-apk',
@@ -85,6 +91,7 @@ export const EXAMPLES: ExampleRun[] = [
       'blocker:apk-16kb:libdemo_native.so',
       'blocker:apk-16kb:react-native-mmkv',
       'blocker:apk-16kb:react-native-reanimated',
+      'info:play-aab-required',
     ],
   },
   {

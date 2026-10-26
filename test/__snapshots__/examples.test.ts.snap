@@ -1634,14 +1634,47 @@ exports[`examples > 09 16 KB (bad.apk) 1`] = `
       },
     ],
     "manifest": {
-      "available": false,
-      "reason": "AndroidManifest.xml is not a compiled (binary) manifest.",
+      "available": true,
+      "manifest": {
+        "components": [
+          {
+            "exported": true,
+            "hasIntentFilter": true,
+            "name": "com.demo.scanner.MainActivity",
+            "type": "activity",
+          },
+        ],
+        "minSdk": 24,
+        "networkSecurityConfig": false,
+        "package": "com.demo.scanner",
+        "permissions": [
+          "android.permission.INTERNET",
+        ],
+        "targetSdk": 36,
+        "versionCode": 1,
+        "versionName": "1.0",
+      },
     },
     "signing": {
-      "certificates": [],
+      "certificates": [
+        {
+          "debug": false,
+          "schemes": [
+            "v2",
+            "v3",
+          ],
+          "sha256": "99:9E:F3:30:F3:F9:06:9E:C1:26:A5:1E:B5:31:67:28:3E:4D:23:51:A8:07:C1:A8:B8:EF:30:07:0C:68:17:4A",
+          "subject": "CN=Demo Release, O=Demo, C=US",
+          "validFrom": "2026-01-01T05:31:16.000Z",
+          "validTo": "2060-12-23T05:31:16.000Z",
+        },
+      ],
       "debugSigned": false,
-      "schemes": [],
-      "unsigned": true,
+      "schemes": [
+        "v2",
+        "v3",
+      ],
+      "unsigned": false,
     },
   },
   "dependencies": [
@@ -1741,6 +1774,14 @@ exports[`examples > 09 16 KB (bad.apk) 1`] = `
       "source": "APK scan (APK); package from known table",
       "title": "react-native-reanimated: libreanimated.so not 16 KB page-size compatible",
     },
+    {
+      "docs": "https://developer.android.com/guide/app-bundle",
+      "fix": "Upload the AAB of the same build (./gradlew bundleRelease).",
+      "id": "play-aab-required",
+      "severity": "info",
+      "source": "APK scan (APK)",
+      "title": "Google Play needs an Android App Bundle (AAB) for new apps; this APK check is a pre-upload check",
+    },
   ],
   "meta": {
     "apk": "<tmp>/bad.apk",
@@ -1767,7 +1808,7 @@ exports[`examples > 09 16 KB (bad.apk) 1`] = `
   "patches": [],
   "summary": {
     "blockers": 3,
-    "info": 0,
+    "info": 1,
     "warnings": 0,
   },
 }
@@ -1840,14 +1881,47 @@ exports[`examples > 09 16 KB (good.apk) 1`] = `
       },
     ],
     "manifest": {
-      "available": false,
-      "reason": "AndroidManifest.xml is not a compiled (binary) manifest.",
+      "available": true,
+      "manifest": {
+        "components": [
+          {
+            "exported": true,
+            "hasIntentFilter": true,
+            "name": "com.demo.scanner.MainActivity",
+            "type": "activity",
+          },
+        ],
+        "minSdk": 24,
+        "networkSecurityConfig": false,
+        "package": "com.demo.scanner",
+        "permissions": [
+          "android.permission.INTERNET",
+        ],
+        "targetSdk": 36,
+        "versionCode": 1,
+        "versionName": "1.0",
+      },
     },
     "signing": {
-      "certificates": [],
+      "certificates": [
+        {
+          "debug": false,
+          "schemes": [
+            "v2",
+            "v3",
+          ],
+          "sha256": "99:9E:F3:30:F3:F9:06:9E:C1:26:A5:1E:B5:31:67:28:3E:4D:23:51:A8:07:C1:A8:B8:EF:30:07:0C:68:17:4A",
+          "subject": "CN=Demo Release, O=Demo, C=US",
+          "validFrom": "2026-01-01T05:31:16.000Z",
+          "validTo": "2060-12-23T05:31:16.000Z",
+        },
+      ],
       "debugSigned": false,
-      "schemes": [],
-      "unsigned": true,
+      "schemes": [
+        "v2",
+        "v3",
+      ],
+      "unsigned": false,
     },
   },
   "dependencies": [
@@ -1927,6 +2001,14 @@ exports[`examples > 09 16 KB (good.apk) 1`] = `
       "source": "APK scan (APK)",
       "title": "All 4 64-bit native libraries are 16 KB page-size compatible",
     },
+    {
+      "docs": "https://developer.android.com/guide/app-bundle",
+      "fix": "Upload the AAB of the same build (./gradlew bundleRelease).",
+      "id": "play-aab-required",
+      "severity": "info",
+      "source": "APK scan (APK)",
+      "title": "Google Play needs an Android App Bundle (AAB) for new apps; this APK check is a pre-upload check",
+    },
   ],
   "meta": {
     "apk": "<tmp>/good.apk",
@@ -1953,7 +2035,7 @@ exports[`examples > 09 16 KB (good.apk) 1`] = `
   "patches": [],
   "summary": {
     "blockers": 0,
-    "info": 1,
+    "info": 2,
     "warnings": 0,
   },
 }

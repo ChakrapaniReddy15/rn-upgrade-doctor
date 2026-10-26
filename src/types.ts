@@ -9,6 +9,8 @@ export interface Finding {
   fix?: string;
   /** Where the data came from, e.g. "npm registry", "React Native Directory", "APK scan". */
   source: string;
+  /** Official documentation for the rule. */
+  docs?: string;
 }
 
 export type ReportFormat = 'terminal' | 'html' | 'md' | 'json';
@@ -239,6 +241,8 @@ export interface ProjectContext {
   patches?: PatchInfo[];
   apk?: ApkReport;
   templates?: NativeTemplates;
+  /** Time of the scan (ISO), for date rules such as certificate expiry. Defaults to now. */
+  now?: string;
 }
 
 export interface Report {
