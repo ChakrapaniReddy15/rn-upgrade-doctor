@@ -153,9 +153,11 @@ export interface ApkReport {
 
 export interface ProjectContext {
   cwd: string;
+  /** 'apk-only' when --apk was given and the folder has no React Native project: only the APK is checked. */
+  mode?: 'project' | 'apk-only';
   /** Exact version from the lockfile, else the lowest version allowed by the package.json range. */
   reactNativeVersion?: string;
-  reactNativeVersionSource: 'lockfile' | 'package.json';
+  reactNativeVersionSource?: 'lockfile' | 'package.json';
   /** The react-native range as written in package.json. */
   reactNativeRange?: string;
   packageManager?: 'npm' | 'yarn' | 'pnpm';
@@ -186,8 +188,10 @@ export interface Report {
     scannedAt: string;
     cwd: string;
     apk?: string;
+    /** 'apk-only' when --apk was given outside a React Native project. */
+    mode: 'project' | 'apk-only';
     reactNativeVersion?: string;
-    reactNativeVersionSource: ProjectContext['reactNativeVersionSource'];
+    reactNativeVersionSource?: ProjectContext['reactNativeVersionSource'];
     latestReactNative?: string;
     latestReactNativeSource?: string;
     upgradeHelperUrl?: string;

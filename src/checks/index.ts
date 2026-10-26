@@ -26,6 +26,9 @@ const CHECKS: Array<(ctx: ProjectContext) => Finding[]> = [
   checkPatches,
 ];
 
+/** Without a project there is no package.json, lockfile or android/ folder: only the built app can be checked. */
+const APK_ONLY_CHECKS: Array<(ctx: ProjectContext) => Finding[]> = [checkApk];
+
 const SEVERITY_RANK: Record<Severity, number> = { blocker: 0, warning: 1, info: 2 };
 
 /**
@@ -34,7 +37,8 @@ const SEVERITY_RANK: Record<Severity, number> = { blocker: 0, warning: 1, info: 
  */
 export function runChecks(ctx: ProjectContext): Finding[] {
   const devOnly = new Set(ctx.devOnly);
-  return rankFindings(CHECKS.flatMap((check) => check(ctx)), (f) => (f.package !== undefined && devOnly.has(f.package) ? 1 : 0));
+  const checks = ctx.mode === 'apk-only' ? APK_ONLY_CHECKS : CHECKS;
+  return rankFindings(checks.flatMap((check) => check(ctx)), (f) => (f.package !== undefined && devOnly.has(f.package) ? 1 : 0));
 }
 
 export function rankFindings(findings: Finding[], tieBreak: (finding: Finding) => number = () => 0): Finding[] {

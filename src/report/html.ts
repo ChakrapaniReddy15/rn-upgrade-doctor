@@ -13,6 +13,7 @@ import {
   nativeSections,
   newArchLabel,
   sixteenKbNotChecked,
+  subtitle,
   templateColumns,
 } from './shared.js';
 
@@ -132,7 +133,7 @@ footer { margin-top: 32px; font-size: .8rem; color: var(--dim); }
 <body>
 <main>
 <h1>${esc(headline(report))}</h1>
-<p class="meta">${esc(report.meta.cwd)}${report.meta.packageManager ? ` · ${esc(report.meta.packageManager)}` : ''}</p>
+<p class="meta">${esc(subtitle(report))}</p>
 ${report.meta.upgradeHelperUrl ? `<p class="meta">Upgrade diff: ${linkify(report.meta.upgradeHelperUrl)}</p>` : ''}
 <div class="summary">
   <div class="b"><strong>${blockers}</strong>blockers</div>
@@ -144,8 +145,7 @@ ${deps.length > 0 ? `<h2>Dependencies to review <span class="dim">(${deps.length
 <div class="table-wrap"><table><thead><tr><th>Package</th><th>Installed</th><th>Latest</th><th>New Arch</th><th>Maintenance</th></tr></thead><tbody>
 ${depRows}
 </tbody></table></div>` : ''}
-<h2>Native config vs React Native template</h2>
-${config}
+${report.meta.mode === 'apk-only' ? '' : `<h2>Native config vs React Native template</h2>\n${config}`}
 ${apkSection || (sixteenKbNotChecked(report) ? `<h2>16 KB page size</h2><p class="w">${esc(SIXTEEN_KB_NOT_CHECKED)}</p>` : '')}
 <h2>Data sources</h2>
 <ul class="dim">${dataSources(report).map((s) => `<li>${esc(s)}</li>`).join('')}</ul>

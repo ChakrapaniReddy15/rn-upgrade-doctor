@@ -14,6 +14,7 @@ import {
   nativeSections,
   newArchLabel,
   sixteenKbNotChecked,
+  subtitle,
   templateColumns,
 } from './shared.js';
 
@@ -23,7 +24,7 @@ export function renderTerminal(report: Report, options: { color: boolean }): str
   const out: string[] = [];
 
   out.push('', c.bold(`rn-upgrade-doctor · ${headline(report)}`));
-  out.push(c.dim(`${report.meta.cwd}${report.meta.packageManager ? ` · ${report.meta.packageManager}` : ''}`));
+  out.push(c.dim(subtitle(report)));
   if (report.meta.upgradeHelperUrl) out.push(`Upgrade diff: ${c.cyan(report.meta.upgradeHelperUrl)}`);
 
   const { blockers, warnings, info } = report.summary;
@@ -74,8 +75,8 @@ export function renderTerminal(report: Report, options: { color: boolean }): str
   }
 
   const columns = templateColumns(report);
-  out.push('', c.bold('Native config vs React Native template'));
-  for (const section of nativeSections(report)) {
+  if (report.meta.mode !== 'apk-only') out.push('', c.bold('Native config vs React Native template'));
+  for (const section of report.meta.mode === 'apk-only' ? [] : nativeSections(report)) {
     if (section.rows.length === 0) {
       out.push(`  ${section.platform}: ${c.dim(`no ${section.platform === 'Android' ? 'android/' : 'ios/Podfile'} found`)}`);
       continue;

@@ -13,6 +13,7 @@ import {
   nativeSections,
   newArchLabel,
   sixteenKbNotChecked,
+  subtitle,
   templateColumns,
 } from './shared.js';
 
@@ -23,6 +24,7 @@ export function renderMarkdown(report: Report): string {
   const { blockers, warnings, info } = report.summary;
 
   out.push(`## rn-upgrade-doctor: ${headline(report)}`, '');
+  if (report.meta.mode === 'apk-only') out.push(`\`${subtitle(report)}\``, '');
   out.push(`**${blockers} blockers** · ${warnings} warnings · ${info} info`, '');
   if (report.meta.upgradeHelperUrl) out.push(`Upgrade diff: ${report.meta.upgradeHelperUrl}`, '');
 
@@ -55,8 +57,8 @@ export function renderMarkdown(report: Report): string {
   }
 
   const columns = templateColumns(report);
-  out.push('### Native config vs React Native template', '');
-  for (const section of nativeSections(report)) {
+  if (report.meta.mode !== 'apk-only') out.push('### Native config vs React Native template', '');
+  for (const section of report.meta.mode === 'apk-only' ? [] : nativeSections(report)) {
     if (section.rows.length === 0) {
       out.push(`**${section.platform}:** not found`, '');
       continue;

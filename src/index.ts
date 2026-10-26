@@ -4,11 +4,11 @@ import { readAndroidConfig } from './android/index.js';
 import { scanApk } from './apk/index.js';
 import { compareNative, registryUnreachable, runChecks } from './checks/index.js';
 import { readIosConfig } from './ios/index.js';
-import { buildProjectContext, readPackageJson, type PackageJson } from './project/index.js';
+import { ProjectError, buildProjectContext, readPackageJson, type PackageJson } from './project/index.js';
 import { readPatches } from './project/patches.js';
 import { FileCache, getDirectoryInfo, getNpmInfo, getTemplate, type RegistryOptions } from './registry/index.js';
 import { upgradeHelperUrl } from './rules/index.js';
-import type { DependencyInfo, NativeTemplates, PatchInfo, ProjectContext, Report, ScanOptions, Sourced } from './types.js';
+import type { DependencyInfo, Finding, NativeTemplates, PatchInfo, ProjectContext, Report, ScanOptions, Sourced } from './types.js';
 
 export * from './types.js';
 export { runChecks, rankFindings } from './checks/index.js';
@@ -30,9 +30,19 @@ export interface RunScanDeps {
   registry?: Partial<RegistryOptions>;
 }
 
-/** Library entry: read the project, look up every dependency, run every check and return a ranked report. */
+/**
+ * Library entry: read the project, look up every dependency, run every check and return a ranked report.
+ * With --apk and no React Native project in the folder, only the APK is scanned (APK-only mode).
+ */
 export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Promise<Report> {
-  const ctx = await buildProjectContext(options.cwd);
+  let ctx: ProjectContext;
+  try {
+    ctx = await buildProjectContext(options.cwd);
+  } catch (err) {
+    // A folder without a React Native project is fine when there is an APK to check; broken project files are not.
+    if (options.apk && err instanceof ProjectError && err.reason !== 'invalid') return runApkOnlyScan(options, options.apk);
+    throw err;
+  }
   const pkg = await readPackageJson(ctx.cwd);
   const root = ctx.workspaceRoot;
   const rootPrefix = root ? `${path.relative(ctx.cwd, root).split(path.sep).join('/')}/` : '';
@@ -63,6 +73,7 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
       scannedAt: new Date().toISOString(),
       cwd: ctx.cwd,
       apk: apk?.file,
+      mode: 'project',
       reactNativeVersion: current,
       reactNativeVersionSource: ctx.reactNativeVersionSource,
       latestReactNative: latest,
@@ -72,11 +83,7 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
       lockfile: ctx.lockfile ? path.relative(ctx.cwd, ctx.lockfile).split(path.sep).join('/') : undefined,
       offline: options.offline,
     },
-    summary: {
-      blockers: findings.filter((f) => f.severity === 'blocker').length,
-      warnings: findings.filter((f) => f.severity === 'warning').length,
-      info: findings.filter((f) => f.severity === 'info').length,
-    },
+    summary: summarize(findings),
     findings,
     dependencies,
     android,
@@ -84,6 +91,43 @@ export async function runScan(options: ScanOptions, deps: RunScanDeps = {}): Pro
     native: compareNative(full),
     patches,
     apk,
+  };
+}
+
+/**
+ * APK-only mode: no package.json, lockfile, node_modules or android/ folder, so only the built app is checked.
+ * Native libraries are matched through the known table only (React Native core, Fresco, popular libraries);
+ * anything else is reported by its .so file name.
+ */
+async function runApkOnlyScan(options: ScanOptions, apkPath: string): Promise<Report> {
+  const cwd = path.resolve(options.cwd);
+  const apk = await scanApk(apkPath, []);
+  const ctx: ProjectContext = { cwd, mode: 'apk-only', installed: {}, declared: {}, devOnly: [], apk };
+  const findings = runChecks(ctx);
+  return {
+    meta: {
+      tool: 'rn-upgrade-doctor',
+      version: TOOL_VERSION,
+      scannedAt: new Date().toISOString(),
+      cwd,
+      apk: apk.file,
+      mode: 'apk-only',
+      offline: options.offline,
+    },
+    summary: summarize(findings),
+    findings,
+    dependencies: [],
+    native: compareNative(ctx),
+    patches: [],
+    apk,
+  };
+}
+
+function summarize(findings: Finding[]): Report['summary'] {
+  return {
+    blockers: findings.filter((f) => f.severity === 'blocker').length,
+    warnings: findings.filter((f) => f.severity === 'warning').length,
+    info: findings.filter((f) => f.severity === 'info').length,
   };
 }
 
