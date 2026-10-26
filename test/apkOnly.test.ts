@@ -13,8 +13,9 @@ let cleanup: () => Promise<void>;
 
 beforeEach(async () => {
   ({ dir, cleanup } = await tempDir('apk-only'));
-  const { good, bad } = exampleApks();
-  await writeTree(dir, { 'good.apk': good, 'bad.apk': bad });
+  const apks = exampleApks();
+  const file = (name: string) => apks.find((a) => a.folder === '09-16kb-apk' && a.file === name)!.data;
+  await writeTree(dir, { 'good.apk': file('good.apk'), 'bad.apk': file('bad.apk') });
 });
 
 afterEach(() => cleanup());
@@ -79,5 +80,21 @@ describe('APK-only mode', () => {
       (err: { code: number; stdout: string }) => err,
     );
     expect('code' in failed ? failed.code : 0).toBe(1);
+  });
+
+  it('works from the CLI inside a project: full project scan plus the Play Store section', async () => {
+    const run = promisify(execFile);
+    const tsx = path.join(ROOT, 'node_modules/tsx/dist/esm/index.mjs');
+    const args = [
+      '--import', tsx, path.join(ROOT, 'src/cli.ts'),
+      path.join(ROOT, 'examples/01-healthy-latest'),
+      '--apk', path.join(dir, 'good.apk'),
+      '--offline', '--cache-dir', path.join(ROOT, 'examples/registry-snapshot'), '--ci',
+    ];
+    const { stdout } = await run(process.execPath, args, { cwd: dir });
+    expect(stdout).toContain('React Native 0.87.1 (latest)');
+    expect(stdout).not.toContain('APK-only scan');
+    expect(stdout).toContain('Native config vs React Native template');
+    expect(stdout).toContain('Play Store ready?  ✅ Ready for Play Store');
   });
 });

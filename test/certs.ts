@@ -1,7 +1,7 @@
 /**
  * Throwaway self-signed test certificates (EC P-256), made with keytool for these tests only. Not real keys.
  * debug: subject "CN=Android Debug" like the Android debug key; expired: valid only in 2000;
- * short: ends 31 Dec 2029, before Google Play's 22 Oct 2033 minimum.
+ * short: ends 30 Jun 2033, before Google Play's 22 Oct 2033 minimum (and not expired until then).
  */
 export const DEBUG_CERT = `-----BEGIN CERTIFICATE-----
 MIIBiDCCAS2gAwIBAgIIddAoXV8mPLcwCgYIKoZIzj0EAwIwNzELMAkGA1UEBhMC
@@ -40,14 +40,14 @@ Kfw=
 -----END CERTIFICATE-----`;
 
 export const SHORT_CERT = `-----BEGIN CERTIFICATE-----
-MIIBeTCCAR+gAwIBAgIIeNhYpjMYMCMwCgYIKoZIzj0EAwIwMTELMAkGA1UEBhMC
+MIIBeDCCAR+gAwIBAgIICi7QTSq/JAwwCgYIKoZIzj0EAwIwMTELMAkGA1UEBhMC
 VVMxDTALBgNVBAoTBERlbW8xEzARBgNVBAMTCkRlbW8gU2hvcnQwHhcNMjYwMTAx
-MDUzMTE2WhcNMjkxMjMxMDUzMTE2WjAxMQswCQYDVQQGEwJVUzENMAsGA1UEChME
+MDcxMDEyWhcNMzMwNjMwMDcxMDEyWjAxMQswCQYDVQQGEwJVUzENMAsGA1UEChME
 RGVtbzETMBEGA1UEAxMKRGVtbyBTaG9ydDBZMBMGByqGSM49AgEGCCqGSM49AwEH
-A0IABE0B/IcZ/tmwUr/ZCwwuk7H9Ke84Sh1JMovSDEajNv7/4HTpr7BPoPVf7W3v
-hIBFz5WLnis4afvb7z8Z/ZcIjm6jITAfMB0GA1UdDgQWBBQybA6v94KzZrb+SShW
-BfzzznXnkzAKBggqhkjOPQQDAgNIADBFAiALi6XbscPD9+Qz4LbXyab9SRq6tyCm
-Yd8SYet7YO+xCAIhAKwJpRAkvGKdrHNvY4VuZogakvMzPGJFbu+nHrToMWNv
+A0IABK5KJBjrxy3ogDyPc1LSNgqfvTLDRayLtVIAoqsdINAqn8Hge+mYRuGtp7Br
+YcXOISS3a0nLdSIAZsygkyQdu5OjITAfMB0GA1UdDgQWBBTM4JlIEO8wFAhqCXxc
+Cc5DH0IxczAKBggqhkjOPQQDAgNHADBEAiAZKIXtMvT/O6ULeAJ/43tH0m6JqNhk
+hNehcbiB0IqMsgIgAYA6+Nqyq6rDuKHt1bFXztaIIi7U02K6nt0Nv3f5pi4=
 -----END CERTIFICATE-----`;
 
 /** DER bytes of a PEM certificate. */

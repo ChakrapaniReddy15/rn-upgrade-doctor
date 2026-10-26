@@ -112,7 +112,7 @@ describe('certificates', () => {
       validTo: '2000-12-31T05:31:16.000Z',
       debug: false,
     });
-    expect(describeCertificate(der(SHORT_CERT))?.validTo).toBe('2029-12-31T05:31:16.000Z');
+    expect(describeCertificate(der(SHORT_CERT))?.validTo).toBe('2033-06-30T07:10:12.000Z');
     expect(describeCertificate(release)?.sha256).toMatch(/^([0-9A-F]{2}:){31}[0-9A-F]{2}$/);
     expect(describeCertificate(Buffer.from('not a certificate'))).toBeUndefined();
   });

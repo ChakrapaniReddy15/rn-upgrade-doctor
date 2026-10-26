@@ -17,9 +17,7 @@ let cleanup: () => Promise<void>;
 
 beforeAll(async () => {
   ({ dir: tmp, cleanup } = await tempDir('examples'));
-  const { good, bad } = exampleApks();
-  await writeFile(path.join(tmp, 'good.apk'), good);
-  await writeFile(path.join(tmp, 'bad.apk'), bad);
+  for (const apk of exampleApks()) await writeFile(path.join(tmp, apk.file), apk.data);
 });
 
 afterAll(() => cleanup());
@@ -27,7 +25,7 @@ afterAll(() => cleanup());
 /** Run the real CLI (offline, registry snapshot) and return its exit code and JSON report. */
 async function scan(example: ExampleRun): Promise<{ code: number; stderr: string; report?: Report }> {
   const out = path.join(tmp, example.name.replace(/\W+/g, '-'));
-  // Use the generated APKs from the temp folder instead of examples/09-16kb-apk (which may not exist yet).
+  // Use the generated APKs from the temp folder instead of the example folders (where they may not exist yet).
   const args = exampleArgs(example).map((a) => (example.apk && a.endsWith(example.apk) ? path.join(tmp, example.apk) : a));
   let code = 0;
   let stderr = '';
@@ -102,12 +100,6 @@ describe('examples', () => {
 
     const uncovered = [...new Set(known)].filter((id) => !seen.some((s) => (id.endsWith(':') ? s.startsWith(id) : s === id)));
     expect(known.length).toBeGreaterThan(15);
-    // Play Store rules are covered by test/playStore.test.ts; their example APKs come with v0.2 step 5.
-    // Remove ids from this list as examples are added; the list must end up empty.
-    const pendingExamples = [
-      'play-manifest-unavailable', 'play-target-sdk', 'play-debuggable', 'play-exported', 'play-permission:',
-      'play-cleartext', 'play-64bit', 'play-unsigned', 'play-debug-signed', 'play-v1-only', 'play-cert-expired', 'play-cert-validity',
-    ];
-    expect(uncovered).toEqual(pendingExamples);
+    expect(uncovered).toEqual([]);
   });
 });
