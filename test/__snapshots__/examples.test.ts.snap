@@ -2030,7 +2030,7 @@ exports[`examples > 09 16 KB (good.apk) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 4 64-bit native libraries are 16 KB page-size compatible",
+      "title": "All 3 64-bit native libraries are 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -3514,7 +3514,7 @@ exports[`examples > 15 Play Store (AAB) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (AAB)",
-      "title": "All 1 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "detail": "Manifest checks need an APK: an AAB stores its manifest in protobuf format. Target API level, debuggable, exported components, permissions and cleartext were not checked.",
@@ -3650,7 +3650,7 @@ exports[`examples > 15 Play Store (SMS permission) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -3803,7 +3803,7 @@ exports[`examples > 15 Play Store (certificate ends before 2033) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -3956,7 +3956,7 @@ exports[`examples > 15 Play Store (cleartext) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -4109,7 +4109,7 @@ exports[`examples > 15 Play Store (debug-signed) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -4263,7 +4263,7 @@ exports[`examples > 15 Play Store (debuggable) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -4416,7 +4416,7 @@ exports[`examples > 15 Play Store (expired certificate) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -4578,7 +4578,7 @@ exports[`examples > 15 Play Store (missing exported) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -4731,7 +4731,7 @@ exports[`examples > 15 Play Store (ready) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -4874,7 +4874,7 @@ exports[`examples > 15 Play Store (targetSdk 34) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -5012,7 +5012,7 @@ exports[`examples > 15 Play Store (unsigned) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
@@ -5150,7 +5150,7 @@ exports[`examples > 15 Play Store (v1-only signing) 1`] = `
       "id": "apk-16kb-ok",
       "severity": "info",
       "source": "APK scan (APK)",
-      "title": "All 2 64-bit native libraries are 16 KB page-size compatible",
+      "title": "The only 64-bit native library is 16 KB page-size compatible",
     },
     {
       "docs": "https://developer.android.com/guide/app-bundle",
